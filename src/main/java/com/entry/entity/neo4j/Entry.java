@@ -1,4 +1,4 @@
-package com.entry.model;
+package com.entry.entity.neo4j;
 
 import javax.persistence.*;
 import org.neo4j.ogm.annotation.NodeEntity;

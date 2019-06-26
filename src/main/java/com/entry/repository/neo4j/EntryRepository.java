@@ -1,6 +1,6 @@
-package com.entry.repository;
+package com.entry.repository.neo4j;
 
-import com.entry.model.Entry;
+import com.entry.entity.neo4j.Entry;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 
