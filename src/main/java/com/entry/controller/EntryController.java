@@ -1,8 +1,9 @@
 package com.entry.controller;
 
-import com.entry.model.Entry;
+
+import com.entry.entity.neo4j.Entry;
 import com.entry.dto.BaseResultFactory;
-import com.entry.repository.EntryRepository;
+import com.entry.repository.neo4j.EntryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

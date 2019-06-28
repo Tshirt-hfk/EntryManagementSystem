@@ -1,7 +1,5 @@
 package com.entry.entity.mysql;
 
-import org.neo4j.ogm.annotation.NodeEntity;
-
 import javax.persistence.*;
 import java.util.List;
 
@@ -10,7 +8,7 @@ import java.util.List;
 public class Subject {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) //自增主键
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  //自增主键
     private Integer id;
 
     @Column(nullable = false)
@@ -25,55 +23,45 @@ public class Subject {
     @OneToMany(mappedBy = "subject",cascade=CascadeType.ALL,fetch=FetchType.LAZY)
     private List<Assignment> assignmentlist;
 
-    public List<SubjectGroup> getSubjectGroupList() {
-        return subjectGroupList;
+    @OneToMany(mappedBy="pk.groupMember.subject",cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+    private List<Task> taskList;
+
+    @OneToMany(mappedBy="pk.subject",cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+    private List<GroupMember> groupMemberList;
+
+    public Subject() {
+
     }
 
-    public void setSubjectGroupList(List<SubjectGroup> subjectGroupList) {
-        this.subjectGroupList = subjectGroupList;
-    }
-
-    @OneToMany(mappedBy="subject",cascade=CascadeType.ALL)
-    private List<SubjectGroup> subjectGroupList;
-
-    public List<Assignment> getAssignmentlist() {
-        return assignmentlist;
-    }
-
-    public void setAssignmentlist(List<Assignment> assignmentlist) {
-        this.assignmentlist = assignmentlist;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
+    public Subject(String name, String introduction, String field) {
+        this.name = name;
+        this.introduction = introduction;
+        this.field = field;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getIntroduction() {
         return introduction;
-    }
-
-    public void setIntroduction(String introduction) {
-        this.introduction = introduction;
     }
 
     public String getField() {
         return field;
     }
 
-    public void setField(String field) {
-        this.field = field;
+    public List<Assignment> getAssignmentlist() {
+        return assignmentlist;
     }
+
+    public List<Task> getTaskList() {
+        return taskList;
+    }
+
+    public List<GroupMember> getGroupMemberList() {
+        return groupMemberList;
+    }
+
 
 }

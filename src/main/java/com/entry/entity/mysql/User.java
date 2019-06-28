@@ -25,64 +25,57 @@ public class User {
     private String phone;
 
     @Email
-    @Column(columnDefinition = "varchar(20)")
+    @Column(columnDefinition = "varchar(20)", unique = true, nullable = false)
     private String email;
 
-    public List<SubjectGroup> getSubjectGroupList() {
-        return subjectGroupList;
+    @OneToMany(mappedBy="pk.user",cascade=CascadeType.REFRESH,fetch=FetchType.LAZY)
+    private List<GroupMember> groupMemberList;
+
+    @OneToMany(mappedBy="pk.groupMember.user",cascade=CascadeType.REFRESH,fetch=FetchType.LAZY)
+    private List<Task> taskList;
+
+    public User() {
+
     }
 
-    public void setSubjectGroupList(List<SubjectGroup> subjectGroupList) {
-        this.subjectGroupList = subjectGroupList;
+    public User(String name, String password, Integer authorith, String phone, String email){
+        this.name = name;
+        this.password = password;
+        this.authorith = authorith;
+        this.password = phone;
+        this.email = email;
     }
-
-    @OneToMany(mappedBy="user",cascade=CascadeType.ALL)
-    private List<SubjectGroup> subjectGroupList;
 
     public Integer getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getPassword() {
         return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public Integer getAuthorith() {
         return authorith;
     }
 
-    public void setAuthorith(Integer authorith) {
-        this.authorith = authorith;
-    }
-
     public String getPhone() {
         return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email){this.email = email; }
+    public List<GroupMember> getGroupMemberList() {
+        return groupMemberList;
+    }
+
+    public List<Task> getTaskList() {
+        return taskList;
+    }
 
 }
