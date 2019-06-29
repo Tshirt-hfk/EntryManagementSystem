@@ -10,31 +10,35 @@ import org.springframework.web.client.HttpClientErrorException;
 import java.util.Date;
 
 public class JwtUtil {
-    final static String base64EncodedSecretKey = "base64EncodedSecretKey";//私钥
-    final static long TOKEN_EXP = 1000 * 60 * 10;//过期时间,测试使用十分钟
-    public static String getToken(Integer id,String role) {
+
+    final static String base64EncodedSecretKey = "base64EncodedSecretKey"; //私钥
+
+    final static long TOKEN_EXP = 1000 * 60 * 10; //过期时间,测试使用十分钟
+
+    public static String getToken(Integer id,Integer role) {
         return Jwts.builder()
                 .setSubject(id.toString())
-                .claim("roles", role)
+                .claim("role", role)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + TOKEN_EXP)) /*过期时间*/
                 .signWith(SignatureAlgorithm.HS256, base64EncodedSecretKey)
                 .compact();
     }
-    public static String getIDbyToken(String token){
+
+    public static Integer getIdbyToken(String token){
         Claims claims=Jwts.parser()
                 .setSigningKey(base64EncodedSecretKey)
                 .parseClaimsJws(token)
                 .getBody();
-        return  claims.getSubject();
+        return  Integer.parseInt(claims.getSubject());
     }
 
-    public static String getRolebyToken(String token){
+    public static Integer getRolebyToken(String token){
         Claims claims=Jwts.parser()
                 .setSigningKey(base64EncodedSecretKey)
                 .parseClaimsJws(token)
                 .getBody();
-        return  claims.get("roles").toString();
+        return  Integer.parseInt(claims.get("role").toString());
     }
 
     public static Claims checkToken(String token) {

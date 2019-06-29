@@ -1,0 +1,110 @@
+<template>
+    <header style="width: 100%">
+        <div class="header">
+            <div class="header-middle">
+                <div class="header-l" >
+                    <h1 @click="toIndex">词条百科</h1>
+                </div>
+                <div class="header-r">
+                    <template v-if="status===0">       <!-- 未登陆 -->
+                        <el-button @click="toLogin">登录</el-button>
+                        <el-button @click="toRegister">注册</el-button>
+                    </template> 
+                    <template v-else-if="status===1">  <!-- 普通用户 -->
+                        <el-button @click="loginOut">登出</el-button>
+                    </template> 
+                    <template v-else-if="status===2">  <!-- 专题制作人 -->
+                        <el-button @click="loginOut">登出</el-button>
+                    </template>
+                    <template v-else-if="status===3">  <!-- 管理员 -->
+                        <el-button @click="loginOut">登出</el-button>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </header>
+</template>
+
+<script>
+export default {
+    name:'myHeader',
+    mounted(){
+        this.identifyAuth()
+    },
+    computed:{
+        status() {
+            return this.$store.state.status
+        }
+    },
+    methods:{
+        identifyAuth: function(){
+            this.$axios.get(
+                "http://localhost:8081/api/user/islogin"
+            ).then(res => {
+                if(res.data.data){
+                    this.$store.commit("status", res.data.data.status);
+                } else {
+                this.$message({
+                    message:res.data.msg,
+                    type:"warning"
+                });
+                }
+            }).catch(error => {
+                if(error.response){
+                    this.$message({
+                        message:error.response.data.msg,
+                        type:"warning"
+                    });
+                }
+            });
+        },
+        toIndex(){
+            this.$router.push('/')
+        },
+        toLogin(){
+            this.$router.push('/login')
+        },
+        toRegister(){
+            this.$router.push('/register')
+        },
+        LoginOut(){
+            this.$store.commit('status', 0)
+            localStorage.clear()   
+            this.$message({
+                message:"success!"
+            })
+            this.$router.push('/') 
+        },
+    }
+}
+</script>
+
+<style scoped>
+    .header{
+        width: 100%;
+        height: 50px;
+        background-color: #409eff;
+    }
+    .header-middle{
+        margin: 0 auto;
+        width: 1170px;
+        display: flex;
+        justify-content: space-between;
+    }
+    .header-l{
+        width: 250px;
+        height: 50px;
+    }
+    .header-l h1{
+        color: #fff;
+        font-weight: 400;
+        font-size: 30px;
+        margin-top: 5px;
+    }
+    .header-r{
+        width: 400px;
+        height: 50px;
+        margin-top: 5px;
+    }
+</style>
+

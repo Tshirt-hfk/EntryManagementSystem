@@ -35,4 +35,6 @@ public class EntryController {
         return new ResponseEntity<>(BaseResultFactory.build(entry), HttpStatus.OK);
     }
 
+
+
 }

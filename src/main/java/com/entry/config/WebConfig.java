@@ -10,7 +10,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         //添加拦截器
-        registry.addInterceptor(new JwtInterceptor()).excludePathPatterns("/user/login","/topic","/user/register","/search");
+        registry.addInterceptor(new JwtInterceptor()).addPathPatterns("/api/**").excludePathPatterns("/api/tourist/*","/error");
         //放掉某些特定不需要校验token的路由
     }
 }

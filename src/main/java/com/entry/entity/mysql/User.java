@@ -12,7 +12,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY) //自增主键
     private Integer id;
 
-    @Column(nullable = false, columnDefinition = "varchar(20)")
+    @Column(unique = true, nullable = false, columnDefinition = "varchar(20)")
     private String name;
 
     @Column(nullable = false, columnDefinition = "varchar(20)")
@@ -42,7 +42,7 @@ public class User {
         this.name = name;
         this.password = password;
         this.authorith = authorith;
-        this.password = phone;
+        this.phone = phone;
         this.email = email;
     }
 
