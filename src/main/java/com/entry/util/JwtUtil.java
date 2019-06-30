@@ -1,4 +1,4 @@
-package com.entry.security;
+package com.entry.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;

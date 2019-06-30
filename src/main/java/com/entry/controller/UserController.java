@@ -1,9 +1,7 @@
 package com.entry.controller;
 
-import com.entry.security.JwtUtil;
 import com.entry.entity.mysql.User;
 import com.entry.repository.mysql.UserRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.entry.dto.BaseResultFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,10 +9,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.HashMap;
 
 

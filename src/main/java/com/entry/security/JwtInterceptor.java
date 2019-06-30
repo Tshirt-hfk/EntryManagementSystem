@@ -1,5 +1,6 @@
 package com.entry.security;
 
+import com.entry.util.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import org.springframework.web.client.HttpClientErrorException;
