@@ -1,9 +1,5 @@
 <template>
     <el-card style="width:81%; margin:40px auto 0">
-        <div style="margin-bottom: 20px; display:flex">
-            <el-input style="width:300px; margin-right: 20px" v-model="searchData"></el-input>
-            <el-button type="primary" @click="search">搜索</el-button>
-        </div>
         <el-table width="80%" :data="data" border>
             <el-table-column type='index' width="50" align="center"></el-table-column>
             <el-table-column label="标题" align="center">

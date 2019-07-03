@@ -20,9 +20,9 @@ public class UserController {
     @Autowired
     UserRepository userRepository;
 
-    @GetMapping("/api/user/isLogin")
+    @GetMapping("/api/user/islogin")
     @CrossOrigin
-    public ResponseEntity<?> touristLogin(HttpServletRequest request){
+    public ResponseEntity<?> isLogin(HttpServletRequest request){
         try{
             Integer userId = (Integer)request.getAttribute("userId");
             User user = userRepository.findUserById(userId);

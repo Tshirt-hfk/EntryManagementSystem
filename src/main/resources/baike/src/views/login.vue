@@ -59,16 +59,22 @@ export default {
 
           return (
             this.$axios.post("http://localhost:8081/api/tourist/login",this.user_data)
-                    .then(result => {
-                        localStorage.setItem("token",result.data.data.token);
-                        this.$store.commit("status", result.data.data.status);
-                        //this.$store.commit("status",result.data.data.status)
-                        // 将Token存储到localStorage
-                        this.$message({
-                          message:result.data.msg
-                        });
-                        // 登录成功跳转到首页
-                        this.$router.push("/");
+                    .then(res => {
+                        if(res.data.data){
+                          localStorage.setItem("token",result.data.data.token);
+                          this.$store.commit("status", result.data.data.status);
+                          //this.$store.commit("status",result.data.data.status)
+                          // 将Token存储到localStorage
+                          this.$message({
+                            message:result.data.msg
+                          });
+                          // 登录成功跳转到首页
+                          this.$router.push("/");
+                        }else{
+                          this.$message({
+                            message:result.data.msg
+                          });
+                        }
                     })
                     .catch(error => {
                       if(error.response){

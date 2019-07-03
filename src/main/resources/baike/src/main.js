@@ -13,7 +13,7 @@ Vue.use(ElementUI)
 Vue.config.productionTip = false
 
 // 全局注册，使用方法为:this.$axios
-Object.defineProperty(Vue.prototype, '$axios', { value: axios });
+Object.defineProperty(Vue.prototype, '$axios', { value: axios })
 
 axios.interceptors.request.use(function (config) {
   let token = localStorage.getItem('token')
@@ -27,7 +27,7 @@ axios.interceptors.request.use(function (config) {
 
 const store = new Vuex.Store({
   state: {
-    status: 0    // 用户身份，0:未登录；1:普通用户；2:专题制作人；3:系统管理员
+    status: '0'    // 用户身份，0:未登录；1:普通用户；2:专题制作人；3:系统管理员
   },
   getters: {
     status: state => state.status
@@ -40,7 +40,6 @@ const store = new Vuex.Store({
 })
 
 router.beforeEach((to, from, next) => {
-
   let token = localStorage.getItem('token')
   if (to.path === '/') {
     return next()

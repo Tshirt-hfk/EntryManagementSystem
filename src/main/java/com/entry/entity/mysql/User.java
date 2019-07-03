@@ -18,8 +18,8 @@ public class User {
     @Column(nullable = false, columnDefinition = "varchar(20)")
     private String password;
 
-    @Column(nullable = false, columnDefinition = "TINYINT default 0")
-    private Integer authorith;  // 0：普通用户; 1：专题制作人，有创建专题权限; 2：系统管理员
+    @Column(nullable = false, columnDefinition = "TINYINT default 1")
+    private Integer authorith;  // 1：普通用户; 2：专题制作人，有创建专题权限; 3：系统管理员
 
     @Column(columnDefinition = "varchar(20)")
     private String phone;
