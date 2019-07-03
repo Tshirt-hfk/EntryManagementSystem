@@ -1,5 +1,7 @@
 package com.entry.controller;
 
+import com.entry.entity.neo4j.Entry;
+import com.entry.repository.neo4j.EntryRepository;
 import com.entry.util.JwtUtil;
 import com.entry.entity.mysql.User;
 import com.entry.repository.mysql.UserRepository;
@@ -15,12 +17,17 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.HashMap;
 
-
+/*
+  游客, 不经过身份认证
+ */
 @RestController
 public class TouristController {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    EntryRepository entryRepository;
 
     @PostMapping("/api/tourist/login")
     @CrossOrigin
@@ -37,7 +44,7 @@ public class TouristController {
                     result.put("token", token);
                     result.put("name", user.getName());
                     result.put("status", user.getAuthorith().toString());
-                    return new ResponseEntity<>(BaseResultFactory.build(result), HttpStatus.OK);
+                    return new ResponseEntity<>(BaseResultFactory.build(result,"登陆成功"), HttpStatus.OK);
                 }else
                     return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),"用户密码错误"), HttpStatus.NOT_FOUND);
             else
@@ -55,7 +62,7 @@ public class TouristController {
             String username = user_data.get("username");
             String password = user_data.get("password");
             String email = user_data.get("email");
-            User user = new User(username,password,0,null,email);
+            User user = new User(username,password,1,null,email);
             try{
                 userRepository.save(user);
                 return new ResponseEntity<>(BaseResultFactory.build("用户注册成功"), HttpStatus.OK);
@@ -68,4 +75,21 @@ public class TouristController {
         }
     }
 
+    /**
+     * @param  { keyword: item }
+     * @return { option: [{ value: item, label: item },...] }
+     */
+    @PostMapping("/api/tourist/search")
+    @CrossOrigin
+    public ResponseEntity<?> touristSearch(@RequestBody String jsonParam){
+        try{
+            //TODO
+            HashMap<String,String> user_data = new ObjectMapper().readValue(jsonParam,HashMap.class);
+            String keyword = user_data.get("keyword");
+            Entry entry = entryRepository.findEntryByName(keyword);
+            return new ResponseEntity<>(BaseResultFactory.build(entry,"TODO"), HttpStatus.OK);
+        }catch (IOException e){
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
+        }
+    }
 }

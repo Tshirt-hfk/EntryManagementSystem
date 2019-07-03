@@ -1,5 +1,6 @@
 package com.entry.dto;
 
+import com.entry.entity.mysql.Subject;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -20,7 +21,12 @@ public class SuccessResult extends AbstractBaseResult {
         this.data=data;
     }
 
-    public SuccessResult(String self){
-        this.msg=self;
+    public SuccessResult(String msg){
+        this.msg=msg;
+    }
+
+    public SuccessResult(Object data, String msg){
+        this.data=data;
+        this.msg=msg;
     }
 }

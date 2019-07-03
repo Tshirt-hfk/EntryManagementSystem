@@ -5,18 +5,22 @@
                 <div class="header-l" >
                     <h1 @click="toIndex">词条百科</h1>
                 </div>
+                <div class="header-m">
+                    <mySearch/>
+                    <el-button @click="search">搜索</el-button>
+                </div>
                 <div class="header-r">
-                    <template v-if="status===0">       <!-- 未登陆 -->
+                    <template v-if="status==='0'">       <!-- 未登陆 -->
                         <el-button @click="toLogin">登录</el-button>
                         <el-button @click="toRegister">注册</el-button>
                     </template> 
-                    <template v-else-if="status===1">  <!-- 普通用户 -->
+                    <template v-else-if="status==='1'">  <!-- 普通用户 -->
                         <el-button @click="loginOut">登出</el-button>
                     </template> 
-                    <template v-else-if="status===2">  <!-- 专题制作人 -->
+                    <template v-else-if="status==='2'">  <!-- 专题制作人 -->
                         <el-button @click="loginOut">登出</el-button>
                     </template>
-                    <template v-else-if="status===3">  <!-- 管理员 -->
+                    <template v-else-if="status==='3'">  <!-- 管理员 -->
                         <el-button @click="loginOut">登出</el-button>
                     </template>
                 </div>
@@ -25,9 +29,16 @@
     </header>
 </template>
 
+
 <script>
+
+import mySearch from './mySearch'
+
 export default {
     name:'myHeader',
+    components:{
+		mySearch
+	},
     mounted(){
         this.identifyAuth()
     },
@@ -42,7 +53,9 @@ export default {
                 "http://localhost:8081/api/user/islogin"
             ).then(res => {
                 if(res.data.data){
+                    window.console.log(res.data.data.status)
                     this.$store.commit("status", res.data.data.status);
+                    window.console.log(this.$store.state.status)
                 } else {
                 this.$message({
                     message:res.data.msg,
@@ -67,8 +80,8 @@ export default {
         toRegister(){
             this.$router.push('/register')
         },
-        LoginOut(){
-            this.$store.commit('status', 0)
+        loginOut(){
+            this.$store.commit('status', '0')
             localStorage.clear()   
             this.$message({
                 message:"success!"
@@ -92,13 +105,18 @@ export default {
         justify-content: space-between;
     }
     .header-l{
-        width: 250px;
+        width: 200px;
         height: 50px;
     }
     .header-l h1{
         color: #fff;
         font-weight: 400;
         font-size: 30px;
+        margin-top: 5px;
+    }
+    .header-m{
+        width: 300px;
+        height: 50px;
         margin-top: 5px;
     }
     .header-r{
