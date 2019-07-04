@@ -1,6 +1,6 @@
 package com.entry.entity.mysql;
 
-import com.entry.entity.GroupMemberPK;
+import com.entry.entity.mysql.pk.GroupMemberPK;
 
 import javax.persistence.*;
 

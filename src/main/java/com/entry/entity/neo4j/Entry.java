@@ -12,16 +12,23 @@ public class Entry {
 
     private String name;
 
-    public void setName(String name) {
-        this.name = name;
+    private String content;
+
+    public Entry(){
+
+    }
+
+    public Entry(String name,String content){
+        this.name=name;
+        this.content=content;
     }
 
     public String getName() {
         return this.name;
     }
 
-    public Long getId() {
-        return this.id;
+    public String getContent(){
+        return this.content;
     }
 
 }

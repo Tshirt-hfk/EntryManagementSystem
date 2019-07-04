@@ -1,8 +1,10 @@
 package com.entry.controller;
 
 
+import com.entry.entity.neo4j.Category;
 import com.entry.entity.neo4j.Entry;
 import com.entry.dto.BaseResultFactory;
+import com.entry.repository.neo4j.CategoryRepository;
 import com.entry.repository.neo4j.EntryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,21 +21,8 @@ public class EntryController {
     @Autowired
     EntryRepository entryRepository;
 
-    @GetMapping("/")
-    @CrossOrigin
-    public ResponseEntity<?> index(HttpServletRequest request){
-
-        Entry entry = entryRepository.findEntryByName("hello world!");
-
-        if (entry == null){
-            entry = new Entry();
-            entry.setName("hello world!");
-            System.out.println(entry.getId());
-            this.entryRepository.save(entry);
-        }
-
-        return new ResponseEntity<>(BaseResultFactory.build(entry), HttpStatus.OK);
-    }
+    @Autowired
+    CategoryRepository categoryRepository;
 
 
 

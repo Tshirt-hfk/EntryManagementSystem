@@ -2,8 +2,7 @@ package com.entry.entity.mysql;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import com.entry.entity.TaskPK;
-import com.entry.entity.mysql.GroupMember;
+import com.entry.entity.mysql.pk.TaskPK;
 
 @Entity
 @Table(name = "task")

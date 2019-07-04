@@ -1,4 +1,4 @@
-package com.entry.entity;
+package com.entry.entity.mysql.pk;
 
 
 import com.entry.entity.mysql.Subject;
