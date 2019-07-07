@@ -88,6 +88,9 @@ export default {
             })
             this.$router.push('/') 
         },
+        search(){
+            //TODO
+        }
     }
 }
 </script>

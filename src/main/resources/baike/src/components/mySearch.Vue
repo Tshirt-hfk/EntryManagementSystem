@@ -17,7 +17,7 @@
 
 <script>
   export default {
-	name:'myHeader',
+	  name:'mySearch',
     data() {
       return {
         options: [],
@@ -44,11 +44,14 @@
       }
     },
     mounted() {
-      this.list = this.states.map(item => {
-        return { value: item, label: item };
-	  });
+      this.init()   
     },
     methods: {
+      init(){
+        this.list = this.states.map(item => {
+            return { value: item, label: item };
+        });
+      },
       remoteMethod(query) {
         if (query !== '') {
           this.loading = true;
