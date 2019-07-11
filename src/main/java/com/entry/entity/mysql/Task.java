@@ -8,12 +8,25 @@ import com.entry.entity.mysql.pk.TaskPK;
 @Table(name = "task")
 public class Task {
 
+    public final static Integer TOAUDITED = 4;
+    public final static Integer TOSUBMIT = 5;
+
     @EmbeddedId
     private TaskPK pk;
 
     @Column(columnDefinition = "TINYINT default 0", nullable = false)
-    private Integer state;
+    private Integer state;  //4：待提交, 5：待审核
 
+    public String getField() {
+        return field;
+    }
+
+    public void setField(String field) {
+        this.field = field;
+    }
+
+    @Column(columnDefinition = "varchar(255)")
+    private String field;
 
     @Column(columnDefinition = "TEXT")
     private String content;

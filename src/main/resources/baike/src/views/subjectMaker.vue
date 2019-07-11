@@ -97,12 +97,12 @@ export default {
 	},
 	methods:{
 		post(){
-			this.$axios.post("http://localhost:8081/api/subjectmaker/subject",this.form)
+			this.$axios.post("http://localhost:8081/api/subjectmaker/subject/create",this.form)
 				.then(res => {
 					if(res.data.data){
 						this.count = res.data.data.count
 						this.assignments = res.data.data.assignments
-						this.$router.push('/subjectmanage')
+						this.$route.push('/subjectmanage')
 					}else{
 						this.$message({
 							message:result.data.msg

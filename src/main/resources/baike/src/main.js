@@ -30,14 +30,16 @@ axios.interceptors.request.use(function (config) {
 
 const store = new Vuex.Store({
   state: {
-    status: '0'    // 用户身份，0:未登录；1:普通用户；2:专题制作人；3:系统管理员
-  },
-  getters: {
-    status: state => state.status
+    status: '0',
+    // eslint-disable-next-line quotes
+    name: ""
   },
   mutations: {
     status (state, status) {
       state.status = status
+    },
+    name (state, name) {
+      state.name = name
     }
   }
 })

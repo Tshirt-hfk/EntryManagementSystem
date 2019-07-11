@@ -2,7 +2,6 @@
 <div class="content">
 	<mavon-editor :editable="false" :toolbarsFlag="false" :subfield="false" defaultOpen="preview" v-model="value"/>
 </div>
-	
 </template>
 
 <script>
@@ -15,7 +14,7 @@ export default {
 		}
 	},
 	mounted(){
-		init()
+		this.init()
 	},
 	methods:{
 		init(){

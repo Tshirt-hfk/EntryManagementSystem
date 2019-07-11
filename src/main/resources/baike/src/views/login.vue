@@ -59,11 +59,10 @@ export default {
         .post("http://localhost:8081/api/tourist/login", this.user_data)
         .then(res => {
           if (res.data.data) {
-            localStorage.setItem("token", res.data.data.token);
-            window.console.log("--");
-            this.$store.commit("status", res.data.data.status);
             // 将Token存储到localStorage
-            window.console.log("---");
+            localStorage.setItem("token", res.data.data.token);
+            this.$store.commit("status", res.data.data.status);
+            this.$store.commit("name", res.data.data.name);
             this.$message({
               message: res.data.msg
             });

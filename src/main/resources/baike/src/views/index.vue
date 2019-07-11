@@ -1,9 +1,6 @@
 <template>
-    <div>
-        <myNavMenu></myNavMenu>
-        <!-- <mySubjectMaker></mySubjectMaker> -->
-        <!-- <myAssignmentCard v-bind:assignment="data" v-bind:state="true"></myAssignmentCard> -->
-        <!-- <myEmptyCard cardName="创建词条"></myEmptyCard> -->
+    <div class="layout">
+        
     </div>
 </template>
 
@@ -39,3 +36,11 @@ export default {
     }
 }
 </script>
+
+<style>
+.layout {
+  width: 60%;
+  margin: 0 auto;
+  margin-top: 30px;
+}
+</style>

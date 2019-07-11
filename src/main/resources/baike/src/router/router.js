@@ -24,22 +24,32 @@ export default new Router({
     {
       path: '/entry',
       name: 'entryPreview',
-      component: () => import('../views/entrypreview')
+      component: () => import('../views/entryPreview')
+    },
+    {
+      path: '/entryedit',
+      name: 'entryEdit',
+      component: () => import('../views/entryEdit')
     },
     {
       path: '/subjectmaker',
       name: 'subjectMaker',
-      component: () => import('../views/subjectmaker')
+      component: () => import('../views/subjectMaker')
     },
     {
       path: '/subjectindex',
       name: 'subjectIndex',
-      component: () => import('../views/subjectindex')
+      component: () => import('../views/subjectIndex')
     },
     {
       path: '/subjectmanagement',
       name: 'subjectManagement',
       component: () => import('../views/subjectManagement')
+    },
+    {
+      path: '/subjectmakerindex',
+      name: 'subjectMakerIndex',
+      component: () => import('../views/subjectMakerIndex')
     }
     // {
     //   path: '/information',

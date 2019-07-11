@@ -10,7 +10,9 @@ public class Assignment {
 
     public final static Integer UNPUBLISHED = 1;
     public final static Integer PUBLISHED = 2;
-    public final static Integer TOAUDITED = 3;
+    public final static Integer DRAWED = 3;     // 待审核
+    public final static Integer TOAUDITED = 4;  // 待审核
+    public final static Integer TOSUBMIT = 5;   // 待提交
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +23,14 @@ public class Assignment {
 
     @Column(columnDefinition = "text")
     private String content;
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setField(String field) {
+        this.field = field;
+    }
 
     @Column(nullable = false)
     private String field;
@@ -72,6 +82,10 @@ public class Assignment {
 
     public Integer getState() {
         return state;
+    }
+
+    public void setState(Integer state){
+        this.state = state;
     }
 
 }

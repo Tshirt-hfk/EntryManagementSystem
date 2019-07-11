@@ -9,10 +9,6 @@
                     <mySearch/>
                     <el-button @click="search">搜索</el-button>
                 </div>
-                <div class="header-circle">                             
-                    <el-avatar :src="circleUrl">
-                    </el-avatar>                 
-                </div>
                 <div class="header-r">
                     <template v-if="status==='0'">       <!-- 未登陆 -->
                         <el-button @click="toLogin">登录</el-button>
@@ -22,8 +18,9 @@
                         <el-button @click="loginOut">登出</el-button>
                     </template> 
                     <template v-else-if="status==='2'">  <!-- 专题制作人 -->
-                        <el-button @click="loginOut">登出</el-button>
+                        <el-button @click="toMySubject">我的专题</el-button>
                         <el-button @click="toSubject">创建专题</el-button>
+                        <el-button @click="loginOut">登出</el-button>
                     </template>
                     <template v-else-if="status==='3'">  <!-- 管理员 -->
                         <el-button @click="loginOut">登出</el-button>
@@ -57,6 +54,9 @@ export default {
     computed:{
         status() {
             return this.$store.state.status
+        },
+        name() {
+            return this.$store.state.name
         }
     },
     methods:{
@@ -67,6 +67,7 @@ export default {
                 if(res.data.data){
                     window.console.log(res.data.data.status)
                     this.$store.commit("status", res.data.data.status);
+                    this.$store.commit("name", res.data.data.name);
                     window.console.log(this.$store.state.status)
                 } else {
                 this.$message({
@@ -82,6 +83,9 @@ export default {
                     });
                 }
             });
+        },
+        toMySubject(){
+            this.$router.push('/subjectmakerindex')
         },
         toIndex(){
             this.$router.push('/')
@@ -118,7 +122,7 @@ export default {
     }
     .header-middle{
         margin: 0 auto;
-        width: 1170px;
+        width: 1200px;
         display: flex;
         justify-content: space-between;
     }
@@ -136,6 +140,7 @@ export default {
         width: 300px;
         height: 50px;
         margin-top: 5px;
+        margin-left: -200px;
     }
     .header-circle {      
         margin-top: 5px;
