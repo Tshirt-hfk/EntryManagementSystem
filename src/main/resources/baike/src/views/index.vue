@@ -6,26 +6,13 @@
 
 <script>
 
-import myNavMenu from "../components/myNavMenu"
-
-import mySubjectMaker from "../components/mySubjectMaker"
-
-import myAssignmentCard from "../components/myAssignmentCard"
-
 
 export default {
     name:'index',
     components:{
-        myNavMenu,
-        mySubjectMaker,
-        myAssignmentCard,
     },
     data(){
         return {
-            data:{
-                name:"test",
-                id:1
-            }
         }
     },
     mounted(){

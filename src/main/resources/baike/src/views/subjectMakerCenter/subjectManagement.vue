@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import myAssignmentCard from "../components/myAssignmentCard";
+import myAssignmentCard from "../../components/myAssignmentCard";
 
 export default {
   name: "subjectManagement",

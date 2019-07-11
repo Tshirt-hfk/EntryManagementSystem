@@ -238,16 +238,16 @@
               <span class="complete">42</span>
             </li>
           </ul>
-        </div> -->
+        </div>-->
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import myAssignmentCard from "../components/myAssignmentCard";
+import myAssignmentCard from "../../components/myAssignmentCard";
 
-import myTask from "../components/myTask"
+import myTask from "../../components/myTask";
 
 export default {
   name: "subujectIndex",
@@ -258,11 +258,11 @@ export default {
   data() {
     return {
       title: "test",
-      totalCount:100,
-      currentCount:80,
-      myCompletedCount:5,
-      deadline:"2019-11-11",
-      creator:"test",
+      totalCount: 100,
+      currentCount: 80,
+      myCompletedCount: 5,
+      deadline: "2019-11-11",
+      creator: "test",
       // joinNumber:100,
       assginments: [
         {
@@ -271,40 +271,40 @@ export default {
           state: true
         }
       ],
-      tasks:[
+      tasks: [
         {
-          id:1,
-          name:'test2',
+          id: 1,
+          name: "test2",
           state: true,
           time: "100"
         },
         {
-          id:2,
-          name:'test2',
+          id: 2,
+          name: "test2",
           state: true,
           time: "100"
         },
         {
-          id:3,
-          name:'test2',
+          id: 3,
+          name: "test2",
           state: true,
           time: "100"
         },
         {
-          id:4,
-          name:'test2',
+          id: 4,
+          name: "test2",
           state: true,
           time: "100"
         }
       ]
     };
   },
-  filters:{
-    handle(isPublic){
-      if(isPublic){
-        return "所有人"
-      }else{
-        return "被邀请的人"
+  filters: {
+    handle(isPublic) {
+      if (isPublic) {
+        return "所有人";
+      } else {
+        return "被邀请的人";
       }
     }
   }

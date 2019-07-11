@@ -85,7 +85,7 @@ export default {
             });
         },
         toMySubject(){
-            this.$router.push('/subjectmakerindex')
+            this.$router.push('/subjectmakercenter/mysubject')
         },
         toIndex(){
             this.$router.push('/')
@@ -105,7 +105,7 @@ export default {
             this.$router.push('/') 
         },
         toSubject(){
-            this.$router.push('/subjectmaker')
+            this.$router.push('/subjectcreate')
         },
         search(){
             //TODO

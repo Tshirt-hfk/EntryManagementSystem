@@ -21,92 +21,57 @@ export default new Router({
       name: 'register',
       component: () => import('../views/register')
     },
-    {
+    { // 词条展示
       path: '/entry',
       name: 'entryPreview',
-      component: () => import('../views/entryPreview')
+      component: () => import('../views/entry/entryPreview')
     },
-    {
+    { // 词条编辑
       path: '/entryedit',
       name: 'entryEdit',
-      component: () => import('../views/entryEdit')
+      component: () => import('../views/entry/entryEdit')
     },
-    {
-      path: '/subjectmaker',
-      name: 'subjectMaker',
-      component: () => import('../views/subjectMaker')
-    },
-    {
-      path: '/subjectindex',
-      name: 'subjectIndex',
-      component: () => import('../views/subjectIndex')
-    },
-    {
+    {  // 专题管理
       path: '/subjectmanagement',
       name: 'subjectManagement',
-      component: () => import('../views/subjectManagement')
+      component: () => import('../views/subjectMakerCenter/subjectManagement')
     },
     {
-      path: '/subjectmakerindex',
-      name: 'subjectMakerIndex',
-      component: () => import('../views/subjectMakerIndex')
+      path: '/subjectmakercenter',
+      name: 'subjectMakerCenter',
+      component: () => import('../views/subjectMakerCenter'),
+      children: [
+        {
+          path: 'mysubject',
+          name: 'mySubject',
+          component: () => import('../views/subjectMakerCenter/mySubject')
+        },
+        {
+          path: 'passwordmodify',
+          name: 'passwordModify',
+          component: () => import('../views/userCenter/passwordModify')
+        },
+        {
+          path: 'emailmodify',
+          name: 'emailModify',
+          component: () => import('../views/userCenter/emailModify')
+        },
+        {
+          path: 'myentry',
+          name: 'myEntry',
+          component: () => import('../views/userCenter/myEntry')
+        }
+      ]
+    },
+    {
+      path: '/subject',
+      name: 'subjectIndex',
+      component: () => import('../views/subject/subjectIndex')
+    },
+    {
+      path: '/subjectcreate',
+      name: 'subjectCreate',
+      component: () => import('../views/subject/subjectCreate')
     }
-    // {
-    //   path: '/information',
-    //   meta:{
-    //     requiresAuth: true
-    //   },
-    //   // redirect: {
-    //   //   name: 'personMessage'
-    //   // },
-    //   name: 'information',
-    //   component: () => import('../views/information'),
-    //   children:[
-    //     {
-    //       path:'personMessage',
-    //       name:'personMessage',
-    //       component:() => import('../views/informations/personMessage'),
-    //     },
-    //     {
-    //       path:'editMessage',
-    //       component:() => import('../views/informations/editMessage'),
-    //     },
-    //     {
-    //       path:'editPassword',
-    //       component:() => import('../views/informations/editPassword'),
-    //     },
-    //     {
-    //       path:'mybstopic',
-    //       component:() => import('../views/informations/mybstopic'),
-    //     }
-    //   ]
-    // },
-    // {
-    //   path: '/administrator',
-    //   meta:{
-    //     requiresAuth: true
-    //   },
-    //   // redirect: {
-    //   //   name: 'personMessage'
-    //   // },
-    //   name: 'administrator',
-    //   component: () => import('../views/administrator'),
-    //   children:[
-    //     {
-    //       path:'blogManagement',
-    //       name:'blogManagement',
-    //       component:() => import('../views/administration/blogManagement'),
-    //     },
-    //     {
-    //       path:'userManagement',
-    //       name:'userManagement',
-    //       component:() => import('../views/administration/userManagement'),
-    //     },{
-    //       path:'blogContentManagement',
-    //       name:'blogContentManagement',
-    //       component:() => import('../views/administration/blogContentManagement')
-    //     }
-    //   ]
-    // }
   ]
 })
