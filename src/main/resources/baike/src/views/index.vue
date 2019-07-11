@@ -1,9 +1,9 @@
 <template>
     <div>
-        <!-- <myNavMenu></myNavMenu> -->
+        <myNavMenu></myNavMenu>
         <!-- <mySubjectMaker></mySubjectMaker> -->
-        <myAssignmentCard v-bind:assignment="data"></myAssignmentCard>
-        <myEmptyCard cardName="创建词条"></myEmptyCard>
+        <!-- <myAssignmentCard v-bind:assignment="data" v-bind:state="true"></myAssignmentCard> -->
+        <!-- <myEmptyCard cardName="创建词条"></myEmptyCard> -->
     </div>
 </template>
 
@@ -15,7 +15,6 @@ import mySubjectMaker from "../components/mySubjectMaker"
 
 import myAssignmentCard from "../components/myAssignmentCard"
 
-import myEmptyCard from "../components/myEmptyCard"
 
 export default {
     name:'index',
@@ -23,13 +22,12 @@ export default {
         myNavMenu,
         mySubjectMaker,
         myAssignmentCard,
-        myEmptyCard
     },
     data(){
         return {
             data:{
                 name:"test",
-                reasons:["没有目录","没有参考资料","aaa"]
+                id:1
             }
         }
     },

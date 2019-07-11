@@ -8,6 +8,10 @@ import java.util.List;
 @Table(name="assignment")
 public class Assignment {
 
+    public final static Integer UNPUBLISHED = 1;
+    public final static Integer PUBLISHED = 2;
+    public final static Integer TOAUDITED = 3;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -28,6 +32,9 @@ public class Assignment {
     @OneToOne(mappedBy="pk.assignment", fetch=FetchType.LAZY)
     private Task task;
 
+    @Column(columnDefinition = "TINYINT")
+    private Integer state; //1:未发布；2：已发布，3：被领取
+
     public Assignment() {
 
     }
@@ -37,6 +44,10 @@ public class Assignment {
         this.content = content;
         this.field = field;
         this.subject = subject;
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     public String getEntryName() {
@@ -57,6 +68,10 @@ public class Assignment {
 
     public Task getTask() {
         return task;
+    }
+
+    public Integer getState() {
+        return state;
     }
 
 }

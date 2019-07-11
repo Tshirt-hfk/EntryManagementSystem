@@ -1,6 +1,7 @@
 package com.entry.controller;
 
 import com.entry.entity.neo4j.Entry;
+import com.entry.repository.neo4j.CategoryRepository;
 import com.entry.repository.neo4j.EntryRepository;
 import com.entry.util.JwtUtil;
 import com.entry.entity.mysql.User;
@@ -29,10 +30,14 @@ public class TouristController {
     @Autowired
     EntryRepository entryRepository;
 
+    @Autowired
+    CategoryRepository categoryRepository;
+
     @PostMapping("/api/tourist/login")
     @CrossOrigin
     public ResponseEntity<?> touristLogin(@RequestBody String jsonParam){
         try{
+            System.out.println(jsonParam);
             HashMap<String,String> user_data = new ObjectMapper().readValue(jsonParam,HashMap.class);
             String username=user_data.get("username");
             String password=user_data.get("password");
@@ -75,21 +80,4 @@ public class TouristController {
         }
     }
 
-    /**
-     * @param  { keyword: item }
-     * @return { option: [{ value: item, label: item },...] }
-     */
-    @PostMapping("/api/tourist/search")
-    @CrossOrigin
-    public ResponseEntity<?> touristSearch(@RequestBody String jsonParam){
-        try{
-            //TODO
-            HashMap<String,String> user_data = new ObjectMapper().readValue(jsonParam,HashMap.class);
-            String keyword = user_data.get("keyword");
-            Entry entry = entryRepository.findEntryByName(keyword);
-            return new ResponseEntity<>(BaseResultFactory.build(entry,"TODO"), HttpStatus.OK);
-        }catch (IOException e){
-            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
-        }
-    }
 }

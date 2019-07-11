@@ -8,4 +8,5 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Integer>
 
     @Query(value = "select * from assignment where id = ?1", nativeQuery = true)
     Assignment findAssignmentById(Integer id);
+
 }

@@ -13,7 +13,7 @@ public class JwtUtil {
 
     final static String base64EncodedSecretKey = "base64EncodedSecretKey"; //私钥
 
-    final static long TOKEN_EXP = 1000 * 60 * 10; //过期时间,测试使用十分钟
+    final static long TOKEN_EXP = 1000 * 60 * 60; //过期时间,测试使用60分钟
 
     public static String getToken(Integer id,Integer role) {
         return Jwts.builder()

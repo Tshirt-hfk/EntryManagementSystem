@@ -28,7 +28,6 @@
                 </div>
               </el-col>
             </el-row>
-            
           </el-form-item>
         </el-form>
       </el-card>
@@ -38,57 +37,57 @@
 
 <script>
 export default {
-    name:'login',
-    data() {
-        return {
-          user_data: {
-            username: "",
-            password: ""
-          },
-        //console:console
-        };
-    },
-    methods: {
-        login() {
-          // this.console.log("执行登录操作");
-          if (!this.user_data.username.trim() || !this.user_data.password.trim())
-              return this.$message({
-              message: "请输入用户名或密码!",
-              type: "warning"
-              });
+  name: "login",
+  data() {
+    return {
+      user_data: {
+        username: "",
+        password: ""
+      }
+      //console:console
+    };
+  },
+  methods: {
+    login() {
+      // this.console.log("执行登录操作");
+      if (!this.user_data.username.trim() || !this.user_data.password.trim())
+        return this.$message({
+          message: "请输入用户名或密码!",
+          type: "warning"
+        });
+      return this.$axios
+        .post("http://localhost:8081/api/tourist/login", this.user_data)
+        .then(res => {
+          if (res.data.data) {
+            localStorage.setItem("token", res.data.data.token);
+            window.console.log("--");
+            this.$store.commit("status", res.data.data.status);
+            // 将Token存储到localStorage
+            window.console.log("---");
+            this.$message({
+              message: res.data.msg
+            });
+            // 登录成功跳转到首页
 
-          return (
-            this.$axios.post("http://localhost:8081/api/tourist/login",this.user_data)
-                    .then(res => {
-                        if(res.data.data){
-                          localStorage.setItem("token",result.data.data.token);
-                          this.$store.commit("status", result.data.data.status);
-                          //this.$store.commit("status",result.data.data.status)
-                          // 将Token存储到localStorage
-                          this.$message({
-                            message:result.data.msg
-                          });
-                          // 登录成功跳转到首页
-                          this.$router.push("/");
-                        }else{
-                          this.$message({
-                            message:result.data.msg
-                          });
-                        }
-                    })
-                    .catch(error => {
-                      if(error.response){
-                        this.$message({
-                          message:error.response.data.msg,
-                          type:"warning"
-                        });
-                      }
-                    })
-          );
-        },
-        toRegister(){
-            this.$router.push('/register')
-        }
+            this.$router.push("/");
+          } else {
+            this.$message({
+              message: res.data.msg
+            });
+          }
+        })
+        .catch(error => {
+          if (error.response) {
+            this.$message({
+              message: error.response.data.msg,
+              type: "warning"
+            });
+          }
+        });
+    },
+    toRegister() {
+      this.$router.push("/register");
     }
+  }
 };
 </script>

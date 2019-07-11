@@ -9,6 +9,10 @@
                     <mySearch/>
                     <el-button @click="search">搜索</el-button>
                 </div>
+                <div class="header-circle">                             
+                    <el-avatar :src="circleUrl">
+                    </el-avatar>                 
+                </div>
                 <div class="header-r">
                     <template v-if="status==='0'">       <!-- 未登陆 -->
                         <el-button @click="toLogin">登录</el-button>
@@ -19,6 +23,7 @@
                     </template> 
                     <template v-else-if="status==='2'">  <!-- 专题制作人 -->
                         <el-button @click="loginOut">登出</el-button>
+                        <el-button @click="toSubject">创建专题</el-button>
                     </template>
                     <template v-else-if="status==='3'">  <!-- 管理员 -->
                         <el-button @click="loginOut">登出</el-button>
@@ -39,6 +44,13 @@ export default {
     components:{
 		mySearch
 	},
+    data() {
+        return{
+            circleUrl: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
+            squareUrl: "https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png",
+            sizeList: ["large", "medium", "small"]
+        }
+    },
     mounted(){
         this.identifyAuth()
     },
@@ -88,6 +100,9 @@ export default {
             })
             this.$router.push('/') 
         },
+        toSubject(){
+            this.$router.push('/subjectmaker')
+        },
         search(){
             //TODO
         }
@@ -120,6 +135,9 @@ export default {
     .header-m{
         width: 300px;
         height: 50px;
+        margin-top: 5px;
+    }
+    .header-circle {      
         margin-top: 5px;
     }
     .header-r{

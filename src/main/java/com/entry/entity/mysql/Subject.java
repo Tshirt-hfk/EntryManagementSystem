@@ -17,8 +17,14 @@ public class Subject {
     @Column(columnDefinition = "text")
     private String introduction;
 
+    @Column(columnDefinition = "text")
+    private String goal;
+
     @Column(nullable = false)
     private String field;
+
+    @Column(columnDefinition = "BOOLEAN")
+    private Boolean isPublic;
 
     @OneToMany(mappedBy = "subject",cascade=CascadeType.ALL,fetch=FetchType.LAZY)
     private List<Assignment> assignmentlist;
@@ -33,10 +39,12 @@ public class Subject {
 
     }
 
-    public Subject(String name, String introduction, String field) {
+    public Subject(String name, String introduction, String goal, String field, boolean isPublic) {
         this.name = name;
         this.introduction = introduction;
+        this.goal = goal;
         this.field = field;
+        this.isPublic = isPublic;
     }
 
     public String getName() {
@@ -45,6 +53,10 @@ public class Subject {
 
     public String getIntroduction() {
         return introduction;
+    }
+
+    public String getGoal() {
+        return goal;
     }
 
     public String getField() {
@@ -62,6 +74,5 @@ public class Subject {
     public List<GroupMember> getGroupMemberList() {
         return groupMemberList;
     }
-
 
 }

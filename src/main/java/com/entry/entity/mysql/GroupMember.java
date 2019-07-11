@@ -11,7 +11,7 @@ public class GroupMember {
     private GroupMemberPK pk;
 
     @Column(name = "identity",columnDefinition = "TINYINT default 0")
-    private Integer identity;  // 0：普通用户；1：专题创建人，可以审核词条
+    private Integer identity;  // 1：普通用户；2：专题创建人，可以审核词条
 
     public GroupMember() {
 

@@ -20,6 +20,26 @@ export default new Router({
       path: '/register',
       name: 'register',
       component: () => import('../views/register')
+    },
+    {
+      path: '/entry',
+      name: 'entryPreview',
+      component: () => import('../views/entrypreview')
+    },
+    {
+      path: '/subjectmaker',
+      name: 'subjectMaker',
+      component: () => import('../views/subjectmaker')
+    },
+    {
+      path: '/subjectindex',
+      name: 'subjectIndex',
+      component: () => import('../views/subjectindex')
+    },
+    {
+      path: '/subjectmanagement',
+      name: 'subjectManagement',
+      component: () => import('../views/subjectManagement')
     }
     // {
     //   path: '/information',
