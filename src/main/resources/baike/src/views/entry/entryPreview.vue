@@ -10,7 +10,7 @@ export default {
 	data(){
 		return {
 			name:this.$route.query.name,
-			value:"**测量仪器**[1]（），又称为**测量仪表**[2]、**检测仪表**[3]或**测量仪器仪表**[4]）"
+			value:""
 		}
 	},
 	mounted(){

@@ -34,6 +34,35 @@ public class SubjectMakerController {
     TaskRepository taskRepository;
 
 
+    @PostMapping("/api/subjectmaker/getSubject")
+    @CrossOrigin
+    public ResponseEntity<?> getSubject(HttpServletRequest request){
+        try{
+            System.out.println("test");
+            Integer userId = (Integer)request.getAttribute("userId");
+            System.out.println(userId);
+            List<GroupMember> groupMembers = groupMemberRepository.findAllByUserAndIdentity(userId,GroupMember.SUBJECTMAKER);
+            if(groupMembers==null){
+                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
+            }
+            List<Object> tmps = new ArrayList<>();
+            HashMap<String,Object> tmp = null;
+            for(GroupMember groupMember : groupMembers){
+                Subject subject = groupMember.getSubject();
+                tmp = new HashMap<>();
+                tmp.put("id", subject.getId());
+                tmp.put("name", subject.getName());
+                tmp.put("introduction", subject.getIntroduction());
+                tmps.add(tmp);
+            }
+            HashMap<String,Object> result = new HashMap<>();
+            result.put("subjects",tmps);
+            return new ResponseEntity<>(BaseResultFactory.build(result,"success"), HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
+        }
+    }
+
     /**
      * 创建专题
      * @param request

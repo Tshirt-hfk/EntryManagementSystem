@@ -31,11 +31,6 @@ export default new Router({
       name: 'entryEdit',
       component: () => import('../views/entry/entryEdit')
     },
-    {  // 专题管理
-      path: '/subjectmanagement',
-      name: 'subjectManagement',
-      component: () => import('../views/subjectMakerCenter/subjectManagement')
-    },
     {
       path: '/subjectmakercenter',
       name: 'subjectMakerCenter',
@@ -45,6 +40,11 @@ export default new Router({
           path: 'mysubject',
           name: 'mySubject',
           component: () => import('../views/subjectMakerCenter/mySubject')
+        },
+        {  // 专题管理
+          path: 'subjectmanagement',
+          name: 'subjectManagement',
+          component: () => import('../views/subjectMakerCenter/subjectManagement')
         },
         {
           path: 'passwordmodify',

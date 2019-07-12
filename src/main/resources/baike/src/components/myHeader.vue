@@ -18,7 +18,7 @@
                         <el-button @click="loginOut">登出</el-button>
                     </template> 
                     <template v-else-if="status==='2'">  <!-- 专题制作人 -->
-                        <el-button @click="toMySubject">我的专题</el-button>
+                        <el-button @click="toMySubject">个人中心</el-button>
                         <el-button @click="toSubject">创建专题</el-button>
                         <el-button @click="loginOut">登出</el-button>
                     </template>

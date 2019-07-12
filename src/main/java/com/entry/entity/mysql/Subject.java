@@ -7,6 +7,10 @@ import java.util.List;
 @Table(name = "subject")
 public class Subject {
 
+    public Integer getId() {
+        return id;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)  //自增主键
     private Integer id;

@@ -7,6 +7,9 @@ import javax.persistence.*;
 @Entity(name = "groupmember")
 public class GroupMember {
 
+    public final static Integer ORDINRYUSER = 1;
+    public final static Integer SUBJECTMAKER = 2;
+
     @EmbeddedId
     private GroupMemberPK pk;
 

@@ -41,10 +41,34 @@ export default {
       ]
     };
   },
-  mounted() {},
+  mounted() {
+    // 初始化数据
+    this.$axios
+      .post("http://localhost:8081/api/subjectmaker/getSubject")
+      .then(res => {
+        if (res.data.data) {
+          this.subjects=res.data.data.subjects
+          this.$message({
+            message: res.data.msg
+          });
+        } else {
+          this.$message({
+            message: res.data.msg
+          });
+        }
+      })
+      .catch(error => {
+        if (error.response) {
+          this.$message({
+            message: error.response.data.msg,
+            type: "warning"
+          });
+        }
+      });
+  },
   methods: {
     see(id) {
-      this.$router.push({ path: "/subjectmanagement", query: { id: id } });
+      this.$router.push({ path: "/subjectmakercenter/subjectmanagement", query: { id: id } });
     }
   }
 };
