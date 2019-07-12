@@ -9,7 +9,7 @@
         <el-select
           v-model="form.field"
           filterable
-          placeholder="                                                                                                                                      "
+          placeholder="请选择专题领域"
         >
           <el-option v-for="field in fields" :key="field" :label="field" :value="field"></el-option>
         </el-select>
@@ -38,7 +38,7 @@
           </el-col>
           <el-col :span="12">
             <div style="width:30%; margin: 0 auto">
-              <el-button style="width:100%;" type="primary" @click="post">提交</el-button>
+              <el-button style="width:100%;" type="primary" @click="submit">提交</el-button>
             </div>
           </el-col>
         </el-row>
@@ -65,53 +65,22 @@ export default {
         introduction: "",
         goal: ""
       },
-      fields: ["科学"],
-      count: 5,
-      assignments: [
-        {
-          id: 1,
-          name: "test1",
-          state: false
-        },
-        {
-          id: 2,
-          name: "test2",
-          state: false
-        },
-        {
-          id: 3,
-          name: "test3",
-          state: false
-        },
-        {
-          id: 4,
-          name: "test4",
-          state: false
-        },
-        {
-          id: 5,
-          name: "test4",
-          state: false
-        }
-      ]
+      fields: ["科学"]
     };
   },
   methods: {
-    post() {
+    submit() {
       this.$axios
         .post(
           "http://localhost:8081/api/subjectMaker/createSubject",
           this.form
         )
         .then(res => {
-          if (res.data.data) {
-            this.count = res.data.data.count;
-            this.assignments = res.data.data.assignments;
-            this.$route.push("/subjectmanage");
-          } else {
+          if (res.data) {
             this.$message({
-              message: result.data.msg
+              message: res.data.msg
             });
+            this.$router.push("/subjectmakercenter/mysubject");
           }
         })
         .catch(error => {
