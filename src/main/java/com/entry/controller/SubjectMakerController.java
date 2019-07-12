@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.*;
@@ -34,7 +35,7 @@ public class SubjectMakerController {
     TaskRepository taskRepository;
 
 
-    @PostMapping("/api/subjectmaker/getSubject")
+    @PostMapping("/api/subjectMaker/getSubject")
     @CrossOrigin
     public ResponseEntity<?> getSubject(HttpServletRequest request){
         try{
@@ -63,13 +64,15 @@ public class SubjectMakerController {
         }
     }
 
+
+
     /**
      * 创建专题
      * @param request
      * @param jsonParam
      * @return
      */
-    @PostMapping("/api/subjectmaker/subject/create")
+    @PostMapping("/api/subjectMaker/createSubject")
     @CrossOrigin
     public ResponseEntity<?> postSubject(HttpServletRequest request, @RequestBody String jsonParam){
         try{
@@ -88,6 +91,31 @@ public class SubjectMakerController {
             GroupMember groupMember = new GroupMember(new GroupMemberPK(subject,user),2);
             subjectRepository.save(subject);
             groupMemberRepository.save(groupMember);
+            //
+            return new ResponseEntity<>(BaseResultFactory.build("创建成功"), HttpStatus.OK);
+        }catch (IOException e){
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    /**
+     * 创建新的词条任务
+     * @param request
+     * @param jsonParam
+     * @return
+     */
+    @PostMapping("/api/subjectMaker/createEntry")
+    @CrossOrigin
+    public ResponseEntity<?> createEntry(HttpServletRequest request, @RequestBody String jsonParam){
+        try{
+            HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
+            String name = (String) form.get("name");
+            String field = (String) form.get("field");
+            Integer subjectId = (Integer)form.get("subjectId");
+            // TODO 判断该词条是否已经被创建
+            Subject subject = subjectRepository.findSubjectById(subjectId);
+            Assignment assignment = new Assignment(name,"",field,Assignment.UNPUBLISHED,subject);
+            assignmentRepository.save(assignment);
             return new ResponseEntity<>(BaseResultFactory.build("创建成功"), HttpStatus.OK);
         }catch (IOException e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
@@ -96,47 +124,34 @@ public class SubjectMakerController {
 
     /**
      * 获取该专题下的任务
-     * @param id
+     * @param jsonParam
      * @return
      */
-    @GetMapping("/api/subjectmaker/assignment/get")
+    @PostMapping("/api/subjectMaker/getAssignment")
     @CrossOrigin
-    public ResponseEntity<?> getSubject(@RequestParam("id") Integer id){
+    public ResponseEntity<?> getSubject(@RequestBody String jsonParam){
         try{
-            System.out.println(id);
-            Subject subject = subjectRepository.findSubjectById(id);
-            List<Assignment> assignments = subject.getAssignmentlist();
-            HashMap<String,Object> result1=new HashMap<>();
-            HashMap<String,Object> result2=new HashMap<>();
-            HashMap<String,Object> result3=new HashMap<>();
-            HashMap<String,Object> result4=new HashMap<>();
-            HashMap<String,Object> result5=new HashMap<>();
+            System.out.println(jsonParam);
+            HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
+            Integer subjectId = (Integer)form.get("subjectId");
+            Integer type = (Integer)form.get("type");
+            List<Assignment> assignments = assignmentRepository.findAllBySubjectAndState(subjectId,type);
+            System.out.println(assignments.size());
+            HashMap<String,Object> result1;
+            List<Object> list = new ArrayList<>();
             for(Assignment assignment : assignments){
-                Integer state = assignment.getState();
-                if(state==Assignment.UNPUBLISHED){
-                    result1.put("name",assignment.getEntryName());
-                    result1.put("id",assignment.getId());
-                }else if(state==Assignment.PUBLISHED){
-                    result2.put("name",assignment.getEntryName());
-                    result2.put("id",assignment.getId());
-                }else if(state==Assignment.DRAWED){
-                    result3.put("name",assignment.getEntryName());
-                    result3.put("id",assignment.getId());
-                }else if(state==Assignment.TOAUDITED){
-                    result4.put("name",assignment.getEntryName());
-                    result4.put("id",assignment.getId());
-                }else{
-                    result5.put("name",assignment.getEntryName());
-                    result5.put("id",assignment.getId());
+                result1=new HashMap<>();
+                result1.put("id",assignment.getId());
+                result1.put("name",assignment.getEntryName());
+                result1.put("field",assignment.getField());
+                if(type==3 || type==4){
+                    Task task = assignment.getTask();
+                    User user = task.getUser();
+                    result1.put("username", user.getName());
+                    result1.put("userId", user.getId());
                 }
+                list.add(result1);
             }
-            System.out.println("test");
-            List<HashMap<String,Object>> list = new ArrayList<HashMap<String,Object>>();
-            list.add(result1);
-            list.add(result2);
-            list.add(result3);
-            list.add(result4);
-            list.add(result5);
             HashMap<String,Object> result=new HashMap<>();
             result.put("assignments",list);
             return new ResponseEntity<>(BaseResultFactory.build(result,"success"), HttpStatus.OK);
@@ -150,51 +165,60 @@ public class SubjectMakerController {
      * @param jsonParam
      * @return
      */
-    @PostMapping("/api/subjectmaker/assignment/publish")
+    @PostMapping("/api/subjectMaker/publishAssignment")
     @CrossOrigin
-    public ResponseEntity<?> publishAssignment(@RequestBody String jsonParam){
+    @Transactional
+    public ResponseEntity<?> publishAssignment(HttpServletRequest request, @RequestBody String jsonParam){
         try{
+            System.out.println(jsonParam);
             HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
-            Integer id=(Integer) form.get("id");
-            Assignment assignment = assignmentRepository.findAssignmentById(id);
-            if(assignment != null) {
-                assignment.setState(Assignment.PUBLISHED);
-                assignmentRepository.save(assignment);
-                return new ResponseEntity<>(BaseResultFactory.build("发布成功"), HttpStatus.OK);
-            }else{
-                return new ResponseEntity<>(BaseResultFactory.build("无效专题"), HttpStatus.NOT_FOUND);
+            System.out.println(form);
+            List<Integer> entryIds = (List<Integer>) form.get("entryIds");
+            for(Integer id : entryIds){
+                System.out.println(id);
+                assignmentRepository.updateStateById(Assignment.PUBLISHED,id);
             }
+            return new ResponseEntity<>(BaseResultFactory.build("发布成功"), HttpStatus.OK);
         }catch (IOException e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
         }
     }
 
     /**
-     * 审核通过
+     * 审核
      */
-    @PostMapping("/api/subjectmaker/task/audit")
+    @PostMapping("/api/subjectMaker/auditTask")
     @CrossOrigin
-    public ResponseEntity<?> auditAssignment(@RequestBody String jsonParam){
+    public ResponseEntity<?> auditTask(HttpServletRequest request, @RequestBody String jsonParam){
         try{
             HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
-            Integer id=(Integer) form.get("id");
-            Assignment assignment = assignmentRepository.findAssignmentById(id);
-            Task task = assignment.getTask();
+            Integer assignmentId = (Integer) form.get("assignmentId");
+            Boolean pass = (Boolean)form.get("pass");
+            Integer userId = (Integer)form.get("userId");
+            Task task = taskRepository.findTaskByAssignment_IdAAndUser_Id(assignmentId, userId);
+            Assignment assignment = assignmentRepository.findAssignmentById(assignmentId);
             if(assignment != null && task != null) {
-                assignment.setState(Assignment.TOSUBMIT);
-                assignment.setContent(task.getContent());
-                assignment.setField(task.getField());
-                taskRepository.delete(task);
-                return new ResponseEntity<>(BaseResultFactory.build("发布成功"), HttpStatus.OK);
+                if(pass){
+                    assignment.setState(Assignment.TOSUBMIT);
+                    assignment.setContent(task.getContent());
+                    task.setState(Task.TOSUBMIT);
+                    taskRepository.save(task);
+                    assignmentRepository.save(assignment);
+                    return new ResponseEntity<>(BaseResultFactory.build("审核通过"), HttpStatus.OK);
+                }else{
+                    // TODO
+                    assignment.setState(Assignment.PUBLISHED);
+                    assignmentRepository.save(assignment);
+                    taskRepository.delete(task);
+                    return new ResponseEntity<>(BaseResultFactory.build("审核不通过"), HttpStatus.OK);
+                }
             }else{
                 return new ResponseEntity<>(BaseResultFactory.build("无效专题"), HttpStatus.NOT_FOUND);
             }
-
         }catch (IOException e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
         }
     }
-
 
 
 

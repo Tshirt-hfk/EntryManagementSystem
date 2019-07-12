@@ -100,7 +100,7 @@ export default {
     post() {
       this.$axios
         .post(
-          "http://localhost:8081/api/subjectmaker/subject/create",
+          "http://localhost:8081/api/subjectMaker/createSubject",
           this.form
         )
         .then(res => {

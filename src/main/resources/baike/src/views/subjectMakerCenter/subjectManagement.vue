@@ -1,207 +1,83 @@
 <template>
-  <div class="layout">
-    <div class="management">
-      <el-tabs type="border-card">
-        <el-tab-pane>
-          <span slot="label">未发布词条</span>
-          <template v-for="assignment in assignments[0]">
-            <div class="lemma cmn-ellipsis" :key="assignment.id">
-              <span class="lemmaName" :id="assignment.id">{{assignment.name}}</span>
-              <span class="overlay"></span>
-              <a @click="publish(assignment)" class="get">发布</a>
-            </div>
-          </template>
-        </el-tab-pane>
-        <el-tab-pane>
-          <span slot="label">已发布词条</span>
-          <template v-for="assignment in assignments[1]">
-            <div class="lemma cmn-ellipsis" :key="assignment.id">
-              <span class="lemmaName" :id="assignment.id">{{assignment.name}}</span>
-            </div>
-          </template>
-        </el-tab-pane>      
-        <el-tab-pane>
-          <span slot="label">被领取词条</span>
-          <template v-for="assignment in assignments[2]">
-            <div class="lemma cmn-ellipsis" :key="assignment.id">
-              <span class="lemmaName" :id="assignment.id">{{assignment.name}}</span>
-            </div>
-          </template>
-        </el-tab-pane>
-        <el-tab-pane>
-          <span slot="label">待审核词条</span>
-          <template v-for="assignment in assignments[3]">
-            <div class="lemma cmn-ellipsis" :key="assignment.id">
-              <span class="lemmaName" :id="assignment.id">{{assignment.name}}</span>
-              <span class="overlay"></span>
-              <div class="get">
-                <a @click="this.$route.push({path:'/entrycompare', query:{id:assignment.id}})" class="get">查看</a>
-                <a @click="audit(assignment)" >审核</a>
-              </div>
-            </div>
-          </template>
-        </el-tab-pane>
-        <el-tab-pane>
-          <span slot="label">待提交词条</span>
-          <template v-for="assignment in assignments[4]">
-            <div class="lemma cmn-ellipsis" :key="assignment.id">
-              <span class="lemmaName" :id="assignment.id">{{assignment.name}}</span>
-              <span class="overlay"></span>
-              <a @click="this.$route.push({path:'/entrycompare', query:{id:assignment.id}})" class="get">查看</a>
-              <a  class="get">提交</a>
-            </div>
-          </template>
-        </el-tab-pane>
-      </el-tabs>
-    </div>
+  <div class="management">
+    <el-tabs type="border-card">
+      <el-tab-pane lazy>
+        <span slot="label">未发布词条</span>
+        <unpublishedEntry ref="myUnpublishedEntry" v-on:stateChange="stateChange" v-bind:subjectId="subjectId"></unpublishedEntry>
+      </el-tab-pane>
+      <el-tab-pane lazy>
+        <span slot="label">已发布词条</span>
+        <publishedEntry ref="myPublishedEntry" v-on:stateChange="stateChange" v-bind:subjectId="subjectId"></publishedEntry>
+      </el-tab-pane>
+      <el-tab-pane lazy>
+        <span slot="label">被领取词条</span>
+        <drawedEntry ref="myDrawedEntry" v-on:stateChange="stateChange" v-bind:subjectId="subjectId"></drawedEntry>
+      </el-tab-pane>
+      <el-tab-pane lazy>
+        <span slot="label">待审核词条</span>
+        <toAudittedEntry  ref="myToAudittedEntry" v-on:stateChange="stateChange" v-bind:subjectId="subjectId"></toAudittedEntry>
+      </el-tab-pane>
+      <el-tab-pane lazy>
+        <span slot="label">待提交词条</span>
+        <toSubmittedEntry ref="myToSubmittedEntry" v-on:stateChange="stateChange" v-bind:subjectId="subjectId"></toSubmittedEntry>
+      </el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 
 <script>
-import myAssignmentCard from "../../components/myAssignmentCard";
-
+import unpublishedEntry from "./subjectManagement/unpublishedEntry";
+import publishedEntry from "./subjectManagement/publishedEntry";
+import drawedEntry from "./subjectManagement/drawedEntry";
+import toAudittedEntry from "./subjectManagement/toAudittedEntry";
+import toSubmittedEntry from "./subjectManagement/toSubmittedEntry";
+ 
 export default {
   name: "subjectManagement",
   components: {
-    myAssignmentCard
+    unpublishedEntry,
+    publishedEntry,
+    drawedEntry,
+    toAudittedEntry,
+    toSubmittedEntry
   },
   data() {
     return {
       subjectId: this.$route.query.id,
-      assignments: [
-        [
-          {
-            id: 1,
-            name: "test1"
-          }
-        ],
-        [
-          {
-            id: 2,
-            name: "test2"
-          }
-        ],
-        [
-          {
-            id: 3,
-            name: "test3"
-          }
-        ],
-        [
-          {
-            id: 4,
-            name: "test4"
-          }
-        ],
-        [
-          {
-            id: 5,
-            name: "test5"
-          }
-        ]
-      ]
     };
   },
   mounted() {
-    if(this.subjectId){
-      window.console.log(this.subjectId)
-       this.$axios
-      .get("http://localhost:8081/api/subjectmaker/assignment/get", {
-        params: { id: this.subjectId }
-      })
-      .then(res => {
-        if (res.data.data) {
-          this.assginments = res.data.data.assginments;
-        } else {
-          this.$message({
-            message: res.data.msg
-          });
-        }
-      })
-      .catch(error => {
-        if (error.response) {
-          this.$message({
-            message: error.response.data.msg,
-            type: "warning"
-          });
-        }
-      });
-    }
-   
   },
-  methods: {
-    publish(assignment){
-      this.$confirm("此操作将发布该词条?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      }).then(() => {
-          this.$axios.push("http://localhost:8081/api/subjectmaker/assignment/publish", {
-              id: assignment.id,
-            }).then(res => {
-                this.assignments[1].unshift(assignment);
-                this.assignments[0].splice(this.assignments[0].lastIndexOf(assignment),1);
-                this.$message({
-                  type: "success",
-                  message: res.data.msg
-                });
-            }).catch(error => {
-              if (error.response) {
-                this.$message({
-                  message: error.response.data.msg,
-                  type: "warning"
-                });
-              }
-            });  
-        }).catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消"
-          });
-        });
-    },
-    audit(assignment) {
-      this.$confirm("此操作将审核通过该词条?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      }).then(() => {
-          this.$axios.push("http://localhost:8081/api/subjectmaker/task/audit", {
-              id: assignment.id,
-            }).then(res => {
-                this.assignments[4].unshift(assignment);
-                this.assignments[3].splice(this.assignments[0].lastIndexOf(assignment),1);
-                this.$message({
-                  type: "success",
-                  message: res.data.msg
-                });
-            }).catch(error => {
-              if (error.response) {
-                this.$message({
-                  message: error.response.data.msg,
-                  type: "warning"
-                });
-              }
-            });  
-        }).catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消"
-          });
-        });
-    },
-    audit(assignment) {}
+  methods: { 
+    // 状态响应，更新对应组件数据
+    stateChange(state){
+      if(state==1 && this.$refs.myUnpublishedEntry){
+        this.$refs.myUnpublishedEntry.init()
+        return
+      }
+      if(state==2 && this.$refs.myPublishedEntry){
+        this.$refs.myPublishedEntry.init()
+        return
+      }
+      if(state==3 && this.$refs.myDrawedEntry){
+        this.$refs.myDrawedEntry.init()
+        return
+      }
+      if(state==4 && this.$refs.myToAudittedEntry){
+        this.$refs.myToAudittedEntry.init()
+        return
+      }
+      if(state==5 && this.$refs.myToSubmittedEntry) {
+        this.$refs.myToSubmittedEntry.init()
+        return
+      }
+    }
   }
 };
 </script>
 
 <style>
-.layout {
-  width: 980px;
-  margin: 0 auto;
-}
 .management {
-  margin-top: 20px;
   width: 100%;
   height: 500px;
 }

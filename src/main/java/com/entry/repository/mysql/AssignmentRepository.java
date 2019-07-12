@@ -3,6 +3,7 @@ package com.entry.repository.mysql;
 import com.entry.entity.mysql.Assignment;
 import com.entry.entity.mysql.Subject;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
@@ -13,7 +14,8 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Integer>
     Assignment findAssignmentById(Integer id);
 
     @Query(value = "update assignment set state = ?1 where id = ?2", nativeQuery = true)
-    Boolean updateStateById(Integer state, Integer id);
+    @Modifying
+    Integer updateStateById(Integer state, Integer id);
 
     @Query(value = "select * from assignment where subject_id = ?1 and state = ?2", nativeQuery = true)
     List<Assignment> findAllBySubjectAndState(Integer id, Integer state);

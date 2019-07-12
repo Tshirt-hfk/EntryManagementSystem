@@ -17,6 +17,18 @@ public class Task {
     @EmbeddedId
     private TaskPK pk;
 
+    public void setState(Integer state) {
+        this.state = state;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setDeadline(Timestamp deadline) {
+        this.deadline = deadline;
+    }
+
     @Column(columnDefinition = "TINYINT default 0", nullable = false)
     private Integer state;  // 4：待提交, 5：待审核
 
