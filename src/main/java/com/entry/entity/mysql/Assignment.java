@@ -8,15 +8,20 @@ import java.util.List;
 @Table(name="assignment")
 public class Assignment {
 
-    public final static Integer UNPUBLISHED = 1;
-    public final static Integer PUBLISHED = 2;
-    public final static Integer DRAWED = 3;     // 待审核
+    public final static Integer UNPUBLISHED = 1;// 未发布
+    public final static Integer PUBLISHED = 2;  // 已发布
+    public final static Integer DRAWED = 3;     // 被领取
     public final static Integer TOAUDITED = 4;  // 待审核
-    public final static Integer TOSUBMIT = 5;   // 待提交
+    public final static Integer TOSUBMIT = 5;   // 审核通过
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+
+
+    @Column
+    private Integer originalId;
 
     @Column(columnDefinition = "varchar(50)")
     private String entryName;
@@ -49,10 +54,11 @@ public class Assignment {
 
     }
 
-    public Assignment(String entryName, String content, String field, Subject subject) {
+    public Assignment(String entryName, String content, String field, Integer state, Subject subject) {
         this.entryName = entryName;
         this.content = content;
         this.field = field;
+        this.state = state;
         this.subject = subject;
     }
 
@@ -88,4 +94,11 @@ public class Assignment {
         this.state = state;
     }
 
+    public Integer getOriginalId() {
+        return originalId;
+    }
+
+    public void setOriginalId(Integer originalId) {
+        this.originalId = originalId;
+    }
 }
