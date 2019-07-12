@@ -283,21 +283,17 @@ export default {
           name: "test2",
           state: true,
           time: "100"
-        },
-        {
-          id: 3,
-          name: "test2",
-          state: true,
-          time: "100"
-        },
-        {
-          id: 4,
-          name: "test2",
-          state: true,
-          time: "100"
         }
       ]
     };
+  },
+  methods:{
+    getTasks(){
+      //TODO:获取task的接口还没写完
+    },
+    getAssginments(){
+      //TODO:获取Assginment的接口还没写完
+    }
   },
   filters: {
     handle(isPublic) {
