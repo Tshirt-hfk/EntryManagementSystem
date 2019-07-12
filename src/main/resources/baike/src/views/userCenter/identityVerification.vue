@@ -3,13 +3,13 @@
       <el-card class="box-card">
       <div class="input">
         <div class="notice">
-        <p font-size=18px>请输入您要绑定的邮箱地址，绑定后即可用该邮箱</p>
+        <p font-size=18px>为了保障您的帐号安全，变更信息前需验证身份</p>
         </div>
         <div class="phone">
-        <el-input v-model="input" placeholder="请输入有效邮箱地址"></el-input>
+        <el-input v-model="input" placeholder="请输入密保电话"></el-input>
         </div>
         <div class="vcode">
-        <el-input v-model="vcode" placeholder="邮箱验证码"></el-input>
+        <el-input v-model="vcode" placeholder="请输入六位验证码"></el-input>
         </div>
         <div class="sendToPhone">
           <el-button>发送验证码</el-button>

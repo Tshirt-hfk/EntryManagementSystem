@@ -13,8 +13,8 @@
             <template slot="title">
               <span slot="title">个人信息</span>
             </template>
-            <el-menu-item index="/subjectmakercenter/passwordmodify">修改密码</el-menu-item>
-            <el-menu-item index="/subjectmakercenter/emailmodify">修改邮箱</el-menu-item>
+            <el-menu-item index="/subjectmakercenter/identityverification">修改密码</el-menu-item>
+            <el-menu-item index="/subjectmakercenter/identityverification">修改邮箱</el-menu-item>
           </el-submenu>
         </el-menu>
       </el-aside>

@@ -47,6 +47,11 @@ export default new Router({
           component: () => import('../views/subjectMakerCenter/subjectManagement')
         },
         {
+          path: 'identityverification',
+          name: 'identityVerification',
+          component: () => import('../views/userCenter/identityVerification')
+        },
+        {
           path: 'passwordmodify',
           name: 'passwordModify',
           component: () => import('../views/userCenter/passwordModify')
