@@ -44,7 +44,7 @@ export default {
   mounted() {
     // 初始化数据
     this.$axios
-      .post("http://localhost:8081/api/subjectmaker/getSubject")
+      .post("http://localhost:8081/api/subjectMaker/getSubject")
       .then(res => {
         if (res.data.data) {
           this.subjects=res.data.data.subjects

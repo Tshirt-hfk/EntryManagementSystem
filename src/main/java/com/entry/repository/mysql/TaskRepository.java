@@ -7,7 +7,10 @@ import org.springframework.data.jpa.repository.Query;
 public interface TaskRepository extends JpaRepository<Task, Integer> {
 
     @Query(value = "select * from task where id = ?1", nativeQuery = true)
-    public Task findTaskById(Integer id);
+    Task findTaskById(Integer id);
+
+    @Query(value = "select * from task where Assignment_id=?1 and user_id=?2", nativeQuery = true)
+    Task findTaskByAssignment_IdAAndUser_Id(Integer assignmet_id,Integer user_id);
 
 
 }

@@ -38,9 +38,9 @@ export default {
 
 <style>
 .layout {
-  width: 65%;
+  width: 67%;
   margin: 0 auto;
-  margin-top: 20px;
+  margin-top: 30px;
   min-height:800px;
 }
 

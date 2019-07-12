@@ -12,7 +12,7 @@ public class Assignment {
     public final static Integer PUBLISHED = 2;  // 已发布
     public final static Integer DRAWED = 3;     // 被领取
     public final static Integer TOAUDITED = 4;  // 待审核
-    public final static Integer TOSUBMIT = 5;   // 审核通过
+    public final static Integer TOSUBMIT = 5;   // 待提交
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
