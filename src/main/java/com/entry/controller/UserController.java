@@ -6,11 +6,11 @@ import com.entry.entity.mysql.Assignment;
 import com.entry.repository.mysql.UserRepository;
 import com.entry.repository.mysql.TaskRepository;
 import com.entry.dto.BaseResultFactory;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
@@ -46,36 +46,34 @@ public class UserController {
         }
     }
 
-    @GetMapping("api/user/entry/get")
+    @PostMapping("api/user/getEntry")
     @CrossOrigin
-    public ResponseEntity<?> getEntryByName(HttpServletRequest request) {
+    public ResponseEntity<?> getEntry(HttpServletRequest request, @RequestBody String jsonParam) {
         try{
-            String user_name = (String)request.getParameter("name");
-            User user = userRepository.findUserByName(user_name);
+            Integer userId = (Integer) request.getAttribute("userId");
+            HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
+            Integer type = (Integer)form.get("type");
+            System.out.println("userId" + userId);
+            System.out.println("type" + type);
+            User user = userRepository.findUserById(userId);
             List<Task> tasks = user.getTaskList();
-   //         List<Task> tasks = taskRepository.findTaskByUserId(user.getId());
+            System.out.println("tasks.size" + tasks.size());
             if(tasks.size() != 0){
-                List<HashMap<String,Object>> list = new ArrayList<>();
-                HashMap<String, Object> result1 = new HashMap<>();
-                HashMap<String, Object> result2 = new HashMap<>();
-                HashMap<String, Object> result3 = new HashMap<>();
+                List<Object> list = new ArrayList<>();
+                HashMap<String, Object> restemp = new HashMap<>();
                 for(Task task: tasks){
                     Assignment assignment = task.getAssignment();
                     Integer state = assignment.getState();
-                    if(state == Assignment.DRAWED){
-                        result1.put("name", assignment.getEntryName());
-                    }else if(state == Assignment.TOAUDITED){
-                        result2.put("name", assignment.getEntryName());
-                    }else{
-                        result3.put("name", assignment.getEntryName());
+                    if(state == type) {
+                        restemp.put("name", assignment.getEntryName());
                     }
                 }
-                list.add(result1);
-                list.add(result2);
-                list.add(result3);
+                if(restemp.size() != 0)
+                    list.add(restemp);
+                System.out.println("restemp.size" + restemp.get("name"));
                 HashMap<String, Object> result = new HashMap<>();
                 result.put("assignments", list);
-                return new ResponseEntity<>(BaseResultFactory.build(result), HttpStatus.OK);
+                return new ResponseEntity<>(BaseResultFactory.build(result, "success"), HttpStatus.OK);
             }else
                 return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),"用户没有词条"), HttpStatus.NOT_FOUND);
         }catch (Exception e){

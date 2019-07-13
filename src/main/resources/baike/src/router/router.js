@@ -62,9 +62,9 @@ export default new Router({
           component: () => import('../views/userCenter/emailModify')
         },
         {
-          path: 'myentry',
-          name: 'myEntry',
-          component: () => import('../views/userCenter/myEntry')
+          path: 'usermanagement',
+          name: 'userManagement',
+          component: () => import('../views/userCenter/userManagement')
         }
       ]
     },
