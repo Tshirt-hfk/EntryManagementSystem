@@ -47,6 +47,11 @@ export default new Router({
           component: () => import('../views/userCenter/mySubject/createdSubject/subjectManagement')
         },
         {
+          path: 'allmyentry',
+          name: 'allMyEntry',
+          component: () => import('../views/userCenter/myEntry/allMyEntry')
+        },
+        {
           path: 'entrymanagement',
           name: 'entryManagement',
           component: () => import('../views/userCenter/myEntry/entryManagement')
