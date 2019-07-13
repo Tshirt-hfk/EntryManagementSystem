@@ -2,19 +2,19 @@
   <div class="layout">
     <el-container height="1000px">
       <el-aside width="210px">
-        <el-menu :router="true" default-active="/subjectmakercenter/mysubject" class="el-menu-vertical-demo">
-          <el-menu-item index="/subjectmakercenter/mysubject">
+        <el-menu :router="true" default-active="/usercenter/allmysubject" class="el-menu-vertical-demo">
+          <el-menu-item index="/usercenter/allmysubject">
             <span slot="title">我的专题</span>
           </el-menu-item>
-          <el-menu-item index="/subjectmakercenter/myentry">
+          <el-menu-item index="/usercenter/entrymanagement">
             <span slot="title">我的词条</span>
           </el-menu-item>
           <el-submenu index="1">
             <template slot="title">
               <span slot="title">个人信息</span>
             </template>
-            <el-menu-item index="/subjectmakercenter/passwordmodify">修改密码</el-menu-item>
-            <el-menu-item index="/subjectmakercenter/emailmodify">修改邮箱</el-menu-item>
+            <el-menu-item index="/usercenter/identityverification">修改密码</el-menu-item>
+            <el-menu-item index="/usercenter/identityverification">修改邮箱</el-menu-item>
           </el-submenu>
         </el-menu>
       </el-aside>
@@ -38,9 +38,9 @@ export default {
 
 <style>
 .layout {
-  width: 65%;
+  width: 67%;
   margin: 0 auto;
-  margin-top: 20px;
+  margin-top: 30px;
   min-height:800px;
 }
 

@@ -2,10 +2,9 @@
   <div class="layout">
   <div class="management">
     <div class="section_title">
-      <a href="" class="actived">  我的版本  </a>   <!--连接未完成啊 -->
+      <a class="actived">  我的版本  </a>   <!--连接未完成啊 -->
       <a href="">  我的收藏 </a>
     </div>
-
     <el-tabs class="border_card" type="border-card">
       <el-tab-pane lazy>
         <span slot="label">已通过词条</span>
@@ -29,13 +28,13 @@
 </template>
 
 <script>
-import passedEntry from "./userManagement/passedEntry";
-import toBeAuditedEntry from "./userManagement/toBeAuditedEntry";
-import failPassEntry from "./userManagement/failPassEntry";
-import toBeAdmittedEntry from "./userManagement/toBeAdmittedEntry";
+import passedEntry from "./entryManagement/passedEntry";
+import toBeAuditedEntry from "./entryManagement/toBeAuditedEntry";
+import failPassEntry from "./entryManagement/failPassEntry";
+import toBeAdmittedEntry from "./entryManagement/toBeAdmittedEntry";
  
 export default {
-  name: "userManagement",
+  name: "entryManagement",
   components: {
     passedEntry,
     toBeAuditedEntry,

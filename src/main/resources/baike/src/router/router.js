@@ -32,39 +32,39 @@ export default new Router({
       component: () => import('../views/entry/entryEdit')
     },
     {
-      path: '/subjectmakercenter',
-      name: 'subjectMakerCenter',
-      component: () => import('../views/subjectMakerCenter'),
+      path: '/usercenter',
+      name: 'userCenter',
+      component: () => import('../views/userCenter'),
       children: [
         {
-          path: 'mysubject',
-          name: 'mySubject',
-          component: () => import('../views/subjectMakerCenter/mySubject')
+          path: 'allmysubject',
+          name: 'allMySubject',
+          component: () => import('../views/userCenter/mySubject/allMySubject')
         },
         {  // 专题管理
           path: 'subjectmanagement',
           name: 'subjectManagement',
-          component: () => import('../views/subjectMakerCenter/subjectManagement')
+          component: () => import('../views/userCenter/mySubject/createdSubject/subjectManagement')
+        },
+        {
+          path: 'entrymanagement',
+          name: 'entryManagement',
+          component: () => import('../views/userCenter/myEntry/entryManagement')
         },
         {
           path: 'identityverification',
           name: 'identityVerification',
-          component: () => import('../views/userCenter/identityVerification')
+          component: () => import('../views/userCenter/myInfo/identityVerification')
         },
         {
           path: 'passwordmodify',
           name: 'passwordModify',
-          component: () => import('../views/userCenter/passwordModify')
+          component: () => import('../views/userCenter/myInfo/passwordModify')
         },
         {
           path: 'emailmodify',
           name: 'emailModify',
-          component: () => import('../views/userCenter/emailModify')
-        },
-        {
-          path: 'usermanagement',
-          name: 'userManagement',
-          component: () => import('../views/userCenter/userManagement')
+          component: () => import('../views/userCenter/myInfo/emailModify')
         }
       ]
     },

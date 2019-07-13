@@ -263,6 +263,7 @@ export default {
       myCompletedCount: 5,
       deadline: "2019-11-11",
       creator: "test",
+      subjectId: this.$route.query.id,
       // joinNumber:100,
       assginments: [
         {

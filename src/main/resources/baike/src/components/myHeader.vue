@@ -15,10 +15,11 @@
                         <el-button @click="toRegister">注册</el-button>
                     </template> 
                     <template v-else-if="status==='1'">  <!-- 普通用户 -->
+                    <el-button @click="toUserCenter">个人中心</el-button>
                         <el-button @click="loginOut">登出</el-button>
                     </template> 
                     <template v-else-if="status==='2'">  <!-- 专题制作人 -->
-                        <el-button @click="toMySubject">个人中心</el-button>
+                        <el-button @click="toUserCenter">个人中心</el-button>
                         <el-button @click="toSubject">创建专题</el-button>
                         <el-button @click="loginOut">登出</el-button>
                     </template>
@@ -84,8 +85,8 @@ export default {
                 }
             });
         },
-        toMySubject(){
-            this.$router.push('/subjectmakercenter/mysubject')
+        toUserCenter(){
+            this.$router.push('/usercenter')
         },
         toIndex(){
             this.$router.push('/')

@@ -24,7 +24,7 @@
 
 <script>
 export default {
-    name:"identityVerification",
+    name:"emailModify",
     data() {
     return {
       input: '',

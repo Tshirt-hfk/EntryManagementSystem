@@ -1,6 +1,6 @@
 <template>
     <div class="pass">
-      <el-card class="box-card">
+      <el-card class="userboxCard">
       <div class="input">
         <div class="notice">
         <p font-size=18px>为了保障您的帐号安全，变更信息前需验证身份</p>

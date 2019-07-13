@@ -36,7 +36,6 @@ export default {
         .then(res => {
           if (res.data.data) {
             this.tableData = res.data.data.assignments;
-            window.console.log(tableData.name);
           } else {
             this.$message({
               message: res.data.msg
