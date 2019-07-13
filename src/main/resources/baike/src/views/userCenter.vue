@@ -6,7 +6,7 @@
           <el-menu-item index="/usercenter/allmysubject">
             <span slot="title">我的专题</span>
           </el-menu-item>
-          <el-menu-item index="/usercenter/entrymanagement">
+          <el-menu-item index="/usercenter/allmyentry">
             <span slot="title">我的词条</span>
           </el-menu-item>
           <el-submenu index="1">

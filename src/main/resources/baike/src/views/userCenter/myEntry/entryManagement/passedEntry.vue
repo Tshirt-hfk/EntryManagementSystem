@@ -1,16 +1,15 @@
 <template>
-  <el-table :data="tableData" style="width: 100%" max-height="500">
+  <el-table :data="tableData" style="width: 100%" max-height="500" @row-click="jumpToPreview">
     <el-table-column prop="name" label="词条名称" width="200"> </el-table-column>
-    <el-table-column prop="version_pass" label="全部版本" width="150"> </el-table-column>
-    <el-table-column prop="time_pass" label="通过时间" width="150"> </el-table-column>
-    <el-table-column prop="modify_pass" label="被其它人修改版本" width="150"> </el-table-column>
+    <el-table-column prop="name" label="全部版本" width="150"> </el-table-column>
+    <el-table-column prop="name" label="通过时间" width="150"> </el-table-column>
+    <el-table-column prop="name" label="被其它人修改版本" width="150"> </el-table-column>
   </el-table>
 </template>
 
 <script>
 export default {
   name: "passedEntry",
-  props: ["subjectId"],
   data() {
     return {
       tableData: []
@@ -43,6 +42,9 @@ export default {
             });
           }
         });
+    },
+    jumpToPreview(){
+      this.$router.push({path : "/entry", query :{id : id}});
     },
     stateChange(state){
       this.$emit('stateChange', state)
