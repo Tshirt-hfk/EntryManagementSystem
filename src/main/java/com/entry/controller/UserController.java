@@ -1,8 +1,8 @@
 package com.entry.controller;
 
-import com.entry.entity.mysql.User;
-import com.entry.entity.mysql.Task;
-import com.entry.entity.mysql.Assignment;
+import com.entry.entity.mysql.*;
+import com.entry.repository.mysql.GroupMemberRepository;
+import com.entry.repository.mysql.SubjectRepository;
 import com.entry.repository.mysql.UserRepository;
 import com.entry.repository.mysql.TaskRepository;
 import com.entry.dto.BaseResultFactory;
@@ -27,6 +27,12 @@ public class UserController {
 
     @Autowired
     TaskRepository taskRepository;
+
+    @Autowired
+    SubjectRepository subjectRepository;
+
+    @Autowired
+    GroupMemberRepository groupMemberRepository;
 
     @GetMapping("/api/user/islogin")
     @CrossOrigin
@@ -76,6 +82,36 @@ public class UserController {
                 return new ResponseEntity<>(BaseResultFactory.build(result, "success"), HttpStatus.OK);
             }else
                 return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),"用户没有词条"), HttpStatus.NOT_FOUND);
+        }catch (Exception e){
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"我真的错了"),HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("api/user/getSubject/basicInfo")
+    @CrossOrigin
+    public ResponseEntity<?> getSubjectBasicInfo(HttpServletRequest request, @RequestBody String jsonParam) {
+        try{
+            Integer userId = (Integer)request.getAttribute("userId");
+            HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
+            Integer subjectId = (Integer) form.get("subjectId");
+            Subject subject = subjectRepository.findSubjectById(subjectId);
+            GroupMember groupMember = groupMemberRepository.findByUser_IdAndSubject_Id(userId,subjectId);
+            HashMap<String, Object> result = new HashMap<>();
+            if(subject!=null && groupMember!=null){
+                result.put("title", subject.getName());
+                result.put("creator", subject.getCreator());
+                result.put("isPublic", subject.getPublic());
+                result.put("myCompletedCount",groupMember.getMyCompletedCount());
+                result.put("currentCount",subject.getCurrentCount());
+                result.put("totalCount",subject.getTotalCount());
+                result.put("deadline", subject.getDeadline());
+                result.put("introduction",subject.getIntroduction());
+                result.put("goal",subject.getGoal());
+                return new ResponseEntity<>(BaseResultFactory.build(result, "success"), HttpStatus.OK);
+            }else if(subject==null)
+                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),"该专题不存在"), HttpStatus.NOT_FOUND);
+            else
+                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),"未加入该专题"), HttpStatus.NOT_FOUND);
         }catch (Exception e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"我真的错了"),HttpStatus.BAD_REQUEST);
         }

@@ -41,6 +41,7 @@
 
 
 <script>
+import subjectIndexVue from '../../../../subject/subjectIndex.vue';
 export default {
   name: "unpublishedEntry",
   props: ["subjectId"],
@@ -129,7 +130,8 @@ export default {
       window.console.log(array)
       this.$axios
         .post("http://localhost:8081/api/subjectMaker/publishAssignment", {
-          entryIds: array
+          entryIds: array,
+          subjectId: new Number(this.subjectId)
         })
         .then(res => {
           if (res.data) {

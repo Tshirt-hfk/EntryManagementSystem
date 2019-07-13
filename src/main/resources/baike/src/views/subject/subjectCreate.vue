@@ -86,7 +86,7 @@ export default {
             this.$message({
               message: res.data.msg
             });
-            this.$router.push("/subjectmakercenter/mysubject");
+            this.$router.push("/usercenter/allmysubject");
           }
         })
         .catch(error => {

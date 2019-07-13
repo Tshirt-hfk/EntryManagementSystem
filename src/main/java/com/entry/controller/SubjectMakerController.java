@@ -4,16 +4,19 @@ import com.entry.dto.BaseResultFactory;
 import com.entry.entity.mysql.*;
 import com.entry.entity.mysql.pk.GroupMemberPK;
 import com.entry.repository.mysql.*;
+import com.entry.util.HttpRequestUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.sql.Timestamp;
 import java.util.*;
 
 @RestController
@@ -34,7 +37,11 @@ public class SubjectMakerController {
     @Autowired
     TaskRepository taskRepository;
 
-
+    /**
+     * 获取所有的专题的信息列表
+     * @param request
+     * @return
+     */
     @PostMapping("/api/subjectMaker/getSubject")
     @CrossOrigin
     public ResponseEntity<?> getSubject(HttpServletRequest request){
@@ -42,7 +49,7 @@ public class SubjectMakerController {
             System.out.println("test");
             Integer userId = (Integer)request.getAttribute("userId");
             System.out.println(userId);
-            List<GroupMember> groupMembers = groupMemberRepository.findAllByUserAndIdentity(userId,GroupMember.SUBJECTMAKER);
+            List<GroupMember> groupMembers = groupMemberRepository.findAllByUser_IdAndIdentity(userId,GroupMember.SUBJECTMAKER);
             if(groupMembers==null){
                 return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
             }
@@ -76,22 +83,26 @@ public class SubjectMakerController {
     @CrossOrigin
     public ResponseEntity<?> postSubject(HttpServletRequest request, @RequestBody String jsonParam){
         try{
+            System.out.println(jsonParam);
             Integer userId = (Integer)request.getAttribute("userId");
             User user = userRepository.findUserById(userId);
             // 创建专题组
             System.out.println(jsonParam);
             HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
+            String imageUrl=(String)form.getOrDefault("imageUrl","");
             String name=(String)form.get("name");
             String field=(String)form.get("field");
             Boolean isPublic=(Boolean)form.get("isPublic");
             String introduction=(String)form.get("introduction");
             String goal=(String)form.get("goal");
-            Subject subject = new Subject(name,introduction,goal,field,isPublic);
+            Long deadLine= (Long)form.getOrDefault("deadline", (new Date()).getTime());
+            Subject subject = new Subject(imageUrl,name,user.getName(),introduction,goal,field,new Timestamp(deadLine),isPublic);
             // 将创建人加入专题组中
             GroupMember groupMember = new GroupMember(new GroupMemberPK(subject,user),2);
             subjectRepository.save(subject);
             groupMemberRepository.save(groupMember);
-            //
+            //初始化 专题的所有任务
+
             return new ResponseEntity<>(BaseResultFactory.build("创建成功"), HttpStatus.OK);
         }catch (IOException e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
@@ -174,9 +185,18 @@ public class SubjectMakerController {
             HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
             System.out.println(form);
             List<Integer> entryIds = (List<Integer>) form.get("entryIds");
-            for(Integer id : entryIds){
-                System.out.println(id);
-                assignmentRepository.updateStateById(Assignment.PUBLISHED,id);
+            Integer subjectId = (Integer) form.get("subjectId");
+            Subject subject = subjectRepository.findSubjectById(subjectId);
+            Integer num = 0;
+            try {
+                for (Integer id : entryIds) {
+                    assignmentRepository.updateStateById(Assignment.PUBLISHED, id);
+                    num = num + 1;
+                }
+            }catch (Exception e){
+                // TODO logo
+            }finally {
+                subject.setTotalCount(subject.getTotalCount()+num);
             }
             return new ResponseEntity<>(BaseResultFactory.build("发布成功"), HttpStatus.OK);
         }catch (IOException e){
@@ -195,8 +215,10 @@ public class SubjectMakerController {
             Integer assignmentId = (Integer) form.get("assignmentId");
             Boolean pass = (Boolean)form.get("pass");
             Integer userId = (Integer)form.get("userId");
+            Integer subjectId = (Integer)form.get("subjectId");
             Task task = taskRepository.findTaskByAssignment_IdAAndUser_Id(assignmentId, userId);
             Assignment assignment = assignmentRepository.findAssignmentById(assignmentId);
+            GroupMember groupMember = groupMemberRepository.findByUser_IdAndSubject_Id(userId,subjectId);
             if(assignment != null && task != null) {
                 if(pass){
                     assignment.setState(Assignment.TOSUBMIT);
@@ -204,6 +226,8 @@ public class SubjectMakerController {
                     task.setState(Task.TOSUBMIT);
                     taskRepository.save(task);
                     assignmentRepository.save(assignment);
+                    groupMember.setMyCompletedCount(groupMember.getMyCompletedCount()+1);
+                    groupMemberRepository.save(groupMember);
                     return new ResponseEntity<>(BaseResultFactory.build("审核通过"), HttpStatus.OK);
                 }else{
                     // TODO

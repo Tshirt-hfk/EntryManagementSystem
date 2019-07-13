@@ -98,8 +98,8 @@ export default {
   float: left;
   margin-top: 10px;
   margin-left: 10px;
-  height: 170px;
-  width: 150px;
+  height: 250px;
+  width: 200px;
 }
 .clearfix:before,
 .clearfix:after {

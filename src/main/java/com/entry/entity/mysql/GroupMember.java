@@ -3,6 +3,7 @@ package com.entry.entity.mysql;
 import com.entry.entity.mysql.pk.GroupMemberPK;
 
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
 
 @Entity(name = "groupmember")
 public class GroupMember {
@@ -16,6 +17,9 @@ public class GroupMember {
     @Column(name = "identity",columnDefinition = "TINYINT default 0")
     private Integer identity;  // 1：普通用户；2：专题创建人，可以审核词条
 
+    @Column(columnDefinition = "INT default 0")
+    private Integer myCompletedCount;
+
     public GroupMember() {
 
     }
@@ -28,6 +32,7 @@ public class GroupMember {
     public GroupMember(Subject subject, User user, Integer identity) {
         this.pk = new GroupMemberPK(subject, user);
         this.identity = identity;
+        this.myCompletedCount = 0;
     }
 
     @Transient
@@ -43,4 +48,17 @@ public class GroupMember {
     public Integer getIdentity() {
         return  this.identity;
     }
+
+    public Integer getMyCompletedCount() {
+        return myCompletedCount;
+    }
+
+    public void setMyCompletedCount(Integer myCompletedCount) {
+        this.myCompletedCount = myCompletedCount;
+    }
+
+    public void setIdentity(Integer identity) {
+        this.identity = identity;
+    }
+
 }

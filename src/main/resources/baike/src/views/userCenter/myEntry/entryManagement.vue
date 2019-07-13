@@ -1,5 +1,4 @@
 <template>
-  <div class="layout">
   <div class="management">
     <div class="section_title">
       <a class="actived">  我的版本  </a>   <!--连接未完成啊 -->
@@ -23,7 +22,6 @@
         <toBeAdmittedEntry  ref="myBeAdmittedEntry" v-on:stateChange="stateChange" v-bind:subjectId="subjectId"></toBeAdmittedEntry>
       </el-tab-pane>
     </el-tabs>
-  </div>
   </div>
 </template>
 
@@ -69,10 +67,6 @@ export default {
 </script>
 
 <style>
-.layout {
-  width: 980px;
-  margin: 0 auto;
-}
 .management {
   width: 100%;
   height: 500px;
