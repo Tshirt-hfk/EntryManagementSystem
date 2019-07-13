@@ -8,12 +8,12 @@ import java.util.List;
 
 public interface TaskRepository extends JpaRepository<Task, Integer> {
 
-    @Query(value = "select * from task where id = ?1", nativeQuery = true)
-    Task findTaskById(Integer id);
-
     @Query(value = "select * from task where Assignment_id=?1 and user_id=?2", nativeQuery = true)
     Task findTaskByAssignment_IdAAndUser_Id(Integer assignmet_id,Integer user_id);
 
     @Query(value = "select * from task where user_id = ?1", nativeQuery = true)
-    public List<Task> findTaskByUserId(Integer id);
+    List<Task> findTaskByUserId(Integer id);
+
+    @Query(value = "select * from task where subject_id = ?1 and user_id = ?2 and state = ?3", nativeQuery = true)
+    List<Task> findAllBySubject_IdAndUser_IdAAndState(Integer subjectId, Integer userId, Integer state);
 }

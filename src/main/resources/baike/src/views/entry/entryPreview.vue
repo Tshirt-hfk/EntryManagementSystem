@@ -18,7 +18,30 @@ export default {
 	},
 	methods:{
 		init(){
+			window.console.log("test")
 			// 获取词条数据 
+			this.$axios.get(
+                "http://127.0.0.1:5000/fetchPageById",{params:{
+					entryId:new Number(this.name)
+				}}
+            ).then(res => {
+                if(res.data){
+					window.console.log("test")
+                    this.value=res.data.page_content
+                } else {
+                this.$message({
+                    message:res.data.msg,
+                    type:"warning"
+                });
+                }
+            }).catch(error => {
+                if(error.response){
+                    this.$message({
+                        message:error.response.data.msg,
+                        type:"warning"
+                    });
+                }
+            });
 		}
 	}
 }

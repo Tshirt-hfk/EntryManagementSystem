@@ -2,6 +2,7 @@ package com.entry.entity.mysql;
 
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
@@ -49,6 +50,9 @@ public class Assignment {
 
     @Column(columnDefinition = "TINYINT")
     private Integer state; //1:未发布；2：已发布，3：被领取
+
+    @Column(columnDefinition = "INT default 864000000")
+    private Integer deadline;
 
     public Assignment() {
 
@@ -100,5 +104,13 @@ public class Assignment {
 
     public void setOriginalId(Integer originalId) {
         this.originalId = originalId;
+    }
+
+    public Integer getDeadline() {
+        return deadline;
+    }
+
+    public void setDeadline(Integer deadline) {
+        this.deadline = deadline;
     }
 }

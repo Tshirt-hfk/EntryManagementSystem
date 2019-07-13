@@ -1,78 +1,6 @@
 <template>
   <div>
-    <div class="layout">
-      <div class="taskIntro">
-        <div class="cmn-clearfix">
-          <div class="taskPic">
-            <img
-              src="https://gss0.bdstatic.com/94o3dSag_xI4khGkpoWK1HF6hhy/baike/crop%3D0%2C0%2C460%2C275%3BeWH%3D257%2C154/sign=a13a9483bd19ebc4d4372cd9bf16e3cc/37d12f2eb9389b5097c94bb48b35e5dde7116e26.jpg"
-              width="257"
-              height="154"
-              alt="任务详情图片"
-            />
-          </div>
-          <div class="fl">
-            <div class="mb30">
-              <h1 class="fwn di">{{title}}</h1>
-            </div>
-            <div class="cmn-clearfix">
-              <div class="joinRequirement">
-                <div class="boxInfo">
-                  <div class="box f16">{{isPublic | handle}}</div>
-                  <div class="btmDesc">参加条件</div>
-                </div>
-                <div class="boxInfo">
-                  <div class="box pr">
-                    <div class="hasCompleted">{{currentCount}}</div>
-                    <div class="totalNum">
-                      <span class="count">{{totalCount}}</span>
-                    </div>
-                  </div>
-                  <div class="btmDesc">完成词条</div>
-                </div>
-                <div class="boxInfo">
-                  <div class="box">{{myCompletedCount}}</div>
-                  <div class="btmDesc">我的进度</div>
-                </div>
-              </div>
-
-              <div class="createInfo">
-                <p class="restTime">剩余时间：</p>
-                <p>
-                  任务发起：
-                  <a
-                    href="/usercenter/userpage?uname=%E5%86%B7%E9%AD%84year&amp;from=task"
-                    target="_blank"
-                    class="createMan"
-                  >{{creator}}</a>
-                </p>
-                <p class="deadline">结束时间：{{deadline}}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="taskDesc">
-        <el-tabs type="border-card">
-          <el-tab-pane>
-            <span slot="label">
-              <div class="descButton">任务介绍</div>
-            </span>
-            <div class="descDetail">
-              <div class="descContent">任务介绍</div>
-            </div>
-          </el-tab-pane>
-          <el-tab-pane>
-            <span slot="label">
-              <div class="descButton">任务目标</div>
-            </span>
-            <div class="descDetail">
-              <div class="descContent">任务目标</div>
-            </div>
-          </el-tab-pane>
-        </el-tabs>
-      </div>
-    </div>
+    <subjectBasicInfo :subjectId="subjectId"></subjectBasicInfo>
     <div class="layout">
       <!-- 任务词条 -->
       <div class="taskLemma">
@@ -83,9 +11,11 @@
         <div class="content">
           <div class="viewport cmn-clearfix">
             <div class="lemmaList" style>
-              <template v-for="assginment in assginments">
-                <myAssignmentCard v-bind:assignment="assginment" :key="assginment.id"></myAssignmentCard>
-              </template>
+              <myAssignmentCard
+                v-for="assignment in assignments"
+                v-bind:assignment="assignment"
+                :key="assignment.id"
+              ></myAssignmentCard>
             </div>
           </div>
           <div id="taskLemmaPager" pager-type="tpager" class="wgt_horPager" style="display: none;"></div>
@@ -249,60 +179,76 @@ import myAssignmentCard from "../../components/myAssignmentCard";
 
 import myTask from "../../components/myTask";
 
+import subjectBasicInfo from "./subjectIndex/subjectBasicInfo";
+
 export default {
   name: "subujectIndex",
   components: {
     myAssignmentCard,
-    myTask
+    myTask,
+    subjectBasicInfo
   },
   data() {
     return {
-      title: "test",
-      totalCount: 100,
-      currentCount: 80,
-      myCompletedCount: 5,
-      deadline: "2019-11-11",
-      creator: "test",
       subjectId: this.$route.query.id,
-      // joinNumber:100,
-      assginments: [
-        {
-          id: 1,
-          name: "test1",
-          state: true
-        }
-      ],
-      tasks: [
-        {
-          id: 1,
-          name: "test2",
-          state: true,
-          time: "100"
-        },
-        {
-          id: 2,
-          name: "test2",
-          state: true,
-          time: "100"
-        }
-      ]
+      assignments: [],
+      tasks: []
     };
   },
-  methods:{
-    getTasks(){
-      //TODO:获取task的接口还没写完
-    },
-    getAssginments(){
-      //TODO:获取Assginment的接口还没写完
-    }
+  mounted() {
+    this.getTasks();
+    this.getAssginments();
   },
-  filters: {
-    handle(isPublic) {
-      if (isPublic) {
-        return "所有人";
-      } else {
-        return "被邀请的人";
-      }
+  methods: {
+    getTasks() {
+      this.$axios
+        .post("http://localhost:8081/api/user/getTask", {
+          subjectId: new Number(this.subjectId),
+          type: 3
+        })
+        .then(res => {
+          if (res.data.data) {
+            for (var i = 0; i < res.data.data.tasks.length; i++) {
+              this.tasks.push(res.data.data.tasks[i]);
+            }
+          }
+          this.$message({
+            message: res.data.msg
+          });
+        })
+        .catch(error => {
+          if (error.response) {
+            this.$message({
+              message: error.response.data.msg,
+              type: "warning"
+            });
+          }
+        });
+    },
+    getAssginments() {
+      this.$axios
+        .post("http://localhost:8081/api/user/getAssignment", {
+          subjectId: new Number(this.subjectId)
+        })
+        .then(res => {
+          //window.console.log(res.data.data)
+          if (res.data.data) {
+            for (var i = 0; i < res.data.data.assignments.length; i++) {
+              this.assignments.push(res.data.data.assignments[i]);
+            }
+          }
+          this.$message({
+            message: res.data.msg
+          });
+        })
+        .catch(error => {
+          if (error.response) {
+            this.$message({
+              message: error.response.data.msg,
+              type: "warning"
+            });
+          }
+        });
     }
   }
 };
@@ -765,7 +711,6 @@ a:hover {
 }
 .progress .myProgress {
   position: relative;
-  width: 587px;
   height: 600px;
   float: left;
 }

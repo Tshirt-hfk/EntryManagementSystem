@@ -178,7 +178,6 @@ public class SubjectMakerController {
      */
     @PostMapping("/api/subjectMaker/publishAssignment")
     @CrossOrigin
-    @Transactional
     public ResponseEntity<?> publishAssignment(HttpServletRequest request, @RequestBody String jsonParam){
         try{
             System.out.println(jsonParam);
@@ -186,11 +185,15 @@ public class SubjectMakerController {
             System.out.println(form);
             List<Integer> entryIds = (List<Integer>) form.get("entryIds");
             Integer subjectId = (Integer) form.get("subjectId");
+            Integer time = (Integer) form.getOrDefault("dealine", 10*24*3600*1000);
             Subject subject = subjectRepository.findSubjectById(subjectId);
             Integer num = 0;
             try {
                 for (Integer id : entryIds) {
-                    assignmentRepository.updateStateById(Assignment.PUBLISHED, id);
+                    Assignment assignment = assignmentRepository.findAssignmentById(id);
+                    assignment.setState(Assignment.PUBLISHED);
+                    assignment.setDeadline(time);
+                    assignmentRepository.save(assignment);
                     num = num + 1;
                 }
             }catch (Exception e){

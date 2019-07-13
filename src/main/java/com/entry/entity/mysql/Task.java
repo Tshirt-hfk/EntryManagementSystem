@@ -17,18 +17,6 @@ public class Task {
     @EmbeddedId
     private TaskPK pk;
 
-    public void setState(Integer state) {
-        this.state = state;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public void setDeadline(Timestamp deadline) {
-        this.deadline = deadline;
-    }
-
     @Column(columnDefinition = "TINYINT default 0", nullable = false)
     private Integer state;  // 4：待提交, 5：待审核
 
@@ -39,6 +27,9 @@ public class Task {
     public void setField(String field) {
         this.field = field;
     }
+
+    @Column(columnDefinition = "varchar(50)")
+    private String entryName;
 
     @Column(columnDefinition = "varchar(255)")
     private String field;
@@ -53,22 +44,25 @@ public class Task {
 
     }
 
-    public Task(TaskPK pk, Integer state, String content, Timestamp deadline) {
+    public Task(TaskPK pk, String entryName, Integer state, String content, Timestamp deadline) {
         this.pk = pk;
+        this.entryName = entryName;
         this.state = state;
         this.content = content;
         this.deadline = deadline;
     }
 
-    public Task(GroupMember groupMember, Assignment assignment, Integer state, String content, Timestamp deadline) {
+    public Task(GroupMember groupMember,String entryName, Assignment assignment, Integer state, String content, Timestamp deadline) {
         this.pk = new TaskPK(groupMember.getSubject(), groupMember.getUser(), assignment);
+        this.entryName = entryName;
         this.state = state;
         this.content = content;
         this.deadline = deadline;
     }
 
-    public Task(Subject subject, User user, Assignment assignment, Integer state, String content, Timestamp deadline) {
+    public Task(Subject subject,String entryName, User user, Assignment assignment, Integer state, String content, Timestamp deadline) {
         this.pk = new TaskPK(subject, user, assignment);
+        this.entryName = entryName;
         this.state = state;
         this.content = content;
         this.deadline = deadline;
@@ -89,15 +83,43 @@ public class Task {
         return  this.pk.getAssignment();
     }
 
+    public TaskPK getPk() {
+        return pk;
+    }
+
+    public void setPk(TaskPK pk) {
+        this.pk = pk;
+    }
+
     public Integer getState() {
         return state;
+    }
+
+    public void setState(Integer state) {
+        this.state = state;
+    }
+
+    public String getEntryName() {
+        return entryName;
+    }
+
+    public void setEntryName(String entryName) {
+        this.entryName = entryName;
     }
 
     public String getContent() {
         return content;
     }
 
-    public Timestamp getDeadline() {
-        return deadline;
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public Long getDeadline() {
+        return deadline.getTime();
+    }
+
+    public void setDeadline(Long deadline) {
+        this.deadline = new Timestamp(deadline);
     }
 }

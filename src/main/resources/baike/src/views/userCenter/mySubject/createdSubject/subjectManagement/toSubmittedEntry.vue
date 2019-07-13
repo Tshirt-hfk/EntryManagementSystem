@@ -1,11 +1,3 @@
-<template></template>
-
-<script>
-export default {
-  name: "toSubmittedEntry",
-  props: ["subjectId"]
-};
-</script>
 <template>
   <el-table
     ref="multipleTable"

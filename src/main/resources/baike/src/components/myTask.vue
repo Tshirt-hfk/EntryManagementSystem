@@ -1,29 +1,50 @@
 <template>
-  <div class="myLemma" id="29139302" data>
+  <div class="myLemma">
     <div class="operation">
-      <a
-        href="/edit/%E4%B8%AD%E8%81%8C%E5%BF%83%E7%90%86%E5%81%A5%E5%BA%B7%E9%98%B3%E5%85%89%E6%95%99%E8%82%B2%E5%AD%A6%E7%94%9F%E7%94%A8%E4%B9%A6/12138104"
-        class="edit"
-        target="_blank"
-      >编辑</a>
-      <a href="javascript:;" class="giveUp">放弃</a>
+      <a class="edit">编辑</a>
+      <a class="giveUp">放弃</a>
     </div>
     <div class="forMiddle">
-      <div class="lemmaName cmn-ellipsis">{{task.name}}</div>
-      <div class="received">{{task.state}}</div>
-      <div class="restTime" serial="0" lefttime="15635">
-        剩余编辑时间
-        <span class="time">{{task.time}}</span>
+      <div class="lemmaName cmn-ellipsis">{{name}}</div>
+      <div class="restTime">
+        剩余时间：
+        <span class="time">{{restTime}}</span>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { setInterval } from 'timers';
 export default {
   name: "myTask",
-  props:['task'],
-
+  props: ["task"],
+  data() {
+      return {
+        name:this.task.name,
+        deadline:this.task.deadline,
+        restTime:""
+      }
+  },
+  mounted(){
+    setInterval(()=>{
+      var timeStr = "";
+      var rt = parseInt((this.deadline - Date.now()) / 1000);
+      var day = parseInt(rt / (24 * 3600));
+      if(day>0)
+        timeStr = timeStr + day +"天"
+      var hour = parseInt((rt % (24 * 3600)) / 3600);
+      if(hour>0)
+        timeStr = timeStr + hour +"时"
+      var min = parseInt((rt % 3600) / 60);
+      if(min>0)
+        timeStr = timeStr + min +"分"
+      var sec = parseInt(rt % 60);
+      if(sec>0)
+        timeStr = timeStr + sec +"秒"
+      this.restTime = timeStr;
+    },1000)
+  }
 };
 </script>
 
@@ -88,17 +109,15 @@ a:hover {
   display: block;
   width: 187px;
   color: #333;
+  font-size: 18px;
 }
 .progress .myLemma .restTime {
   font-size: 12px;
+  margin-top: 5px;
 }
 .progress .myLemma .restTime .time {
   color: #ff9600;
   margin-left: 8px;
-}
-.progress .myLemma .received {
-  color: #333;
-  font-size: 14px;
 }
 .progress .operation {
   opacity: 0;

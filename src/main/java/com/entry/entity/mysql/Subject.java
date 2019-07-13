@@ -140,12 +140,12 @@ public class Subject {
         this.field = field;
     }
 
-    public Timestamp getDeadline() {
-        return deadline;
+    public Long getDeadline() {
+        return deadline.getTime();
     }
 
-    public void setDeadline(Timestamp deadLine) {
-        this.deadline = deadLine;
+    public void setDeadline(Long deadLine) {
+        this.deadline = new Timestamp(deadLine);
     }
 
     public Boolean getPublic() {

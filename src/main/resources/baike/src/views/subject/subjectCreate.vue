@@ -63,7 +63,7 @@ export default {
         isPublic: false,
         introduction: "",
         goal: "",
-        filedata: ""
+        documents: []
       },
       fields: ["科学"]
     };
@@ -71,12 +71,14 @@ export default {
   methods: {
     getFile: function(event) {
       // 获取input里的文件
-      var file=event.target.files[0];
+      var files=event.target.files;
       var reader = new FileReader();
-      reader.readAsText(file, "UTF-8")
-      reader.onload = (event) => {
-        this.form.filedata = event.target.result;
+      for(var file in files){
+        reader.readAsText(file, "UTF-8")
+        reader.onload = (event) => {
+        this.form.documents.push(event.target.result);
       }
+      }  
     },
     submit() {
       this.$axios
