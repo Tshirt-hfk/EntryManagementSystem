@@ -2,22 +2,55 @@
     <div class="lemma cmn-ellipsis" :key="assignment.id">
       <span class="lemmaName" :id="assignment.id">{{assignment.name}}</span>
       <span class="overlay"></span>
-      <a @click="open" class="get" joinstatus="allowJoin">{{op}}</a>
+      <a v-if="notGet" @click="open" class="get" joinstatus="allowJoin">领取任务</a>
+      <a v-else class="get" joinstatus="allowJoin">已领取</a>
     </div>
 </template>
 
 <script>
 export default {
   name: "myAssignmentCard",
-  props: ["assignment","op"],
+  props: ["assignment"],
+  mounted (){
+    this.getContent()
+  },
+  data(){
+    return{
+      content: "内容",
+      notGet: true
+    }
+  },
   methods: {
     open() {
-      this.$alert("这是一段内容", "标题名称", {
+      this.$alert(this.content, this.assignment.name, {
         confirmButtonText: "确定",
         callback: action => {
-          this.$emit("handler")
+          // TODO:这里需要有一个后端的函数，但是还没写
+          this.notGet=false
         }
       });
+    },
+    getContent: function(){
+      this.$axios.get(
+                "http://localhost:8081/api/subject/getAssignmentContent",
+                {params: {id: this.assignment.id}}
+            ).then(res => {
+                if(res.data.data){
+                  this.content=res.data.data.content
+                } else {
+                this.$message({
+                    message:res.data.msg,
+                    type:"warning"
+                });
+                }
+            }).catch(error => {
+                if(error.response){
+                    this.$message({
+                        message:error.response.data.msg,
+                        type:"warning"
+                    });
+                }
+            });
     }
   }
 };
