@@ -1,15 +1,14 @@
 <template>
   <el-table :data="tableData" style="width: 100%" max-height="500">
     <el-table-column prop="name" label="词条名称" width="300"> </el-table-column>
-    <el-table-column prop="version_wait" label="版本" width="150"> </el-table-column>
-    <el-table-column prop="time_wait" label="提交时间" width="150"> </el-table-column>
+    <el-table-column prop="name" label="版本" width="150"> </el-table-column>
+    <el-table-column prop="name" label="提交时间" width="150"> </el-table-column>
   </el-table>
 </template>
 
 <script>
 export default {
   name: "toBeAuditedEntry",
-  props: ["subjectId"],
   data() {
     return {
       tableData: [],

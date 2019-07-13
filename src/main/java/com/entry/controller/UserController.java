@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,13 +27,13 @@ public class UserController {
     TaskRepository taskRepository;
 
     @Autowired
+    AssignmentRepository assignmentRepository;
+
+    @Autowired
     SubjectRepository subjectRepository;
 
     @Autowired
     GroupMemberRepository groupMemberRepository;
-
-    @Autowired
-    AssignmentRepository assignmentRepository;
 
     @GetMapping("/api/user/islogin")
     @CrossOrigin
@@ -66,17 +67,19 @@ public class UserController {
             System.out.println("tasks.size" + tasks.size());
             if(tasks.size() != 0){
                 List<Object> list = new ArrayList<>();
-                HashMap<String, Object> restemp = new HashMap<>();
+                HashMap<String, Object> restemp = null;
                 for(Task task: tasks){
                     Assignment assignment = task.getAssignment();
                     Integer state = assignment.getState();
                     if(state == type) {
+                        restemp = new HashMap<>();
+                        restemp.put("id", assignment.getId());
                         restemp.put("name", assignment.getEntryName());
+                        restemp.put("field", assignment.getField());
+                        list.add(restemp);
                     }
                 }
-                if(restemp.size() != 0)
-                    list.add(restemp);
-                System.out.println("restemp.size" + restemp.get("name"));
+                System.out.println("list.size" + list.size());
                 HashMap<String, Object> result = new HashMap<>();
                 result.put("assignments", list);
                 return new ResponseEntity<>(BaseResultFactory.build(result, "success"), HttpStatus.OK);
@@ -86,6 +89,41 @@ public class UserController {
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"我真的错了"),HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PostMapping("api/user/admitEntry")
+    @CrossOrigin
+    @Transactional
+    public ResponseEntity<?> admitEntry(HttpServletRequest request, @RequestBody String jsonParam) {
+        try{
+            HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
+            List<Integer> entryIds = (List<Integer>) form.get("entryIds");
+            for (Integer id : entryIds){
+                assignmentRepository.updateStateById(Assignment.TOAUDITED, id);
+                taskRepository.updateStateByAssignmentId(Assignment.TOAUDITED, id);
+            }
+            return new ResponseEntity<>(BaseResultFactory.build("提交成功"), HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"我真的错了"),HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("api/user/deleteEntry")
+    @CrossOrigin
+    @Transactional
+    public ResponseEntity<?> deleteEntry(HttpServletRequest request, @RequestBody String jsonParam) {
+        try{
+            HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
+            List<Integer> entryIds = (List<Integer>) form.get("entryIds");
+            for (Integer id : entryIds){
+                assignmentRepository.deleteStateById(Assignment.TOAUDITED, id);
+                taskRepository.deleteStateByAssignmentId(Assignment.TOAUDITED, id);
+            }
+            return new ResponseEntity<>(BaseResultFactory.build("提交成功"), HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"我真的错了"),HttpStatus.BAD_REQUEST);
+        }
+    }
+
 
     @PostMapping("api/user/getSubjectBasicInfo")
     @CrossOrigin

@@ -1,25 +1,21 @@
 <template>
   <div class="management">
-    <div class="section_title">
-      <a class="actived">  我的版本  </a>   <!--连接未完成啊 -->
-      <a href="">  我的收藏 </a>
-    </div>
     <el-tabs class="border_card" type="border-card">
       <el-tab-pane lazy>
-        <span slot="label">已通过词条</span>
-        <passedEntry ref="myPassedEntry" v-on:stateChange="stateChange" v-bind:subjectId="subjectId"></passedEntry>
+        <span slot="label">待提交词条</span>
+        <toBeAdmittedEntry  ref="myBeAdmittedEntry" v-on:stateChange="stateChange" v-bind:subjectId="subjectId"></toBeAdmittedEntry>
       </el-tab-pane>
       <el-tab-pane lazy>
         <span slot="label">待审核词条</span>
         <toBeAuditedEntry ref="myBeAuditedEntry" v-on:stateChange="stateChange" v-bind:subjectId="subjectId"></toBeAuditedEntry>
       </el-tab-pane>
       <el-tab-pane lazy>
-        <span slot="label">未通过词条</span>
-        <failPassEntry ref="myFailPassEntry" v-on:stateChange="stateChange" v-bind:subjectId="subjectId"></failPassEntry>
+        <span slot="label">已通过词条</span>
+        <passedEntry ref="myPassedEntry" v-on:stateChange="stateChange" v-bind:subjectId="subjectId"></passedEntry>
       </el-tab-pane>
       <el-tab-pane lazy>
-        <span slot="label">待提交词条</span>
-        <toBeAdmittedEntry  ref="myBeAdmittedEntry" v-on:stateChange="stateChange" v-bind:subjectId="subjectId"></toBeAdmittedEntry>
+        <span slot="label">未通过词条</span>
+        <failPassEntry ref="myFailPassEntry" v-on:stateChange="stateChange" v-bind:subjectId="subjectId"></failPassEntry>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -93,7 +89,6 @@ export default {
 }
 .border_card{
   width: 900px;
-  margin: 0 auto; 
 }
 </style>
 
