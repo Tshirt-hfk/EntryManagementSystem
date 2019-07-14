@@ -1,6 +1,7 @@
 package com.entry.entity.mysql;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.sql.Timestamp;
 import com.entry.entity.mysql.pk.TaskPK;
 
@@ -60,12 +61,20 @@ public class Task {
         this.deadline = deadline;
     }
 
-    public Task(Subject subject,String entryName, User user, Assignment assignment, Integer state, String content, Timestamp deadline) {
+    public Task(Subject subject, User user, Assignment assignment, Integer state, String content, Timestamp deadline) {
         this.pk = new TaskPK(subject, user, assignment);
-        this.entryName = entryName;
+        this.entryName = assignment.getEntryName();
         this.state = state;
         this.content = content;
         this.deadline = deadline;
+    }
+
+    public Task(Subject subject,User user, Assignment assignment, Integer state){
+        this.pk = new TaskPK(subject, user, assignment);
+        this.entryName = assignment.getEntryName();
+        this.state = state;
+        this.content = assignment.getContent();
+        this.deadline = new Timestamp((new Date()).getTime()+assignment.getDeadline());
     }
 
     @Transient

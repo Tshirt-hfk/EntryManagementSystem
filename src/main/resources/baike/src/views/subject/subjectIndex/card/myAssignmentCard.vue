@@ -1,32 +1,56 @@
 <template>
-    <div class="lemma cmn-ellipsis">
-      <span class="lemmaName" :id="assignment.id">{{assignment.name}}</span>
-      <span class="overlay"></span>
-      <a v-if="notGet" @click="open" class="get" joinstatus="allowJoin">领取任务</a>
-      <a v-else class="get" joinstatus="allowJoin">已领取</a>
-    </div>
+  <div class="lemma cmn-ellipsis">
+    <span class="lemmaName" :id="assignment.id">{{assignment.name}}</span>
+    <span class="overlay"></span>
+    <a v-if="notGet" @click="open" class="get">领取任务</a>
+    <a v-else class="get">已领取</a>
+  </div>
 </template>
 
 <script>
 export default {
   name: "myAssignmentCard",
   props: ["assignment"],
-  data(){
-    return{
+  data() {
+    return {
       content: "内容",
       notGet: true
-    }
+    };
   },
   methods: {
     open() {
-      this.$alert(this.content, this.assignment.name, {
+      this.$alert("确认领取词条："+this.assignment.name, this.assignment.name, {
         confirmButtonText: "确定",
         callback: action => {
           // TODO: 后端领取任务
-          this.notGet=false
+          this.$axios
+            .post("http://localhost:8081/api/user/drawAssignment", {
+              assignmentId: this.assignment.id
+            })
+            .then(res => {
+              if (!res.data.errcode) {
+                this.notGet = false;
+                this.refresh();
+              }
+              this.$message({
+                  message: res.data.msg,
+                  type: "warning"
+                });
+            })
+            .catch(error => {
+              if (error.response) {
+                this.$message({
+                  message: error.response.data.msg,
+                  type: "warning"
+                });
+              }
+            });
         }
       });
     },
+    refresh(){
+      this.$emit("refresh");
+    }
   }
 };
 </script>

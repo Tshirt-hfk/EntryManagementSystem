@@ -1,8 +1,8 @@
 <template>
   <div class="myLemma">
     <div class="operation">
-      <a class="edit">编辑</a>
-      <a class="giveUp">放弃</a>
+      <a class="edit" @click="edit">编辑</a>
+      <a class="giveUp" @click="giveup">放弃</a>
     </div>
     <div class="forMiddle">
       <div class="lemmaName cmn-ellipsis">{{name}}</div>
@@ -15,35 +15,66 @@
 </template>
 
 <script>
-import { setInterval } from 'timers';
+import { setInterval } from "timers";
 export default {
-  name: "myTask",
+  name: "myTaskCard",
   props: ["task"],
   data() {
-      return {
-        name:this.task.name,
-        deadline:this.task.deadline,
-        restTime:""
-      }
+    return {
+      taskId: this.task.id,
+      name: this.task.name,
+      deadline: this.task.deadline,
+      restTime: this.timer()
+    };
   },
-  mounted(){
-    setInterval(()=>{
+  mounted() {
+    setInterval(() => {
+      this.timer();
+    }, 1000);
+  },
+  methods: {
+    timer() {
       var timeStr = "";
       var rt = parseInt((this.deadline - Date.now()) / 1000);
       var day = parseInt(rt / (24 * 3600));
-      if(day>0)
-        timeStr = timeStr + day +"天"
+      if (day > 0) timeStr = timeStr + day + "天";
       var hour = parseInt((rt % (24 * 3600)) / 3600);
-      if(hour>0)
-        timeStr = timeStr + hour +"时"
+      if (hour > 0) timeStr = timeStr + hour + "时";
       var min = parseInt((rt % 3600) / 60);
-      if(min>0)
-        timeStr = timeStr + min +"分"
+      if (min > 0) timeStr = timeStr + min + "分";
       var sec = parseInt(rt % 60);
-      if(sec>0)
-        timeStr = timeStr + sec +"秒"
+      if (sec > 0) timeStr = timeStr + sec + "秒";
       this.restTime = timeStr;
-    },1000)
+    },
+    edit() {
+      this.$router.push("/entryedit", { query: { entryId: this.taskId } });
+    },
+    giveup() {
+      this.$axios
+        .post("http://localhost:8081/api/user/giveUpAssignment", {
+          assignmentId: this.taskId
+        })
+        .then(res => {
+          if (!res.data.errcode) {
+            this.refresh();
+          }
+          this.$message({
+            message: res.data.msg,
+            type: "warning"
+          });
+        })
+        .catch(error => {
+          if (error.response) {
+            this.$message({
+              message: error.response.data.msg,
+              type: "warning"
+            });
+          }
+        });
+    },
+    refresh() {
+      this.$emit("refresh", this.taskId);
+    }
   }
 };
 </script>
@@ -81,11 +112,11 @@ a:focus {
 a:hover {
   text-decoration: none;
 }
-.progress .myLemma {
+.myLemma {
   position: relative;
   display: table;
   width: 188px;
-  height: 90px;
+  height: 68px;
   z-index: 2;
   float: left;
   font-size: 16px;
@@ -94,32 +125,32 @@ a:hover {
   margin-bottom: 8px;
   border: 1px solid #a2aaaf;
 }
-.progress .myLemma:hover .operation {
+.myLemma:hover .operation {
   opacity: 1;
 }
-.progress .myLemma:hover .operation + .forMiddle {
+.myLemma:hover .operation + .forMiddle {
   opacity: 0.1;
 }
-.progress .myLemma .forMiddle {
+.myLemma .forMiddle {
   display: table-cell;
   vertical-align: middle;
   transition: 0.2s;
 }
-.progress .myLemma .lemmaName {
+.myLemma .lemmaName {
   display: block;
   width: 187px;
   color: #333;
   font-size: 18px;
 }
-.progress .myLemma .restTime {
+.myLemma .restTime {
   font-size: 12px;
   margin-top: 5px;
 }
-.progress .myLemma .restTime .time {
+.myLemma .restTime .time {
   color: #ff9600;
   margin-left: 8px;
 }
-.progress .operation {
+.operation {
   opacity: 0;
   position: absolute;
   z-index: 3;
@@ -131,24 +162,25 @@ a:hover {
   height: 38px;
   transition: 0.2s;
 }
-.progress .operation .edit,
-.progress .operation .giveUp {
+.operation .edit,
+.operation .giveUp {
   display: inline-block;
   color: #fff;
   padding: 7px 18px;
   border-radius: 4px;
+  cursor: pointer;
 }
-.progress .operation .edit {
+.operation .edit {
   background-color: #459df5;
 }
-.progress .operation .edit:hover {
+.operation .edit:hover {
   background-color: #1e89f3;
 }
-.progress .operation .giveUp {
+.operation .giveUp {
   margin-left: 10px;
   background-color: #98a8b2;
 }
-.progress .operation .giveUp:hover {
+.operation .giveUp:hover {
   background-color: #8194a1;
 }
 </style>
