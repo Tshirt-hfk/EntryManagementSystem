@@ -47,13 +47,9 @@
 </template>
 
 <script>
-import myAssignmentCard from "../../components/myAssignmentCard";
 
 export default {
   name: "subjectCreate",
-  components: {
-    myAssignmentCard
-  },
   data() {
     return {
       active: 1,

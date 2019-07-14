@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -200,6 +201,10 @@ public class UserController {
             Integer userId = (Integer)request.getAttribute("userId");
             HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
             Integer subjectId = (Integer)form.get("subjectId");
+            GroupMember groupMember = groupMemberRepository.findByUser_IdAndSubject_Id(userId,subjectId);
+            if(groupMember == null) {
+                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(), "未加入该专题"), HttpStatus.NOT_FOUND);
+            }
             Integer type = (Integer)form.get("type");
             List<Task> tasks = taskRepository.findAllBySubject_IdAndUser_IdAAndState(subjectId,userId,type);
             HashMap<String,Object> result1;
@@ -212,9 +217,60 @@ public class UserController {
                 list.add(result1);
             }
             HashMap<String,Object> result=new HashMap<>();
-            result.put("assignments",list);
+            result.put("tasks",list);
             return new ResponseEntity<>(BaseResultFactory.build(result,"success"), HttpStatus.OK);
         }catch (Exception e){
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/api/user/drawAssignment")
+    @CrossOrigin
+    public ResponseEntity<?> drawAssignment(HttpServletRequest request,@RequestBody String jsonParam){
+        try{
+            System.out.println(jsonParam);
+            Integer userId = (Integer)request.getAttribute("userId");
+            HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
+            Integer assignmentId = (Integer)form.get("assignmentId");
+            User user = userRepository.findUserById(userId);
+            Assignment assignment = assignmentRepository.findAssignmentById(assignmentId);
+            Subject subject = assignment.getSubject();
+            GroupMember groupMember = groupMemberRepository.findByUser_IdAndSubject_Id(userId,subject.getId());
+            if(groupMember == null){
+                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),"未加入该专题"), HttpStatus.NOT_FOUND);
+            }
+            List<Task> tasks = taskRepository.findAllBySubject_IdAndUser_IdAAndState(subject.getId(),userId,Task.DRAWED);
+            if(tasks.size()>0){
+                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),"已领取了一个任务"), HttpStatus.NOT_FOUND);
+            }
+            assignment.setState(Assignment.DRAWED);
+            Task task = new Task(subject,user,assignment,Task.DRAWED);
+            assignmentRepository.save(assignment);
+            taskRepository.save(task);;
+            return new ResponseEntity<>(BaseResultFactory.build("领取成功"), HttpStatus.OK);
+        }catch (IOException e){
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/api/user/giveUpAssignment")
+    @CrossOrigin
+    public ResponseEntity<?> giveUpAssignment(HttpServletRequest request,@RequestBody String jsonParam){
+        try{
+            System.out.println(jsonParam);
+            Integer userId = (Integer)request.getAttribute("userId");
+            HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
+            Integer assignmentId = (Integer)form.get("assignmentId");
+            Task task = taskRepository.findTaskByAssignment_IdAAndUser_Id(assignmentId,userId);
+            if(task == null){
+                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),"该任务已被取消"), HttpStatus.NOT_FOUND);
+            }
+            Assignment assignment = assignmentRepository.findAssignmentById(assignmentId);
+            assignment.setState(Assignment.PUBLISHED);
+            assignmentRepository.save(assignment);
+            taskRepository.delete(task);
+            return new ResponseEntity<>(BaseResultFactory.build("放弃成功"), HttpStatus.OK);
+        }catch (IOException e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
         }
     }

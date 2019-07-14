@@ -85,39 +85,35 @@ export default {
         introduction: "introduction",
         goal: "goal"
       },
-      restTime:""
+      restTime: ""
     };
   },
   mounted: function() {
-    setInterval(()=>{
+    setInterval(() => {
       var now = Date.now();
       var timeStr = "";
       var rt = parseInt((this.basicInfo.deadline - now) / 1000);
       var day = parseInt(rt / (24 * 3600));
-      if(day>0)
-        timeStr = timeStr + day +"天"
+      if (day > 0) timeStr = timeStr + day + "天";
       var hour = parseInt((rt % (24 * 3600)) / 3600);
-      if(hour>0)
-        timeStr = timeStr + hour +"时"
+      if (hour > 0) timeStr = timeStr + hour + "时";
       var min = parseInt((rt % 3600) / 60);
-      if(min>0)
-        timeStr = timeStr + min +"分"
+      if (min > 0) timeStr = timeStr + min + "分";
       var sec = parseInt(rt % 60);
-      if(sec>0)
-        timeStr = timeStr + sec +"秒"
+      if (sec > 0) timeStr = timeStr + sec + "秒";
       this.restTime = timeStr;
-    },1000)
-    this.init()  
+    }, 1000);
+    this.init();
   },
   methods: {
     init() {
       this.$axios
         .post("http://localhost:8081/api/user/getSubjectBasicInfo", {
-          subjectId: new Number(this.subjectId),
+          subjectId: new Number(this.subjectId)
         })
         .then(res => {
           if (res.data.data) {
-            this.basicInfo = res.data.data.basicInfo
+            this.basicInfo = res.data.data.basicInfo;
             this.$message({
               message: res.data.msg
             });
@@ -383,6 +379,49 @@ a:hover {
 }
 .descContent::-webkit-scrollbar-thumb:hover {
   background-color: #adadad;
+}
+/*! CSS Used from: https://bkssl.bdimg.com/static/wiki-common/pkg/wiki-common-base_66a9374.css */
+input {
+  font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+}
+input {
+  font-size: 100%;
+}
+input {
+  margin: 0;
+  padding: 0;
+}
+input {
+  vertical-align: middle;
+}
+input {
+  line-height: normal;
+}
+input::-moz-focus-inner {
+  border: 0;
+}
+/*! CSS Used from: https://bkssl.bdimg.com/static/wiki-task/taskBase/taskBase_9b28203.css */
+input {
+  border: 1px solid #e2e7ea;
+}
+input:focus {
+  outline: 0;
+}
+/*! CSS Used from: https://bkssl.bdimg.com/static/wiki-task/taskInfo-c2c/taskInfo-c2c_bb8c671.css */
+.taskLemma .searchBox {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  margin-top: -15px;
+  padding: 7px 10px 7px 30px;
+  width: 250px;
+  border: 1px solid #e2e7ea;
+  background: url(https://bkssl.bdimg.com/static/wiki-task/taskInfo-c2c/resource/img/search_bf61ad0.png)
+    no-repeat 5px;
+}
+.taskLemma .searchBox:focus {
+  border-color: #459df5;
 }
 </style>
 
