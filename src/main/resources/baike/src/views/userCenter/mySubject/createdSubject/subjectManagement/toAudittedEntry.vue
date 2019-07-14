@@ -80,6 +80,7 @@ export default {
         })
         .then(res => {
           if (res.data) {
+            stateChange(5)
             this.$message({
               message: res.data.msg
             });
@@ -93,6 +94,11 @@ export default {
             });
           }
         });
+    },
+    stateChange(state){
+      this.init()
+      window.console.log(state)
+      this.$emit('stateChange', state)
     }
   }
 };

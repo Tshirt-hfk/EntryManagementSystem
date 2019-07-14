@@ -221,7 +221,7 @@ public class SubjectMakerController {
             Integer subjectId = (Integer)form.get("subjectId");
             Task task = taskRepository.findTaskByAssignment_IdAAndUser_Id(assignmentId, userId);
             Assignment assignment = assignmentRepository.findAssignmentById(assignmentId);
-            GroupMember groupMember = groupMemberRepository.findByUser_IdAndSubject_Id(userId,subjectId);
+//            GroupMember groupMember = groupMemberRepository.findByUser_IdAndSubject_Id(userId,subjectId);
             if(assignment != null && task != null) {
                 if(pass){
                     assignment.setState(Assignment.TOSUBMIT);
@@ -229,8 +229,8 @@ public class SubjectMakerController {
                     task.setState(Task.TOSUBMIT);
                     taskRepository.save(task);
                     assignmentRepository.save(assignment);
-                    groupMember.setMyCompletedCount(groupMember.getMyCompletedCount()+1);
-                    groupMemberRepository.save(groupMember);
+//                    groupMember.setMyCompletedCount(groupMember.getMyCompletedCount()+1);
+//                    groupMemberRepository.save(groupMember);
                     return new ResponseEntity<>(BaseResultFactory.build("审核通过"), HttpStatus.OK);
                 }else{
                     // TODO

@@ -56,6 +56,12 @@ public class UserController {
         }
     }
 
+    /**
+     *
+     * @param request
+     * @param jsonParam
+     * @return
+     */
     @PostMapping("api/user/getEntry")
     @CrossOrigin
     public ResponseEntity<?> getEntry(HttpServletRequest request, @RequestBody String jsonParam) {
@@ -95,10 +101,37 @@ public class UserController {
         }
     }
 
-    @PostMapping("api/user/editEntry")
+    /**
+     *
+     * @param request
+     * @param jsonParam
+     * @return
+     */
+    @PostMapping("api/user/getEntryContent")
     @CrossOrigin
-    public ResponseEntity<?> editEntry(HttpServletRequest request, @RequestBody String jsonParam) {
+    public ResponseEntity<?> getEntryContent(HttpServletRequest request, @RequestBody String jsonParam) {
         try{
+            Integer userId = (Integer) request.getAttribute("userId");
+            HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
+            Integer entryId = (Integer)form.get("entryId");
+            Task task = taskRepository.findTaskByAssignment_IdAAndUser_Id(entryId,userId);
+            if(task!=null){
+                HashMap<String,Object> result = new HashMap<>();
+                result.put("content", task.getContent());
+                return new ResponseEntity<>(BaseResultFactory.build(result, "success"), HttpStatus.OK);
+            }else
+                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),"用户没有词条"), HttpStatus.NOT_FOUND);
+        }catch (Exception e){
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"我真的错了"),HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
+    @PostMapping("api/user/saveEntry")
+    @CrossOrigin
+    public ResponseEntity<?> saveEntry(HttpServletRequest request, @RequestBody String jsonParam) {
+        try{
+            System.out.println(jsonParam);
             Integer user_id = (Integer) request.getAttribute("userId");
             HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
             Integer entryId = (Integer) form.get("entryId");

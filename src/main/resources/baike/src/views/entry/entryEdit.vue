@@ -66,17 +66,17 @@ export default {
     };
   },
   mounted() {
+    this.init()
   },
   methods: {
     init(){
       this.$axios
-        .post("http://localhost:8081/api/user/getEntry", {
-          subjectId: new Number(this.subjectId),
-          type: 3
+        .post("http://localhost:8081/api/user/getEntryContent", {
+          entryId: new Number(this.entryId),
         })
         .then(res => {
           if (res.data.data) {
-            this.tableData = res.data.data.assignments;
+            this.content = res.data.data.content;
           } else {
             this.$message({
               message: res.data.msg
@@ -95,8 +95,8 @@ export default {
 	  save(){
       window.console.log(this.entryId)
       this.$axios
-        .post("http://localhost:8081/api/user/editEntry", {
-          entryId: this.entryId,
+        .post("http://localhost:8081/api/user/saveEntry", {
+          entryId: new Number(this.entryId),
           content: this.content
         })
         .then(res => {

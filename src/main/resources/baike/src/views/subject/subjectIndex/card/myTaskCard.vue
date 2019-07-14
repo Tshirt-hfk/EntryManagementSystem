@@ -47,7 +47,10 @@ export default {
       this.restTime = timeStr;
     },
     edit() {
-      this.$router.push("/entryedit", { query: { entryId: this.taskId } });
+      this.$router.push({
+        path: "/entryedit",
+        query: { id: this.taskId }
+      });
     },
     giveup() {
       this.$axios
