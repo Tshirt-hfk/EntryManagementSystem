@@ -10,11 +10,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Date;
 
 
 @RestController
@@ -60,20 +62,22 @@ public class UserController {
             Integer userId = (Integer) request.getAttribute("userId");
             HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
             Integer type = (Integer)form.get("type");
-            System.out.println("userId" + userId);
-            System.out.println("type" + type);
             User user = userRepository.findUserById(userId);
             List<Task> tasks = user.getTaskList();
-            System.out.println("tasks.size" + tasks.size());
             if(tasks.size() != 0){
                 List<Object> list = new ArrayList<>();
                 HashMap<String, Object> restemp = null;
+                Date date = new Date();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
                 for(Task task: tasks){
                     Assignment assignment = task.getAssignment();
                     Integer state = assignment.getState();
                     if(state == type) {
                         restemp = new HashMap<>();
                         restemp.put("id", assignment.getId());
+                        restemp.put("content", assignment.getContent());
+                        restemp.put("time", sdf.format(date));
+                        restemp.put("endTime", sdf.format(new Date(task.getDeadline())));
                         restemp.put("name", assignment.getEntryName());
                         restemp.put("field", assignment.getField());
                         list.add(restemp);
@@ -90,20 +94,46 @@ public class UserController {
         }
     }
 
+    @PostMapping("api/user/editEntry")
+    @CrossOrigin
+    public ResponseEntity<?> editEntry(HttpServletRequest request, @RequestBody String jsonParam) {
+        try{
+            Integer user_id = (Integer) request.getAttribute("userId");
+            HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
+            Integer entryId = (Integer) form.get("entryId");
+            String content = (String) form.get("content");
+            Task task = taskRepository.findTaskByAssignment_IdAAndUser_Id(entryId, user_id);
+            if(task == null)
+                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"用户未拥有该词条修改权"),HttpStatus.BAD_REQUEST);
+            Assignment assignment = assignmentRepository.findAssignmentById(entryId);
+            task.setContent(content);
+            taskRepository.save(task);
+            assignment.setContent(content);
+            assignmentRepository.save(assignment);
+            return new ResponseEntity<>(BaseResultFactory.build("编辑成功"), HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"编辑错误"),HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @PostMapping("api/user/admitEntry")
     @CrossOrigin
-    @Transactional
     public ResponseEntity<?> admitEntry(HttpServletRequest request, @RequestBody String jsonParam) {
         try{
+            Integer user_id = (Integer) request.getAttribute("userId");
             HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
             List<Integer> entryIds = (List<Integer>) form.get("entryIds");
             for (Integer id : entryIds){
-                assignmentRepository.updateStateById(Assignment.TOAUDITED, id);
-                taskRepository.updateStateByAssignmentId(Assignment.TOAUDITED, id);
+                Task task = taskRepository.findTaskByAssignment_IdAAndUser_Id(id, user_id);
+                Assignment assignment = assignmentRepository.findAssignmentById(id);
+                task.setState(Assignment.TOAUDITED);
+                assignment.setState(Assignment.TOAUDITED);
+                taskRepository.save(task);
+                assignmentRepository.save(assignment);
             }
             return new ResponseEntity<>(BaseResultFactory.build("提交成功"), HttpStatus.OK);
         }catch (Exception e){
-            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"我真的错了"),HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"提交错误"),HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -118,9 +148,9 @@ public class UserController {
                 assignmentRepository.deleteStateById(Assignment.TOAUDITED, id);
                 taskRepository.deleteStateByAssignmentId(Assignment.TOAUDITED, id);
             }
-            return new ResponseEntity<>(BaseResultFactory.build("提交成功"), HttpStatus.OK);
+            return new ResponseEntity<>(BaseResultFactory.build("删除成功"), HttpStatus.OK);
         }catch (Exception e){
-            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"我真的错了"),HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"删除错误"),HttpStatus.BAD_REQUEST);
         }
     }
 

@@ -2,11 +2,27 @@
     <div>
         <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark"
             style="width: 100%" @selection-change="handleSelectionChange"
-            @row-click="jumpToEdit">
+            @cell-mouse-enter="getId">
             <el-table-column type="selection" width="55"> </el-table-column>
-            <el-table-column prop="name" label="词条名称" width="150"> </el-table-column>
-            <el-table-column prop="name" label="保存时间" width="150"> </el-table-column>
-            <el-table-column prop="name" label="操作" show-overflow-tooltip> </el-table-column>
+            <el-table-column type="expand">
+              <template slot-scope="props">
+                <el-form label-position="left" inline class="demo-table-expand">
+                  <el-form-item label="词条内容">
+                    <span>{{ props.row.content }}</span>
+                  </el-form-item>
+                </el-form>
+              </template>
+            </el-table-column>
+            <el-table-column prop="name" label="词条名称" width="100"> </el-table-column>
+            <el-table-column prop="field" label="领域" width="80"> </el-table-column>
+            <el-table-column prop="time" label="保存时间" width="180"> </el-table-column>
+            <el-table-column prop="endTime" label="结束时间" width="180"> </el-table-column>
+            <el-table-column prop="name" label="状态" show-overflow-tooltip> </el-table-column>
+            <el-table-column align="right">
+              <template>
+                <el-button size="mini" type="primary" @click="jumpToEdit">编辑</el-button>
+              </template>
+            </el-table-column>
         </el-table>
         <div style="margin-top: 20px">
             <el-button @click="admitFlag = true">提交</el-button>
@@ -38,7 +54,8 @@ export default {
       multipleSelection: [],
       disabledFlag: true,
       admitFlag : false,
-      deleteFlag : false
+      deleteFlag : false,
+      entryId: 0
     };
   },
   mounted() {
@@ -48,7 +65,6 @@ export default {
     init() {
       this.$axios
         .post("http://localhost:8081/api/user/getEntry", {
-          subjectId: new Number(this.subjectId),
           type: 3
         })
         .then(res => {
@@ -81,8 +97,11 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
-    jumpToEdit(row){
-      this.$router.push({path : "/entryedit", query :{id : row.id}});
+    getId(row){
+      this.entryId = row.id;
+    },
+    jumpToEdit(){
+      this.$router.push({path : "/entryedit", query :{id : this.entryId}});
     },
     admitEntry(){
       var array = new Array
@@ -145,3 +164,18 @@ export default {
   }
 };
 </script>
+
+<style>
+  .demo-table-expand {
+    font-size: 0;
+  }
+  .demo-table-expand label {
+    width: 90px;
+    color: #99a9bf;
+  }
+  .demo-table-expand .el-form-item {
+    margin-right: 0;
+    margin-bottom: 0;
+    width: 50%;
+  }
+</style>

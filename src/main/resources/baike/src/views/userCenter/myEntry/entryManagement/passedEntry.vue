@@ -1,7 +1,7 @@
 <template>
   <el-table :data="tableData" style="width: 100%" max-height="500" @row-click="jumpToPreview">
-    <el-table-column prop="name" label="词条名称" width="200"> </el-table-column>
-    <el-table-column prop="name" label="全部版本" width="150"> </el-table-column>
+    <el-table-column prop="name" label="词条名称" width="150"> </el-table-column>
+    <el-table-column prop="field" label="领域" width="150"> </el-table-column>
     <el-table-column prop="name" label="通过时间" width="150"> </el-table-column>
     <el-table-column prop="name" label="被其它人修改版本" width="150"> </el-table-column>
   </el-table>
@@ -22,7 +22,6 @@ export default {
     init() {
       this.$axios
         .post("http://localhost:8081/api/user/getEntry", {
-          subjectId: new Number(this.subjectId),
           type: 5
         })
         .then(res => {

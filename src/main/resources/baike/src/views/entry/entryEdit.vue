@@ -5,11 +5,18 @@
       :toolbarsFlag="true"
       :subfield="true"
       defaultOpen="preview"
-	  @imgAdd="imgAdd"
-	  @imgDel="imgDel"
-	  @save="save"
+	    @imgAdd="imgAdd"
+	    @imgDel="imgDel"
+	    @save="saveFlag = true"
       v-model="content"
     />
+    <el-dialog title="提示" :visible.sync="saveFlag" width="30%">
+      <span>保存词条内容？</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="saveFlag = false">取 消</el-button>
+        <el-button type="primary" @click="save">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -18,6 +25,9 @@ export default {
   name: "entryEdit",
   data() {
     return {
+      content: "",
+      entryId: this.$route.query.id,
+      saveFlag: false,
       toolbars: {
         bold: true, // 粗体
         italic: true, // 斜体
@@ -53,12 +63,56 @@ export default {
         subfield: true, // 单双栏模式
         preview: true // 预览
       },
-      content: ""
     };
   },
+  mounted() {
+  },
   methods: {
+    init(){
+      this.$axios
+        .post("http://localhost:8081/api/user/getEntry", {
+          subjectId: new Number(this.subjectId),
+          type: 3
+        })
+        .then(res => {
+          if (res.data.data) {
+            this.tableData = res.data.data.assignments;
+          } else {
+            this.$message({
+              message: res.data.msg
+            });
+          }
+        })
+        .catch(error => {
+          if (error.response) {
+            this.$message({
+              message: error.response.data.msg,
+              type: "warning"
+            });
+          }
+        });
+    },
 	  save(){
-		  
+      window.console.log(this.entryId)
+      this.$axios
+        .post("http://localhost:8081/api/user/editEntry", {
+          entryId: this.entryId,
+          content: this.content
+        })
+        .then(res => {
+          this.$message({
+            message: res.data.msg
+          });
+          this.$router.push("/usercenter/allmyentry");
+        })
+        .catch(error => {
+          if (error.response) {
+            this.$message({
+              message: error.response.data.msg,
+              type: "warning"
+            });
+          }
+        });
 	  },
 	  imgAdd(){
 
