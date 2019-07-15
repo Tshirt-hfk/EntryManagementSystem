@@ -10,14 +10,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Date;
 
 
 @RestController
@@ -38,6 +36,11 @@ public class UserController {
     @Autowired
     GroupMemberRepository groupMemberRepository;
 
+    /**
+     * 用户登陆状态
+     * @param request
+     * @return
+     */
     @GetMapping("/api/user/islogin")
     @CrossOrigin
     public ResponseEntity<?> isLogin(HttpServletRequest request){
@@ -57,7 +60,7 @@ public class UserController {
     }
 
     /**
-     *
+     * 获取该用户的所有词条任务task
      * @param request
      * @param jsonParam
      * @return
@@ -69,28 +72,19 @@ public class UserController {
             Integer userId = (Integer) request.getAttribute("userId");
             HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
             Integer type = (Integer)form.get("type");
-            User user = userRepository.findUserById(userId);
-            List<Task> tasks = user.getTaskList();
+            List<Task> tasks = taskRepository.findAllByUser_IdAndState(userId,type);
             if(tasks.size() != 0){
                 List<Object> list = new ArrayList<>();
-                HashMap<String, Object> restemp = null;
-                Date date = new Date();
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                HashMap<String, Object> tmp = null;
                 for(Task task: tasks){
-                    Assignment assignment = task.getAssignment();
-                    Integer state = assignment.getState();
-                    if(state == type) {
-                        restemp = new HashMap<>();
-                        restemp.put("id", assignment.getId());
-                        restemp.put("content", assignment.getContent());
-                        restemp.put("time", sdf.format(date));
-                        restemp.put("endTime", sdf.format(new Date(task.getDeadline())));
-                        restemp.put("name", assignment.getEntryName());
-                        restemp.put("field", assignment.getField());
-                        list.add(restemp);
-                    }
+                    tmp = new HashMap<>();
+                    tmp.put("id", task.getId());
+                    tmp.put("content", task.getContent());
+                    tmp.put("endTime", task.getDeadline());
+                    tmp.put("name", task.getEntryName());
+                    tmp.put("field", task.getField());
+                    list.add(tmp);
                 }
-                System.out.println("list.size" + list.size());
                 HashMap<String, Object> result = new HashMap<>();
                 result.put("assignments", list);
                 return new ResponseEntity<>(BaseResultFactory.build(result, "success"), HttpStatus.OK);
@@ -102,7 +96,7 @@ public class UserController {
     }
 
     /**
-     *
+     * 获取词条task内容
      * @param request
      * @param jsonParam
      * @return
@@ -114,8 +108,8 @@ public class UserController {
             Integer userId = (Integer) request.getAttribute("userId");
             HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
             Integer entryId = (Integer)form.get("entryId");
-            Task task = taskRepository.findTaskByAssignment_IdAAndUser_Id(entryId,userId);
-            if(task!=null){
+            Task task = taskRepository.findTaskById(entryId);
+            if(task!=null && task.getUser().getId()==userId){
                 HashMap<String,Object> result = new HashMap<>();
                 result.put("content", task.getContent());
                 return new ResponseEntity<>(BaseResultFactory.build(result, "success"), HttpStatus.OK);
@@ -126,44 +120,54 @@ public class UserController {
         }
     }
 
-
+    /**
+     * 暂存词条task
+     * @param request
+     * @param jsonParam
+     * @return
+     */
     @PostMapping("api/user/saveEntry")
     @CrossOrigin
     public ResponseEntity<?> saveEntry(HttpServletRequest request, @RequestBody String jsonParam) {
         try{
             System.out.println(jsonParam);
-            Integer user_id = (Integer) request.getAttribute("userId");
+            Integer userId = (Integer) request.getAttribute("userId");
             HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
             Integer entryId = (Integer) form.get("entryId");
             String content = (String) form.get("content");
-            Task task = taskRepository.findTaskByAssignment_IdAAndUser_Id(entryId, user_id);
-            if(task == null)
+            Task task = taskRepository.findTaskById(entryId);
+            if(task == null || task.getUser().getId()!=userId)
                 return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"用户未拥有该词条修改权"),HttpStatus.BAD_REQUEST);
-            Assignment assignment = assignmentRepository.findAssignmentById(entryId);
             task.setContent(content);
             taskRepository.save(task);
-            assignment.setContent(content);
-            assignmentRepository.save(assignment);
             return new ResponseEntity<>(BaseResultFactory.build("编辑成功"), HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"编辑错误"),HttpStatus.BAD_REQUEST);
         }
     }
 
+    /**
+     * 用户提交词条task
+     * @param request
+     * @param jsonParam
+     * @return
+     */
     @PostMapping("api/user/admitEntry")
     @CrossOrigin
     public ResponseEntity<?> admitEntry(HttpServletRequest request, @RequestBody String jsonParam) {
         try{
-            Integer user_id = (Integer) request.getAttribute("userId");
+            Integer userId = (Integer) request.getAttribute("userId");
             HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
             List<Integer> entryIds = (List<Integer>) form.get("entryIds");
             for (Integer id : entryIds){
-                Task task = taskRepository.findTaskByAssignment_IdAAndUser_Id(id, user_id);
-                Assignment assignment = assignmentRepository.findAssignmentById(id);
-                task.setState(Assignment.TOAUDITED);
-                assignment.setState(Assignment.TOAUDITED);
-                taskRepository.save(task);
-                assignmentRepository.save(assignment);
+                Task task = taskRepository.findTaskById(id);
+                if(task!=null && task.getUser().getId()==userId){
+                    Assignment assignment = assignmentRepository.findAssignmentById(id);
+                    task.setState(Task.TOAUDITED);
+                    assignment.setState(Assignment.TOAUDITED);
+                    taskRepository.save(task);
+                    assignmentRepository.save(assignment);
+                }
             }
             return new ResponseEntity<>(BaseResultFactory.build("提交成功"), HttpStatus.OK);
         }catch (Exception e){
@@ -171,16 +175,25 @@ public class UserController {
         }
     }
 
-    @PostMapping("api/user/deleteEntry")
+    /**
+     * 用户放弃任务
+     * @param request
+     * @param jsonParam
+     * @return
+     */
+    @PostMapping("api/user/giveUpTask")
     @CrossOrigin
     @Transactional
-    public ResponseEntity<?> deleteEntry(HttpServletRequest request, @RequestBody String jsonParam) {
+    public ResponseEntity<?> giveUpTask(HttpServletRequest request, @RequestBody String jsonParam) {
         try{
             HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
             List<Integer> entryIds = (List<Integer>) form.get("entryIds");
             for (Integer id : entryIds){
-                assignmentRepository.deleteStateById(Assignment.TOAUDITED, id);
-                taskRepository.deleteStateByAssignmentId(Assignment.TOAUDITED, id);
+                Task task = taskRepository.findTaskById(id);
+                Assignment assignment = task.getAssignment();
+                assignment.setState(Assignment.PUBLISHED);
+                assignmentRepository.save(assignment);
+                taskRepository.delete(task);
             }
             return new ResponseEntity<>(BaseResultFactory.build("删除成功"), HttpStatus.OK);
         }catch (Exception e){
@@ -188,7 +201,12 @@ public class UserController {
         }
     }
 
-
+    /**
+     * 获取专题基本信息
+     * @param request
+     * @param jsonParam
+     * @return
+     */
     @PostMapping("api/user/getSubjectBasicInfo")
     @CrossOrigin
     public ResponseEntity<?> getSubjectBasicInfo(HttpServletRequest request, @RequestBody String jsonParam) {
@@ -229,12 +247,12 @@ public class UserController {
      */
     @PostMapping("/api/user/getAssignment")
     @CrossOrigin
-    public ResponseEntity<?> getSubject(@RequestBody String jsonParam){
+    public ResponseEntity<?> getAssignment(@RequestBody String jsonParam){
         try{
             System.out.println(jsonParam);
             HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
             Integer subjectId = (Integer)form.get("subjectId");
-            List<Assignment> assignments = assignmentRepository.findAllBySubjectAndState(subjectId,2);
+            List<Assignment> assignments = assignmentRepository.findAllBySubject_IdAndState(subjectId,Assignment.PUBLISHED);
             HashMap<String,Object> result1;
             List<Object> list = new ArrayList<>();
             for(Assignment assignment : assignments){
@@ -274,7 +292,7 @@ public class UserController {
             List<Object> list = new ArrayList<>();
             for(Task task : tasks){
                 result1=new HashMap<>();
-                result1.put("id",task.getAssignment().getId());
+                result1.put("id",task.getId());
                 result1.put("name",task.getEntryName());
                 result1.put("deadline",task.getDeadline());
                 list.add(result1);
@@ -287,6 +305,12 @@ public class UserController {
         }
     }
 
+    /**
+     * 用户领取任务
+     * @param request
+     * @param jsonParam
+     * @return
+     */
     @PostMapping("/api/user/drawAssignment")
     @CrossOrigin
     public ResponseEntity<?> drawAssignment(HttpServletRequest request,@RequestBody String jsonParam){
@@ -316,27 +340,69 @@ public class UserController {
         }
     }
 
-    @PostMapping("/api/user/giveUpAssignment")
+
+    /**
+     * 用户获取参加的专题
+     * @param request
+     * @param jsonParam
+     * @return
+     */
+    @PostMapping("/api/user/getSubject")
     @CrossOrigin
-    public ResponseEntity<?> giveUpAssignment(HttpServletRequest request,@RequestBody String jsonParam){
+    public ResponseEntity<?> getSubject(HttpServletRequest request){
         try{
-            System.out.println(jsonParam);
+            System.out.println("lalala");
             Integer userId = (Integer)request.getAttribute("userId");
-            HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
-            Integer assignmentId = (Integer)form.get("assignmentId");
-            Task task = taskRepository.findTaskByAssignment_IdAAndUser_Id(assignmentId,userId);
-            if(task == null){
-                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),"该任务已被取消"), HttpStatus.NOT_FOUND);
+            List<GroupMember> groupMembers = groupMemberRepository.findAllByUser_IdAndIdentity(userId,GroupMember.ORDINRYUSER);
+            if(groupMembers == null){
+                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),""),HttpStatus.BAD_REQUEST);
             }
-            Assignment assignment = assignmentRepository.findAssignmentById(assignmentId);
-            assignment.setState(Assignment.PUBLISHED);
-            assignmentRepository.save(assignment);
-            taskRepository.delete(task);
-            return new ResponseEntity<>(BaseResultFactory.build("放弃成功"), HttpStatus.OK);
-        }catch (IOException e){
+            System.out.println("wozhale");
+            List<Object> tmps = new ArrayList<>();
+            HashMap<String,Object> tmp = null;
+            for(GroupMember groupMember : groupMembers){
+                Subject subject = groupMember.getSubject();
+                tmp = new HashMap<>();
+                tmp.put("id", subject.getId());
+                tmp.put("name", subject.getName());
+                tmp.put("introduction", subject.getIntroduction());
+                tmps.add(tmp);
+            }
+            System.out.println(tmps.size());
+            HashMap<String,Object> result = new HashMap<>();
+            result.put("subjects",tmps);
+            return new ResponseEntity<>(BaseResultFactory.build(result,"success"), HttpStatus.OK);
+        }catch (Exception e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
         }
     }
 
-
+    /**
+     * 用户加入该专题
+     * @param request
+     * @param jsonParam
+     * @return
+     */
+    @PostMapping("/api/user/joinSubject")
+    @CrossOrigin
+    public ResponseEntity<?> joinSubject(HttpServletRequest request,@RequestBody String jsonParam){
+        try{
+            System.out.println(jsonParam);
+            Integer userId = (Integer)request.getAttribute("userId");
+            HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
+            Integer subjectId = (Integer)form.get("subjectId");
+            User user = userRepository.findUserById(userId);
+            Subject subject = subjectRepository.findSubjectById(subjectId);
+            GroupMember groupMember = groupMemberRepository.findByUser_IdAndSubject_Id(userId,subject.getId());
+            if(groupMember == null){
+                groupMember = new GroupMember(subject,user,GroupMember.ORDINRYUSER);
+                groupMemberRepository.save(groupMember);
+                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),"加入该专题成功"), HttpStatus.OK);
+            }else{
+                return new ResponseEntity<>(BaseResultFactory.build("已加入该专题"), HttpStatus.OK);
+            }
+        }catch (IOException e){
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
+        }
+    }
 }

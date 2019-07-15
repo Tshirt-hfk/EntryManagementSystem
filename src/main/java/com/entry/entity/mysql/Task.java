@@ -3,23 +3,22 @@ package com.entry.entity.mysql;
 import javax.persistence.*;
 import java.util.Date;
 import java.sql.Timestamp;
-import com.entry.entity.mysql.pk.TaskPK;
 
 @Entity
 @Table(name = "task")
 public class Task {
 
-    public final static Integer UNPUBLISHED = 1;// 未发布
-    public final static Integer PUBLISHED = 2;  // 已发布
     public final static Integer DRAWED = 3;     // 待提交
     public final static Integer TOAUDITED = 4;  // 待审核
-    public final static Integer TOSUBMIT = 5;   // 审核通过
+    public final static Integer PASS = 5;       // 审核通过
+    public final static Integer UNPASS = 6;     // 审核未通过
 
-    @EmbeddedId
-    private TaskPK pk;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @Column(columnDefinition = "TINYINT default 0", nullable = false)
-    private Integer state;  // 4：待提交, 5：待审核
+    private Integer state; // 待提交  // 4：待提交, 5：待审核
 
     public String getField() {
         return field;
@@ -41,63 +40,57 @@ public class Task {
     @Column(columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP", nullable = false)
     private Timestamp deadline;
 
+    @ManyToOne(optional=false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "assignment_id")
+    private Assignment assignment;
+
+    @ManyToOne(optional=false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "subject_id")
+    private Subject subject;
+
+    @ManyToOne(optional=false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     public Task() {
 
     }
 
-    public Task(TaskPK pk, String entryName, Integer state, String content, Timestamp deadline) {
-        this.pk = pk;
+    public Task(Subject subject, User user, Assignment assignment,String entryName, Integer state, String content, Timestamp deadline) {
+        this.subject = subject;
+        this.user = user;
+        this.assignment =assignment;
         this.entryName = entryName;
-        this.state = state;
-        this.content = content;
-        this.deadline = deadline;
-    }
-
-    public Task(GroupMember groupMember,String entryName, Assignment assignment, Integer state, String content, Timestamp deadline) {
-        this.pk = new TaskPK(groupMember.getSubject(), groupMember.getUser(), assignment);
-        this.entryName = entryName;
-        this.state = state;
-        this.content = content;
-        this.deadline = deadline;
-    }
-
-    public Task(Subject subject, User user, Assignment assignment, Integer state, String content, Timestamp deadline) {
-        this.pk = new TaskPK(subject, user, assignment);
-        this.entryName = assignment.getEntryName();
         this.state = state;
         this.content = content;
         this.deadline = deadline;
     }
 
     public Task(Subject subject,User user, Assignment assignment, Integer state){
-        this.pk = new TaskPK(subject, user, assignment);
+        this.subject = subject;
+        this.user = user;
+        this.assignment =assignment;
         this.entryName = assignment.getEntryName();
+        this.field = assignment.getField();
         this.state = state;
         this.content = assignment.getContent();
         this.deadline = new Timestamp((new Date()).getTime()+assignment.getDeadline());
     }
 
-    @Transient
+    public Integer getId() {
+        return id;
+    }
+
     public Subject getSubject() {
-        return this.pk.getSubject();
+        return this.subject;
     }
 
-    @Transient
     public User getUser() {
-        return this.pk.getUser();
+        return this.user;
     }
 
-    @Transient
     public Assignment getAssignment() {
-        return  this.pk.getAssignment();
-    }
-
-    public TaskPK getPk() {
-        return pk;
-    }
-
-    public void setPk(TaskPK pk) {
-        this.pk = pk;
+        return  this.assignment;
     }
 
     public Integer getState() {

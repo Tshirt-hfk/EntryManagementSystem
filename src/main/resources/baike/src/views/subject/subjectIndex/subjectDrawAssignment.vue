@@ -30,7 +30,10 @@
         <div class="myLemmaArea cmn-clearfix">
           <div class="progressList">
             <template v-if="status===0">
-              <div class="empty">快来参加任务，赢取奖励吧~</div>
+              <div class="empty">
+                快来参加专题，点击
+                <a @click="join">加入</a>~
+              </div>
             </template>
             <template v-else>
               <myTaskCard
@@ -63,7 +66,7 @@ export default {
   },
   data() {
     return {
-      status,
+      status: 0,
       assignments: [],
       tasks: []
     };
@@ -81,13 +84,14 @@ export default {
         })
         .then(res => {
           if (res.data.data) {
+            this.status = 1;
             for (var i = 0; i < res.data.data.tasks.length; i++) {
               this.tasks.push(res.data.data.tasks[i]);
             }
           }
-          this.$message({
-            message: res.data.msg
-          });
+          //this.$message({
+            //message: res.data.msg
+          //});
         })
         .catch(error => {
           if (error.response) {
@@ -106,16 +110,13 @@ export default {
         .then(res => {
           //window.console.log(res.data.data)
           if (res.data.data) {
-            status = 1;
             for (var i = 0; i < res.data.data.assignments.length; i++) {
               this.assignments.push(res.data.data.assignments[i]);
             }
-          } else if (res.data.errcode) {
-            status = 0;
           }
-          this.$message({
-            message: res.data.msg
-          });
+          //this.$message({
+            //message: res.data.msg
+          //});
         })
         .catch(error => {
           if (error.response) {
@@ -134,6 +135,29 @@ export default {
           return;
         }
       }
+    },
+    join() {
+      this.$axios
+        .post("http://localhost:8081/api/user/joinSubject", {
+          subjectId: new Number(this.subjectId)
+        })
+        .then(res => {
+          //window.console.log(res.data.data)
+          if (!res.data.errcode) {
+            this.status = 1;
+          }
+          this.$message({
+            message: res.data.msg
+          });
+        })
+        .catch(error => {
+          if (error.response) {
+            this.$message({
+              message: error.response.data.msg,
+              type: "warning"
+            });
+          }
+        });
     }
   }
 };
@@ -293,9 +317,9 @@ a:hover {
   text-decoration: none;
 }
 .progress {
-    margin-top: 35px;
-    padding: 40px 0;
-    border-top: 1px solid #e2e7ea;
+  margin-top: 35px;
+  padding: 40px 0;
+  border-top: 1px solid #e2e7ea;
 }
 .progress .myProgress {
   position: relative;

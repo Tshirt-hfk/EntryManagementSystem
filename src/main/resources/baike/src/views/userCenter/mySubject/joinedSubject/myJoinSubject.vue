@@ -1,18 +1,20 @@
 <template>
   <div class="content">
-    <div v-if="status === '9'">
-
+    <div v-if="subjects.length == 0">
+      <div style="width:100%; font-size:20px; margin-top:15px">
+      <span>您还没有加入专题，赶紧加入一个吧</span>
+      </div>
     </div>
     <div v-else>
-        <template v-for="subject in subjects">
+    <template v-for="subject in subjects">
         <el-card class="box-card" :key="subject.id">
-            <div slot="header" class="clearfix">
+          <div slot="header" class="clearfix">
             <span>{{subject.name}}</span>
             <el-button style="float: right; padding: 3px 0" type="text" @click="see(subject.id)">查看</el-button>
-            </div>
-            <div class="text">{{subject.introduction}}</div>
+          </div>
+          <div class="text">{{subject.introduction}}</div>
         </el-card>
-        </template>
+      </template>
     </div>
   </div>
 </template>
@@ -23,28 +25,8 @@ export default {
   data() {
     return {
       status : this.$store.state.status,
-      subjects: [
-        {
-          id: 1,
-          name: "test",
-          introduction: "test"
-        },
-        {
-          id: 2,
-          name: "test",
-          introduction: "test"
-        },
-        {
-          id: 3,
-          name: "test",
-          introduction: "test"
-        },
-        {
-          id: 4,
-          name: "test",
-          introduction: "test"
-        }
-      ]
+      subjects: [],
+      noSubject: false
     };
   },
   mounted() {
@@ -54,21 +36,10 @@ export default {
     init(){
     // 初始化数据
         this.$axios
-        .post("http://localhost:8081/api/subjectMaker/getSubject", {
-            status : new Number(this.status),
-            type : 2
-            })
+        .post("http://localhost:8081/api/user/getSubject")
         .then(res => {
-            if (res.data.data) {
-            this.subjects=res.data.data.subjects
-            this.$message({
-                message: res.data.msg
-            });
-            } else {
-            this.$message({
-                message: res.data.msg
-            });
-            }
+            if (res.data.data)
+              this.subjects=res.data.data.subjects
         })
         .catch(error => {
             if (error.response) {

@@ -40,9 +40,9 @@ export default {
               this.tasks.push(res.data.data.tasks[i]);
             }
           }
-          this.$message({
-            message: res.data.msg
-          });
+          //this.$message({
+            //message: res.data.msg
+          //});
         })
         .catch(error => {
           if (error.response) {
@@ -65,9 +65,9 @@ export default {
               this.assignments.push(res.data.data.assignments[i]);
             }
           }
-          this.$message({
-            message: res.data.msg
-          });
+          //this.$message({
+            //message: res.data.msg
+          //});
         })
         .catch(error => {
           if (error.response) {

@@ -71,9 +71,9 @@ export default {
             window.console.log(res.data.data);
             this.tableData = res.data.data.assignments;
           } else {
-            this.$message({
-              message: res.data.msg
-            });
+            //this.$message({
+              //message: res.data.msg
+            //});
           }
         })
         .catch(error => {

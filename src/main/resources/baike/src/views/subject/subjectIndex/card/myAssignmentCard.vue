@@ -22,7 +22,6 @@ export default {
       this.$alert("确认领取词条："+this.assignment.name, this.assignment.name, {
         confirmButtonText: "确定",
         callback: action => {
-          // TODO: 后端领取任务
           this.$axios
             .post("http://localhost:8081/api/user/drawAssignment", {
               assignmentId: this.assignment.id
@@ -32,10 +31,10 @@ export default {
                 this.notGet = false;
                 this.refresh();
               }
-              this.$message({
-                  message: res.data.msg,
-                  type: "warning"
-                });
+              //this.$message({
+                  //message: res.data.msg,
+                  //type: "warning"
+                //});
             })
             .catch(error => {
               if (error.response) {

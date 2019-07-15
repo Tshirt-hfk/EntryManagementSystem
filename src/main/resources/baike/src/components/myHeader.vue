@@ -100,9 +100,6 @@ export default {
         loginOut(){
             this.$store.commit('status', '0')
             localStorage.clear()   
-            this.$message({
-                message:"success!"
-            })
             this.$router.push('/') 
         },
         toSubject(){
