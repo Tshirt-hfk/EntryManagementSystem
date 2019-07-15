@@ -146,22 +146,30 @@ public class SubjectMakerController {
             HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
             Integer subjectId = (Integer)form.get("subjectId");
             Integer type = (Integer)form.get("type");
-            List<Assignment> assignments = assignmentRepository.findAllBySubjectAndState(subjectId,type);
-            System.out.println(assignments.size());
+
             HashMap<String,Object> result1;
             List<Object> list = new ArrayList<>();
-            for(Assignment assignment : assignments){
-                result1=new HashMap<>();
-                result1.put("id",assignment.getId());
-                result1.put("name",assignment.getEntryName());
-                result1.put("field",assignment.getField());
-                if(type==3 || type==4){
-                    Task task = assignment.getTask();
+            if(type>=Assignment.DRAWED){
+                List<Task> tasks = taskRepository.findAllBySubject_IdAndState(subjectId,type);
+                for(Task task : tasks) {
                     User user = task.getUser();
+                    result1 = new HashMap<>();
+                    result1.put("id", task.getId());
+                    result1.put("name", task.getEntryName());
+                    result1.put("field", task.getField());
                     result1.put("username", user.getName());
                     result1.put("userId", user.getId());
+                    list.add(result1);
                 }
-                list.add(result1);
+            }else{
+                List<Assignment> assignments = assignmentRepository.findAllBySubject_IdAndState(subjectId,type);
+                for(Assignment assignment : assignments){
+                    result1=new HashMap<>();
+                    result1.put("id",assignment.getId());
+                    result1.put("name",assignment.getEntryName());
+                    result1.put("field",assignment.getField());
+                    list.add(result1);
+                }
             }
             HashMap<String,Object> result=new HashMap<>();
             result.put("assignments",list);
@@ -226,7 +234,7 @@ public class SubjectMakerController {
                 if(pass){
                     assignment.setState(Assignment.TOSUBMIT);
                     assignment.setContent(task.getContent());
-                    task.setState(Task.TOSUBMIT);
+                    task.setState(Task.PASS);
                     taskRepository.save(task);
                     assignmentRepository.save(assignment);
 //                    groupMember.setMyCompletedCount(groupMember.getMyCompletedCount()+1);
@@ -236,7 +244,8 @@ public class SubjectMakerController {
                     // TODO
                     assignment.setState(Assignment.PUBLISHED);
                     assignmentRepository.save(assignment);
-                    taskRepository.delete(task);
+                    task.setState(Task.UNPASS);
+                    taskRepository.save(task);
                     return new ResponseEntity<>(BaseResultFactory.build("审核不通过"), HttpStatus.OK);
                 }
             }else{

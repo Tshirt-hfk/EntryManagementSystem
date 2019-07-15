@@ -137,7 +137,7 @@ export default {
         array.push(this.multipleSelection[i].id)
       }
       this.$axios
-        .post("http://localhost:8081/api/user/deleteEntry", {
+        .post("http://localhost:8081/api/user/giveUpTask", {
           entryIds: array
         })
         .then(res => {

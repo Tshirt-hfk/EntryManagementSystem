@@ -49,7 +49,7 @@ public class Subject {
     @OneToMany(mappedBy = "subject",cascade=CascadeType.ALL,fetch=FetchType.LAZY)
     private List<Assignment> assignmentlist;
 
-    @OneToMany(mappedBy="pk.groupMember.subject",cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+    @OneToMany(mappedBy="subject",cascade=CascadeType.ALL, fetch=FetchType.LAZY)
     private List<Task> taskList;
 
     @OneToMany(mappedBy="pk.subject",cascade=CascadeType.ALL, fetch=FetchType.LAZY)

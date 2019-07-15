@@ -31,7 +31,7 @@ public class User {
     @OneToMany(mappedBy="pk.user",cascade=CascadeType.REFRESH,fetch=FetchType.LAZY)
     private List<GroupMember> groupMemberList;
 
-    @OneToMany(mappedBy="pk.groupMember.user",cascade=CascadeType.REFRESH,fetch=FetchType.LAZY)
+    @OneToMany(mappedBy="user",cascade=CascadeType.REFRESH,fetch=FetchType.LAZY)
     private List<Task> taskList;
 
     public User() {

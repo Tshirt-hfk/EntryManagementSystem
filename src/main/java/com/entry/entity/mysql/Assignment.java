@@ -19,8 +19,6 @@ public class Assignment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-
-
     @Column
     private Integer originalId;
 
@@ -30,29 +28,21 @@ public class Assignment {
     @Column(columnDefinition = "text")
     private String content;
 
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public void setField(String field) {
-        this.field = field;
-    }
-
     @Column(nullable = false)
     private String field;
-
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "subject_id")
-    private Subject subject;
-
-    @OneToOne(mappedBy="pk.assignment", fetch=FetchType.LAZY)
-    private Task task;
 
     @Column(columnDefinition = "TINYINT")
     private Integer state; //1:未发布；2：已发布，3：被领取
 
     @Column(columnDefinition = "INT default 864000000")
     private Integer deadline;
+
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "subject_id")
+    private Subject subject;
+
+    @OneToMany(mappedBy="assignment", fetch=FetchType.LAZY)
+    private List<Task> tasks;
 
     public Assignment() {
 
@@ -86,8 +76,8 @@ public class Assignment {
         return subject;
     }
 
-    public Task getTask() {
-        return task;
+    public List<Task> getTask() {
+        return tasks;
     }
 
     public Integer getState() {
@@ -112,5 +102,13 @@ public class Assignment {
 
     public void setDeadline(Integer deadline) {
         this.deadline = deadline;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setField(String field) {
+        this.field = field;
     }
 }
