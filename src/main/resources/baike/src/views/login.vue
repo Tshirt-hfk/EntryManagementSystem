@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <h1 style="color:#333; text-align:center; margin-top:30px">词条百科</h1>
-    <div style="margin:70px auto 0; width:40%;">
+  <div class="login-content">
+    <h1 style="color:#333; text-align:center; margin-top:50px">词条百科</h1>
+    <div style="margin:70px auto 0; width:550px;">
       <el-card>
         <el-form>
           <el-form-item label="账号">
@@ -90,3 +90,14 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.login-content {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top: 50px;
+  bottom: 0px;
+
+}
+</style>

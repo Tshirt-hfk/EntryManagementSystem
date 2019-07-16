@@ -1,6 +1,6 @@
 <template>
-  <div class="content">
-    <mavon-editor
+  <div class="entry-edit">
+    <mavon-editor class="mavonEditor"
       :editable="true"
       :toolbarsFlag="true"
       :subfield="true"
@@ -125,9 +125,15 @@ export default {
 </script>
 
 <style>
-.content {
-  width: 80%;
-  margin: 20px auto;
+.entry-edit {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  top: 50px;
+}
+.mavonEditor {
+  height: 100%;
 }
 </style>
 
