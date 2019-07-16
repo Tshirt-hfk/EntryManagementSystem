@@ -26,13 +26,26 @@
         </el-table>
         <div style="margin-top: 20px">
             <el-button @click="admitFlag = true">提交</el-button>
-            <el-button @click="deleteFlag = true">删除</el-button>
+            <el-button @click="deleteFlag = true">放弃</el-button>
         </div>
-        <el-dialog title="提示" :visible.sync="admitFlag" width="30%">
-          <span>提交选中词条？</span>
+        <el-dialog title="修改原因" :visible.sync="admitFlag" width="30%">
+          <span>
+            <el-button size="mini" @click="reason='更正错误'" plain>更正错误</el-button>
+            <el-button size="mini" @click="reason='内容扩充'" plain>内容扩充</el-button>
+            <el-button size="mini" @click="reason='删除冗余'" plain>删除冗余</el-button>
+            <el-button size="mini" @click="reason='目录结构'" plain>目录结构</el-button>
+            <el-button size="mini" @click="reason='概述'" plain>概述</el-button>
+            <el-button size="mini" @click="reason='图片'" plain>图片</el-button>
+            <div style="margin: 15px 0;"></div>
+            <el-input type="textarea" v-model="reason" maxlength="30" show-word-limit></el-input>
+            <div style="margin: 10px 0;"></div>
+            <el-alert title="请在提交前确认" type="warning"
+            description="不要乱搞"
+            show-icon>  </el-alert>
+          </span>
           <span slot="footer" class="dialog-footer">
-            <el-button @click="admitFlag = false">取 消</el-button>
-            <el-button type="primary" @click="admitEntry">确 定</el-button>
+            <el-button @click="admitFlag = false">返 回</el-button>
+            <el-button type="primary" @click="admitEntry">提 交</el-button>
           </span>
         </el-dialog>
         <el-dialog title="提示" :visible.sync="deleteFlag" width="30%">
@@ -55,7 +68,8 @@ export default {
       disabledFlag: true,
       admitFlag : false,
       deleteFlag : false,
-      entryId: 0
+      entryId: 0,
+      reason: ""
     };
   },
   mounted() {

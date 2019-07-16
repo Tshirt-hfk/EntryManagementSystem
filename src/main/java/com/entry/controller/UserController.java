@@ -10,14 +10,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Date;
 
 
 @RestController
@@ -338,6 +336,43 @@ public class UserController {
             taskRepository.save(task);;
             return new ResponseEntity<>(BaseResultFactory.build("领取成功"), HttpStatus.OK);
         }catch (IOException e){
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
+    /**
+     * 用户获取参加的专题
+     * @param request
+     * @param jsonParam
+     * @return
+     */
+    @PostMapping("/api/user/getSubject")
+    @CrossOrigin
+    public ResponseEntity<?> getSubject(HttpServletRequest request){
+        try{
+            System.out.println("lalala");
+            Integer userId = (Integer)request.getAttribute("userId");
+            List<GroupMember> groupMembers = groupMemberRepository.findAllByUser_IdAndIdentity(userId,GroupMember.ORDINRYUSER);
+            if(groupMembers == null){
+                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),""),HttpStatus.BAD_REQUEST);
+            }
+            System.out.println("wozhale");
+            List<Object> tmps = new ArrayList<>();
+            HashMap<String,Object> tmp = null;
+            for(GroupMember groupMember : groupMembers){
+                Subject subject = groupMember.getSubject();
+                tmp = new HashMap<>();
+                tmp.put("id", subject.getId());
+                tmp.put("name", subject.getName());
+                tmp.put("introduction", subject.getIntroduction());
+                tmps.add(tmp);
+            }
+            System.out.println(tmps.size());
+            HashMap<String,Object> result = new HashMap<>();
+            result.put("subjects",tmps);
+            return new ResponseEntity<>(BaseResultFactory.build(result,"success"), HttpStatus.OK);
+        }catch (Exception e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
         }
     }

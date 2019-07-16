@@ -1,21 +1,24 @@
 <template>
-  <el-table :data="tableData" style="width: 100%">
-    <el-table-column label="名称" width="180">
-      <template slot-scope="scope">{{ scope.row.name }}</template>
-    </el-table-column>
-    <el-table-column label="分类" width="180">
-      <template slot-scope="scope">{{ scope.row.field }}</template>
-    </el-table-column>
-    <el-table-column label="领取人" width="180">
-      <template slot-scope="scope">{{ scope.row.username }}</template>
-    </el-table-column>
-    <el-table-column label="领取人" width="280">
-      <template slot-scope="scope">
-        <el-button @click="see(scope.row)">查 看</el-button>
-        <el-button @click="audit(scope.row, true)">通 过</el-button>
-      </template>
-    </el-table-column>
-  </el-table>
+  <div>
+    <el-table :data="tableData" style="width: 100%">
+      <el-table-column label="名称" width="180">
+        <template slot-scope="scope">{{ scope.row.name }}</template>
+      </el-table-column>
+      <el-table-column label="分类" width="180">
+        <template slot-scope="scope">{{ scope.row.field }}</template>
+      </el-table-column>
+      <el-table-column label="领取人" width="180">
+        <template slot-scope="scope">{{ scope.row.username }}</template>
+      </el-table-column>
+      <el-table-column align="left">
+        <template slot-scope="scope">
+          <el-button @click="see(scope.row)">查 看</el-button>
+          <el-button @click="audit(scope.row, true)">通 过</el-button>
+          <el-button type="danger" @click="reject(scope.row)">拒绝</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
 </template>
 
 
@@ -42,9 +45,9 @@ export default {
           if (res.data.data) {
             this.tableData = res.data.data.assignments;
           } else {
-            this.$message({
-              message: res.data.msg
-            });
+            //this.$message({
+             // message: res.data.msg
+            //});
           }
         })
         .catch(error => {
@@ -80,7 +83,8 @@ export default {
         })
         .then(res => {
           if (res.data) {
-            stateChange(5)
+            this.init();
+            this.stateChange(5);
             this.$message({
               message: res.data.msg
             });
@@ -96,8 +100,6 @@ export default {
         });
     },
     stateChange(state){
-      this.init()
-      window.console.log(state)
       this.$emit('stateChange', state)
     }
   }

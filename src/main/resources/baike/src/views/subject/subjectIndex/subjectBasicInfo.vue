@@ -114,9 +114,9 @@ export default {
         .then(res => {
           if (res.data.data) {
             this.basicInfo = res.data.data.basicInfo;
-            this.$message({
-              message: res.data.msg
-            });
+            //this.$message({
+              //message: res.data.msg
+            //});
           }
         })
         .catch(error => {

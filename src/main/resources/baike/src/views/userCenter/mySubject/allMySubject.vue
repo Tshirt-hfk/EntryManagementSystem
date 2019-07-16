@@ -2,9 +2,10 @@
     <div class="mysubject">
         <el-tabs v-model="activeName" @tab-click="handleClick">
             <el-tab-pane label="我创建的专题" name="first">
-                <myCreatedSubject></myCreatedSubject>
+              <myCreatedSubject></myCreatedSubject>
             </el-tab-pane>
             <el-tab-pane label="我参与的专题" name="second">
+              <myJoinSubject></myJoinSubject>
             </el-tab-pane>
         </el-tabs>
     </div>

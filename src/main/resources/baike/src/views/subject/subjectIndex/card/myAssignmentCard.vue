@@ -31,10 +31,10 @@ export default {
                 this.notGet = false;
                 this.refresh();
               }
-              this.$message({
-                  message: res.data.msg,
-                  type: "warning"
-                });
+              //this.$message({
+                  //message: res.data.msg,
+                  //type: "warning"
+                //});
             })
             .catch(error => {
               if (error.response) {

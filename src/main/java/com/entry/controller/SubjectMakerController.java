@@ -46,9 +46,7 @@ public class SubjectMakerController {
     @CrossOrigin
     public ResponseEntity<?> getSubject(HttpServletRequest request){
         try{
-            System.out.println("test");
             Integer userId = (Integer)request.getAttribute("userId");
-            System.out.println(userId);
             List<GroupMember> groupMembers = groupMemberRepository.findAllByUser_IdAndIdentity(userId,GroupMember.SUBJECTMAKER);
             if(groupMembers==null){
                 return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);

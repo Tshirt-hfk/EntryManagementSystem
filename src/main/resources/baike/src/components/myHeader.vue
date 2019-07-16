@@ -78,6 +78,7 @@ export default {
               message: res.data.msg,
               type: "warning"
             });
+<<<<<<< HEAD
           }
         })
         .catch(error => {
@@ -114,6 +115,32 @@ export default {
     },
     search() {
       //TODO
+=======
+        },
+        toUserCenter(){
+            this.$router.push('/usercenter')
+        },
+        toIndex(){
+            this.$router.push('/')
+        },
+        toLogin(){
+            this.$router.push('/login')
+        },
+        toRegister(){
+            this.$router.push('/register')
+        },
+        loginOut(){
+            this.$store.commit('status', '0')
+            localStorage.clear()   
+            this.$router.push('/') 
+        },
+        toSubject(){
+            this.$router.push('/subjectcreate')
+        },
+        search(){
+            //TODO
+        }
+>>>>>>> 3f91c3701693570ad9dc7b87ba03ac7b2dcd2bee
     }
   }
 };
