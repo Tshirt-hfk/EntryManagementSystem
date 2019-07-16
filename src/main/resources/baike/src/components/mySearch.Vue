@@ -1,18 +1,19 @@
 <template>
-  <el-select
-    v-model="value"
-    filterable
-    remote
-    placeholder="请输入关键词"
-    :remote-method="remoteMethod"
-    :loading="loading">
-    <el-option
-      v-for="item in options"
-      :key="item.value"
-      :label="item.label"
-      :value="item.value">
-    </el-option>
-  </el-select>
+    <el-select
+      v-model="value"
+      filterable
+      remote
+      placeholder="请输入关键词"
+      :remote-method="remoteMethod"
+      :loading="loading"
+      style="width: 440px; font-size: large">
+      <el-option
+        v-for="item in options"
+        :key="item.value"
+        :label="item.label"
+        :value="item.value">
+      </el-option>
+    </el-select>
 </template>
 
 <script>
@@ -85,3 +86,4 @@
     }
   }
 </script>
+
