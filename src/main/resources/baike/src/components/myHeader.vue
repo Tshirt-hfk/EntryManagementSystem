@@ -2,7 +2,7 @@
   <header class="header">
     <div class="header-middle">
       <div class="header-l">
-        <h1 @click="toIndex">众智化词条系统</h1>
+        <h1 @click="toIndex" style="cursor: pointer">众智化词条系统</h1>
       </div>
       <div class="header-m">
           <a class="header-link" href="/"> 首页</a>
