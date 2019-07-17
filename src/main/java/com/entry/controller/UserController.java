@@ -351,13 +351,11 @@ public class UserController {
     @CrossOrigin
     public ResponseEntity<?> getSubject(HttpServletRequest request){
         try{
-            System.out.println("lalala");
             Integer userId = (Integer)request.getAttribute("userId");
             List<GroupMember> groupMembers = groupMemberRepository.findAllByUser_IdAndIdentity(userId,GroupMember.ORDINRYUSER);
             if(groupMembers == null){
                 return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),""),HttpStatus.BAD_REQUEST);
             }
-            System.out.println("wozhale");
             List<Object> tmps = new ArrayList<>();
             HashMap<String,Object> tmp = null;
             for(GroupMember groupMember : groupMembers){
@@ -368,7 +366,6 @@ public class UserController {
                 tmp.put("introduction", subject.getIntroduction());
                 tmps.add(tmp);
             }
-            System.out.println(tmps.size());
             HashMap<String,Object> result = new HashMap<>();
             result.put("subjects",tmps);
             return new ResponseEntity<>(BaseResultFactory.build(result,"success"), HttpStatus.OK);

@@ -3,19 +3,19 @@
     <el-tabs class="border_card" type="border-card">
       <el-tab-pane lazy>
         <span slot="label">待提交词条</span>
-        <toBeAdmittedEntry  ref="myBeAdmittedEntry" v-on:stateChange="stateChange" v-bind:subjectId="subjectId"></toBeAdmittedEntry>
+        <toBeAdmittedEntry  ref="myBeAdmittedEntry" v-on:stateChange="stateChange"></toBeAdmittedEntry>
       </el-tab-pane>
       <el-tab-pane lazy>
         <span slot="label">待审核词条</span>
-        <toBeAuditedEntry ref="myBeAuditedEntry" v-on:stateChange="stateChange" v-bind:subjectId="subjectId"></toBeAuditedEntry>
+        <toBeAuditedEntry ref="myBeAuditedEntry" v-on:stateChange="stateChange"></toBeAuditedEntry>
       </el-tab-pane>
       <el-tab-pane lazy>
         <span slot="label">已通过词条</span>
-        <passedEntry ref="myPassedEntry" v-on:stateChange="stateChange" v-bind:subjectId="subjectId"></passedEntry>
+        <passedEntry ref="myPassedEntry" v-on:stateChange="stateChange"></passedEntry>
       </el-tab-pane>
       <el-tab-pane lazy>
         <span slot="label">未通过词条</span>
-        <failPassEntry ref="myFailPassEntry" v-on:stateChange="stateChange" v-bind:subjectId="subjectId"></failPassEntry>
+        <failPassEntry ref="myFailPassEntry" v-on:stateChange="stateChange"></failPassEntry>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -37,7 +37,7 @@ export default {
   },
   data() {
     return {
-      subjectId: this.$route.query.id,
+      
     };
   },
   mounted() {

@@ -14,12 +14,18 @@
     </div>
     <div v-else>
       <template v-for="subject in subjects">
-        <el-card class="box-card" :key="subject.id">
-          <div slot="header" class="clearfix">
-            <span>{{subject.name}}</span>
-            <el-button style="float: right; padding: 3px 0" type="text" @click="see(subject.id)">查看</el-button>
+        <el-card class="box-card" :key="subject.id" :body-style="{ padding: '0px' }">
+          <img class="subject-image" src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png">
+          <div style="padding: 14px;">
+            <span style="color:#338de6;">{{subject.name}}</span>
+            <el-button class="button" size="mini" @click="see(subject.id)">查看</el-button>
+            <div class="subject-bottom">
+              <i class="el-icon-time" style="color: #cdcfd1; font-size:14px"></i>
+              <span style="font-size:14px; margin-right:5px; color: #cdcfd1;">剩余时间{{deadTime}}天</span>
+              <i class="el-icon-coin" style="color: #cdcfd1; font-size:14px"></i>
+              <span style="font-size:14px; color: #cdcfd1;">完成词条{{finishedSubject}}个</span>
+            </div>
           </div>
-          <div class="text">{{subject.introduction}}</div>
         </el-card>
       </template>
     </div>
@@ -66,10 +72,9 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .content {
   margin-left: 10px;
-  height: 800px;
   width: 960px;
 }
 .text {
@@ -79,8 +84,21 @@ export default {
   float: left;
   margin-top: 10px;
   margin-left: 10px;
-  height: 250px;
-  width: 200px;
+  margin-bottom: 15px;
+  height: 107px;
+  width: 236px;
+}
+.subject-image{
+  width: 234px;
+  height: 130px;
+}
+.subject-bottom{
+  margin-top: 13px;
+  line-height: 12px;
+}
+.button{
+  float: right;
+  margin-top: -2px;
 }
 .clearfix:before,
 .clearfix:after {

@@ -22,12 +22,13 @@
           <!-- 普通用户 -->
           <el-dropdown @command="handleCommand">
             <span class="el-dropdown-link">
-                <a href="http:localhost:8080/#/usercenter">
+                <a @click="toUserCenter">
                     <div class="header-icon">
                         <img src="https://static.hdslb.com/images/member/noface.gif" class="header-face">
                     </div>
                 </a>
-                {{this.userName}}<i class="el-icon-arrow-down el-icon--right"></i>
+                {{this.userName}} 
+                <i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item command="1">我的专题</el-dropdown-item>
@@ -53,12 +54,12 @@
           <!-- 专题制作人 -->
           <el-dropdown @command="handleCommand">
             <span class="el-dropdown-link">
-                <a href="http:localhost:8080/#/usercenter">
-                    <div class="header-icon">
-                        <img src="https://static.hdslb.com/images/member/noface.gif" class="header-face">
-                    </div>
-                </a>
-                {{this.userName}}<i class="el-icon-arrow-down el-icon--right"></i>
+              <a href="http:localhost:8080/#/usercenter">
+                <div class="header-icon">
+                  <img src="https://static.hdslb.com/images/member/noface.gif" class="header-face">
+                </div>
+              </a>   {{this.userName}}
+              <i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item command="1">我的专题</el-dropdown-item>
@@ -224,7 +225,7 @@ export default {
   margin-left: 10px;
 }
 .header-r {
-  width: 450px;
+  width: 500px;
   height: 35px;
   font-size: 18px;
 }

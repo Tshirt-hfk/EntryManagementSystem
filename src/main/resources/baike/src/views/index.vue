@@ -34,7 +34,7 @@
             <el-menu-item index="4" style="width: 150px; text-align: center;font-size: large;letter-spacing:12px;text-indent:8px">订单管理</el-menu-item>
             <div class="line"> </div>
             <a class="index-navbar-usercenter" href="/usercenter">
-            <img src="" >
+            <i class="el-icon-user-solid"> </i>
                 个 人 中 心
             </a>
             </el-menu>
