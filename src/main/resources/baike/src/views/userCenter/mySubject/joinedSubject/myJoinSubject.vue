@@ -10,8 +10,10 @@
         <el-card class="box-card" :key="subject.id" :body-style="{ padding: '0px' }">
           <img class="subject-image" src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png">
           <div style="padding: 14px;">
-            <span style="color:#338de6;">{{subject.name}}</span>
-            <el-button class="button" size="mini" @click="see(subject.id)">查看</el-button>
+            <div style="display: inline;">
+              <span style="color:#338de6;">{{subject.name}}</span>
+              <el-button class="button" size="mini" @click="see(subject.id)">查看</el-button>
+            </div>
             <div class="subject-bottom">
               <i class="el-icon-time" style="color: #cdcfd1; font-size:14px"></i>
               <span style="font-size:14px; margin-right:5px; color: #cdcfd1;">剩余时间{{deadTime}}天</span>
@@ -69,9 +71,6 @@ export default {
   margin-left: 10px;
   width: 960px;
 }
-.text {
-  font-size: 14px;
-}
 .box-card {
   float: left;
   margin-top: 10px;
@@ -90,7 +89,6 @@ export default {
 }
 .button{
   float: right;
-  margin-top: -2px;
 }
 .clearfix:before,
 .clearfix:after {

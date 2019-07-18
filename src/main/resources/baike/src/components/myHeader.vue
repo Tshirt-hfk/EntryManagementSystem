@@ -197,7 +197,7 @@ export default {
 }
 .header-middle {
   margin: 0 auto;
-  width: 100%;
+  width: 2000px;
   display: flex;
   justify-content: space-between;
   height: 35px;
@@ -216,7 +216,7 @@ export default {
 .header-m{
   width: 900px;
   height: 35px;
-  margin-right:300px;
+  margin-right:250px;
   margin-top: 6px;
 }
 .header-link{
@@ -225,7 +225,7 @@ export default {
   margin-left: 10px;
 }
 .header-r {
-  width: 500px;
+  width: 540px;
   height: 35px;
   font-size: 18px;
 }

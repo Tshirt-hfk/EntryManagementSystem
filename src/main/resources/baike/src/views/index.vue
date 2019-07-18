@@ -33,10 +33,12 @@
             <el-menu-item index="3" style="width: 150px; text-align: center;font-size: large;letter-spacing:12px;text-indent:10px">专 题</el-menu-item>
             <el-menu-item index="4" style="width: 150px; text-align: center;font-size: large;letter-spacing:12px;text-indent:8px">订单管理</el-menu-item>
             <div class="line"> </div>
-            <a class="index-navbar-usercenter" href="/usercenter">
-            <i class="el-icon-user-solid"> </i>
-                个 人 中 心
-            </a>
+            <div class="index-navbar-usercenter">
+                <a class="index-navbar-usercenter-link" href="/usercenter">
+                <i class="el-icon-user-solid"> </i>
+                    个 人 中 心
+                </a>
+            </div>
             </el-menu>
         </div>
     </div>
@@ -94,6 +96,7 @@ export default {
 }
 .index-navbar{
     position: relative;
+    width: 1800px;
     height: 70px;
     margin-top: 18px;
 }
@@ -106,10 +109,13 @@ export default {
 }
 .index-navbar-usercenter{
     float:left;
+    width: 200px;
+    margin-top: 15px;
+    margin-left: 60px;
+}
+.index-navbar-usercenter-link{
     font-size: large;
     color: #f5f5f5;
-    margin-top: 15px;
     text-decoration: none;
-    margin-left: 60px;
 }
 </style>
