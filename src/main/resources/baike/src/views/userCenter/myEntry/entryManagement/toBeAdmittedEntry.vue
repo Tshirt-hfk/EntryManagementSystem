@@ -28,7 +28,7 @@
             <el-button @click="admitFlag = true">提交</el-button>
             <el-button @click="deleteFlag = true">放弃</el-button>
         </div>
-        <el-dialog title="修改原因" :visible.sync="admitFlag" width="30%">
+        <el-dialog title="修改原因" :visible.sync="admitFlag" width="600px">
           <span>
             <el-button size="mini" @click="reason='更正错误'" plain>更正错误</el-button>
             <el-button size="mini" @click="reason='内容扩充'" plain>内容扩充</el-button>

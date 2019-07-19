@@ -422,6 +422,9 @@ public class UserController {
                     tmp = new HashMap<>();
                     tmp.put("id", subject.getId());
                     tmp.put("name", subject.getName());
+                    tmp.put("field", subject.getField());
+                    tmp.put("deadTime", subject.getDeadline());
+                    tmp.put("total_count", subject.getTotalCount());
                     tmps.add(tmp);
                 }
                 HashMap<String,Object> result = new HashMap<>();

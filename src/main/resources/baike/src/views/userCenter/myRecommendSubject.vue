@@ -88,12 +88,8 @@ export default {
         this.$axios
             .post("http://localhost:8081/api/user/searchSubject", {keyword:query})
             .then(res => {
-                if(res.data.data){
-                    window.console.log("woxiaole")
-                    this.options = res.data.data.subjects;
-                }else{
-                    window.console.log("wozhale")
-                }
+                if(res.data.data)
+                    this.subjects = res.data.data.subjects;
                 this.loading = false;
             })
             .catch(error => {

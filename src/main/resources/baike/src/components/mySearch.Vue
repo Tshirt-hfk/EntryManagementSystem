@@ -9,9 +9,9 @@
       style="font-size: large">
       <el-option
         v-for="item in options"
-        :key="item.value"
-        :label="item.label"
-        :value="item.value">
+        :key="item.name"
+        :label="item.name"
+        :value="item.name">
       </el-option>
     </el-select>
 </template>
