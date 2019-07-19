@@ -4,13 +4,13 @@
       <div class="header-l">
         <h1 @click="toIndex" style="cursor: pointer">众智化词条系统</h1>
       </div>
-      <div class="header-m">
+      <!-- <div class="header-m">
           <a class="header-link" href="/"> 首页</a>
           <a class="header-link" href="/"> 方磊</a>
           <a class="header-link" href="/"> 方磊</a>
           <a class="header-link" href="/"> 方磊</a>
           <a class="header-link" href="/"> 方磊</a>
-      </div>
+      </div> -->
       <div class="header-r">
         <template v-if="status==='0'">
           <!-- 未登陆 -->
@@ -199,18 +199,18 @@ export default {
   left: 0px;
   right: 0px;
   height: 35px;
+  width: 100%;
 }
 .header-middle {
   margin: 0 auto;
-  width: 2000px;
+  width: 1200px;
   display: flex;
   justify-content: space-between;
   height: 35px;
 }
-.header-l {
-  width: 200px;
+.header-l{
+  float: left;
   height: 35px;
-  margin-left: 110px;
 }
 .header-l h1 {
   color: #409eff;
@@ -230,12 +230,12 @@ export default {
   margin-left: 10px;
 }
 .header-r {
-  width: 540px;
+  float: right;
   height: 35px;
   font-size: 18px;
 }
 .header-line{
-  width: 2000px;
+  width: 100%;
   border-bottom: 1px solid #ddd;
 }
 .header-login-line{

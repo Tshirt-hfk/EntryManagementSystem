@@ -10,6 +10,9 @@
       </a>
     </div>
     <div v-else>
+      <div class="mycreatesub-searchbar">
+          <mySearch style="float:right" v-on:remoteMethod="remoteMethod" :options="options" :value="value" :loading="loading"></mySearch>
+      </div>
       <template v-for="subject in subjects">
         <el-card class="box-card" :key="subject.id" :body-style="{ padding: '0px' }">
           <img class="subject-image" src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png">
@@ -32,8 +35,14 @@
 </template>
 
 <script>
+
+import mySearch from "../../../../components/mySearch"
+
 export default {
   name: "myCreatedSubject",
+  components: {
+    mySearch,
+  },
   data() {
     return {
       status : this.$store.state.status,
@@ -41,6 +50,9 @@ export default {
       deadTime: '0',
       finishedSubject: '0',
       defaultCard: false,
+      options: [],
+      loading: false,
+      value: [],
     };
   },
   mounted() {
@@ -53,7 +65,7 @@ export default {
           .post("http://localhost:8081/api/subjectMaker/getSubject")
           .then(res => {
             if (res.data.data)
-              this.subjects=res.data.data.subjects
+              this.subjects = res.data.data.subjects;
           })
           .catch(error => {
             if (error.response) {
@@ -75,6 +87,23 @@ export default {
         });
       }else
         this.$router.push("/subjectcreate");
+    },
+    remoteMethod(query){
+        this.loading = true;
+        this.$axios
+            .post("http://localhost:8081/api/user/searchSubject", {keyword:query})
+            .then(res => {
+                if(res.data.data){
+                    window.console.log("woxiaole")
+                    this.options = res.data.data.subjects;
+                }else{
+                    window.console.log("wozhale")
+                }
+                this.loading = false;
+            })
+            .catch(error => {
+                      
+            });
     }
   }
 };
@@ -84,6 +113,10 @@ export default {
 .content {
   margin-left: 10px;
   width: 1000px;
+}
+.mycreatesub-searchbar{
+  width: 975px;
+  height: 70px;
 }
 .nothing-a{
   background: #f0f0f0;

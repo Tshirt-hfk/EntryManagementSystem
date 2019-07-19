@@ -25,10 +25,7 @@
           <el-input v-model="form.name" autocomplete="on"></el-input>
         </el-form-item>
         <el-form-item label="分类" label-width="50px">
-          <el-select v-model="form.field" placeholder="请选择领域">
-            <el-option label="自然科学" value="自然科学"></el-option>
-            <el-option label="物理学" value="物理学"></el-option>
-          </el-select>
+          <el-cascader placeholder="请选择领域" :options="options" filterable></el-cascader>
         </el-form-item>
       </el-form>
       <div class="dialog-footer">

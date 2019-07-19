@@ -6,7 +6,10 @@
       </div>
     </div>
     <div v-else>
-    <template v-for="subject in subjects">
+      <div class="myjoinsub-searchbar">
+          <mySearch style="float:right" v-on:remoteMethod="remoteMethod" :options="options" :value="value" :loading="loading"></mySearch>
+      </div>
+      <template v-for="subject in subjects">
         <el-card class="box-card" :key="subject.id" :body-style="{ padding: '0px' }">
           <img class="subject-image" src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png">
           <div style="padding: 14px;">
@@ -22,20 +25,29 @@
             </div>
           </div>
         </el-card>
-    </template>
+      </template>
     </div>
   </div>
 </template>
 
 <script>
+
+import mySearch from "../../../../components/mySearch"
+
 export default {
   name: "myJoinSubject",
+  components: {
+    mySearch,
+  },
   data() {
     return {
       status : this.$store.state.status,
       subjects: [],
       deadTime: '0',
       finishedSubject: '0',
+      options: [],
+      loading: false,
+      value: [],
     };
   },
   mounted() {
@@ -61,6 +73,23 @@ export default {
     },
     see(id) {
       this.$router.push({ path: "/subject", query: { id: id } });
+    },
+    remoteMethod(query){
+        this.loading = true;
+        this.$axios
+            .post("http://localhost:8081/api/user/searchSubject", {keyword:query})
+            .then(res => {
+                if(res.data.data){
+                    window.console.log("woxiaole")
+                    this.options = res.data.data.subjects;
+                }else{
+                    window.console.log("wozhale")
+                }
+                this.loading = false;
+            })
+            .catch(error => {
+                      
+            });
     }
   }
 };
@@ -70,6 +99,10 @@ export default {
 .content {
   margin-left: 10px;
   width: 960px;
+}
+.myjoinsub-searchbar{
+  width: 975px;
+  height: 70px;
 }
 .box-card {
   float: left;

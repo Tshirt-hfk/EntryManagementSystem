@@ -37,6 +37,9 @@ public class Task {
     @Column(columnDefinition = "TEXT")
     private String content;
 
+    @Column
+    private String admitReason;
+
     @Column(columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP", nullable = false)
     private Timestamp deadline;
 

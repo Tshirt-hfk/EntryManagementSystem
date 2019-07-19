@@ -1,5 +1,8 @@
 <template>
   <div class="content">
+    <div class="myrecentry-searchbar">
+        <mySearch style="float:right" v-on:remoteMethod="remoteMethod" :options="options" :value="value" :loading="loading"></mySearch>
+    </div>
     <template v-for="entry in entrys">
         <a class="box-card" @click="see(entry.id)" :title="entry.name"
         :key="entry.id" :body-style="{ padding: '0px' }">
@@ -17,119 +20,36 @@
 </template>
 
 <script>
+
+import mySearch from "../../components/mySearch"
+
 export default {
   name: "myRecommendEntry",
+  components: {
+    mySearch,
+  },
   data() {
     return {
+      entrys: [],
+      options: [],
+      loading: false,
+      value: [],
       status : this.$store.state.status,
-      entrys: [
-          {
-            id: '1',
-            name: '撩妹',
-            field: '娱乐',
-            reason1: '内容不全',
-            reason2: '参考资料缺失'
-          },
-          {
-            id: '3',
-            name: '掉头发',
-            field: '科学',
-            reason1: '正文缺少图片',
-            reason2: '目录缺失'
-          },
-          {
-            id: '4',
-            name: '加班',
-            field: '科学',
-            reason1: '概述缺失',
-            reason2: '概述图不清晰'
-          },
-          {
-            id: '7',
-            name: '航天器',
-            field: '科学',
-            reason1: '存在相似内容',
-            reason2: '正文缺少图片'
-          },
-          {
-            id: '10',
-            name: '打游戏',
-            field: '娱乐',
-            reason1: '存在相似内容',
-            reason2: '正文缺少图片'
-          },
-          {
-            id: '11',
-            name: '打游戏',
-            field: '娱乐',
-            reason1: '存在相似内容',
-            reason2: '正文缺少图片'
-          },
-          {
-            id: '12',
-            name: '打游戏',
-            field: '娱乐',
-            reason1: '存在相似内容',
-            reason2: '正文缺少图片'
-          },
-          {
-            id: '13',
-            name: '打游戏',
-            field: '娱乐',
-            reason1: '存在相似内容',
-            reason2: '正文缺少图片'
-          },
-          {
-            id: '14',
-            name: '打游戏',
-            field: '娱乐',
-            reason1: '存在相似内容',
-            reason2: '正文缺少图片'
-          },
-          {
-            id: '15',
-            name: '打游戏',
-            field: '娱乐',
-            reason1: '存在相似内容',
-            reason2: '正文缺少图片'
-          },
-          {
-            id: '16',
-            name: '打游戏',
-            field: '娱乐',
-            reason1: '存在相似内容',
-            reason2: '正文缺少图片'
-          },
-          {
-            id: '17',
-            name: '打游戏',
-            field: '娱乐',
-            reason1: '存在相似内容',
-            reason2: '正文缺少图片'
-          },
-          {
-            id: '18',
-            name: '打游戏',
-            field: '娱乐',
-            reason1: '存在相似内容',
-            reason2: '正文缺少图片'
-          }
-      ],
       deadTime: '0',
       finishedSubject: '0',
     };
   },
   mounted() {
-    
+    this.init()
   },
   methods: {
     init(){
     // 初始化数据
         this.$axios
-        .post("http://localhost:8081/api/user/getRecommendEntry")
+        .post("http://localhost:8081/api/user/getRecommendEntry",{})
         .then(res => {
             if (res.data.data)
-              this.entrys = res.data.data.subjects
+              this.entrys = res.data.data.assignments
         })
         .catch(error => {
             if (error.response) {
@@ -142,6 +62,23 @@ export default {
     },
     see(id) {
       this.$router.push({ path: "/entryedit", query: { id: id } });
+    },
+    remoteMethod(query){
+        this.loading = true;
+        this.$axios
+            .post("http://localhost:8081/api/user/searchSubject", {keyword:query})
+            .then(res => {
+                if(res.data.data){
+                    window.console.log("woxiaole")
+                    this.options = res.data.data.subjects;
+                }else{
+                    window.console.log("wozhale")
+                }
+                this.loading = false;
+            })
+            .catch(error => {
+                      
+            });
     }
   }
 };
@@ -151,6 +88,10 @@ export default {
 .content {
   margin-left: 10px;
   width: 1200px;
+}
+.myrecentry-searchbar{
+  width: 1125px;
+  height: 70px;
 }
 .box-card {
   padding: 10px 20px;

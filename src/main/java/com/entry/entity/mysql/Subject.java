@@ -44,7 +44,7 @@ public class Subject {
     private Timestamp deadline;
 
     @Column(columnDefinition = "BOOLEAN")
-    private Boolean isPublic;
+    private Boolean isPublic;          // 1 为公开， 0 为未公开
 
     @OneToMany(mappedBy = "subject",cascade=CascadeType.ALL,fetch=FetchType.LAZY)
     private List<Assignment> assignmentlist;
