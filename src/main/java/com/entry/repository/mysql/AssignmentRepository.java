@@ -15,4 +15,7 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Integer>
 
     @Query(value = "select * from assignment where subject_id = ?1 and state = ?2", nativeQuery = true)
     List<Assignment> findAllBySubject_IdAndState(Integer id, Integer state);
+
+    @Query(value = "SELECT * FROM assignment ORDER BY RAND() LIMIT ?1", nativeQuery = true)
+    List<Assignment> findAssignmentByRand(Integer number);
 }

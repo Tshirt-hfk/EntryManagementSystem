@@ -1,12 +1,12 @@
 <template>
     <el-select
-      v-model="value"
+      v-model="searchValue"
       filterable
       remote
       placeholder="请输入关键词"
       :remote-method="remoteMethod"
       :loading="loading"
-      style="width: 440px; font-size: large">
+      style="font-size: large">
       <el-option
         v-for="item in options"
         :key="item.value"
@@ -18,13 +18,30 @@
 
 <script>
   export default {
-	  name:'mySearch',
+    name:'mySearch',
+    props: {
+      options:{
+        type: Array,
+      },
+      value:{
+        type: Array,
+      },
+      loading:{
+        type: Boolean,
+      }
+    },
+    watch :{
+      loading:{
+        handler(n, o){
+          this.loadingSearch = n;
+        }
+      }
+    },
     data() {
       return {
-        options: [],
-        value: [],
+        searchValue: this.value,
         list: [],
-        loading: false,
+        loadingSearch: false,
         states: ["Alabama", "Alaska", "Arizona",
         "Arkansas", "California", "Colorado",
         "Connecticut", "Delaware", "Florida",
@@ -55,7 +72,7 @@
       },
       remoteMethod(query) {
         if (query !== '') {
-          this.loading = true;
+          this.$emit('remoteMethod', query);
           // setTimeout(() => {
           //   this.loading = false;
           //   this.options = this.list.filter(item => {
@@ -63,24 +80,8 @@
           //       .indexOf(query.toLowerCase()) > -1;
           //   });
           // }, 200);
-          this.$axios.post("http://localhost:8081/api/tourist/search", {
-                  keyword:query
-              }).then(res => {
-                        if(res.data.data){
-                          this.option = res.data.data.option
-                        }else{
-                          this.$message({
-                            message:result.data.msg
-                          });
-                        }
-                    }).catch(error => {
-                      if(error.response){
-                        this.$message({
-                          message:error.response.data.msg,
-                          type:"warning"
-                        });
-                      }
-                    });
+        }else {
+            this.options = [];
         }
       }
     }

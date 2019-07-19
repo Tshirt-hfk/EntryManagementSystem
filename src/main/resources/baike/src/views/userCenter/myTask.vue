@@ -8,12 +8,12 @@
         </el-radio-group>
         <!--高度后期需要自适应 -->
         <div v-if="tabSelection == 'right'">
-            <el-card style="width: 1200px;max-height: 725px;">
+            <el-card style="width: 1200px;height:560px">
                 <myRecommendSubject></myRecommendSubject>
             </el-card>
         </div>
         <div v-else>
-            <el-card style="width: 1200px;max-height: 450px;">
+            <el-card style="width: 1200px;height: 550px;">
                 <myRecommendEntry></myRecommendEntry>
             </el-card>
         </div> 

@@ -28,6 +28,9 @@ public class Assignment {
     @Column(columnDefinition = "text")
     private String content;
 
+    @Column
+        private String modifyReason;
+
     @Column(nullable = false)
     private String field;
 
@@ -63,6 +66,10 @@ public class Assignment {
     public String getEntryName() {
         return this.entryName;
     }
+
+    public String getModifyReason(){ return this.modifyReason;}
+
+    public void setModifyReason(String modifyReason){ this.modifyReason = modifyReason;}
 
     public String getContent() {
         return content;

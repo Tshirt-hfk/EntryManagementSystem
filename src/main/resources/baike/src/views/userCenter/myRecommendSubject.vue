@@ -1,25 +1,27 @@
 <template>
   <div class="content">
-      <div>
-        <el-select v-model="value" filterable remote :loading="loading"
-        reserve-keyword placeholder="请输入关键词" :remote-method="remoteMethod">
-        <el-option v-for="item in options" :key="item.name"
-        :label="item.name" :value="item.name">
-    </el-option>  
-        </el-select>
+      <div class="myrecsub-searchbar">
+        <!-- <el-select v-model="value" filterable remote :loading="loading"
+        reserve-keyword placeholder="请输入关键词" :remote-method="remoteMethod"
+        style="float: right">
+          <el-option v-for="item in options" :key="item.name"
+          :label="item.name" :value="item.name">
+          </el-option>  
+        </el-select> -->
+        <mySearch style="float:right" v-on:remoteMethod="remoteMethod" :options="options" :value="value" :loading="loading"></mySearch>
       </div>
     <template v-for="subject in subjects">
         <el-card class="box-card" :key="subject.id" :body-style="{ padding: '0px' }">
           <img class="subject-image" src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png">
           <div style="padding: 14px;">
-            <div style="display: inline;">
+            <div class="subject-top">
               <span style="color:#338de6;">{{subject.name}}</span>
               <el-button class="button" size="mini" @click="see(subject.id)">参加活动</el-button>
             </div>
             <div class="subject-bottom">
               <div v-if="subject.deadTime !== '0'" >
                 <i class="el-icon-time" style="color: #707070; font-size:14px"></i>
-                <span style="font-size:14px; margin-right:5px; color: #707070;">剩余时间{{subject.deadTime}}天</span>
+                <span style="font-size:14px; margin-right:5px; color: #707070;">剩余时间5天</span>
                 <i class="el-icon-coin" style="color: #707070; font-size:14px;margin-left: 5px"></i>
                 <span style="font-size:14px; color: #707070;">{{subject.total_count}}人参加</span>
               </div>
@@ -35,107 +37,39 @@
 </template>
 
 <script>
+
+import mySearch from "../../components/mySearch"
+
 export default {
   name: "myRecommendSubject",
+  components: {
+    mySearch,
+  },
+  computed:{
+    deadline: function(){
+
+    }
+  },
   data() {
     return {
+      subjects: [],
       options: [],
       loading: false,
       value: [],
       status : this.$store.state.status,
-      subjects: [
-          {
-              id: '100',
-              name: '方磊',
-              total_count: '2',
-              deadTime: '0',
-          },
-          {
-              id: '1',
-              name: '燥起来',
-              total_count: '10',
-              deadTime: '5'
-          },
-          {
-              id: '2',
-              name: '科研狂人',
-              total_count: '5',
-              deadTime: '3'
-          },
-          {
-              id: '3',
-              name: '燥起来',
-              total_count: '10',
-              deadTime: '5'
-          },
-          {
-              id: '4',
-              name: '燥起来',
-              total_count: '10',
-              deadTime: '5'
-          },
-          {
-              id: '5',
-              name: '燥起来',
-              total_count: '10',
-              deadTime: '5'
-          },
-          {
-              id: '6',
-              name: '燥起来',
-              total_count: '10',
-              deadTime: '5'
-          },
-          {
-              id: '7',
-              name: '燥起来',
-              total_count: '10',
-              deadTime: '5'
-          },
-          {
-              id: '8',
-              name: '燥起来',
-              total_count: '10',
-              deadTime: '5'
-          },
-          {
-              id: '9',
-              name: '燥起来',
-              total_count: '10',
-              deadTime: '5'
-          },
-          {
-              id: '10',
-              name: '燥起来',
-              total_count: '10',
-              deadTime: '5'
-          },
-          {
-              id: '11',
-              name: '燥起来',
-              total_count: '10',
-              deadTime: '5'
-          },
-          {
-              id: '12',
-              name: '燥起来',
-              total_count: '10',
-              deadTime: '5'
-          }
-      ],
     };
   },
   mounted() {
-    
+    this.init()
   },
   methods: {
     init(){
     // 初始化数据
         this.$axios
-        .post("http://localhost:8081/api/user/getRecommendSubject")
+        .post("http://localhost:8081/api/user/getRecommendSubject",{})
         .then(res => {
             if (res.data.data)
-              this.subjects=res.data.data.subjects
+              this.subjects = res.data.data.subjects;
         })
         .catch(error => {
             if (error.response) {
@@ -150,32 +84,21 @@ export default {
       this.$router.push({ path: "/subject", query: { id: id } });
     },
     remoteMethod(query){
-        if (query !== '') {
-            this.loading = true;
-            // setTimeout(() => {
-            //     this.loading = false;
-            //     this.options = this.list.filter(item => {
-            //     return item.label.toLowerCase()
-            //         .indexOf(query.toLowerCase()) > -1;
-            //     });
-            // }, 200);
-            this.$axios
-                .post("http://localhost:8081/api/user/searchSubject", {keyword:query})
-                .then(res => {
-                    if(res.data.data){
-                        window.console.log("wozhale")
-                        this.options = res.data.data.subjects;
-                    }else{
-                        window.console.log("wokule")
-                    }
-                    this.loading = false;
-                })
-                .catch(error => {
+        this.loading = true;
+        this.$axios
+            .post("http://localhost:8081/api/user/searchSubject", {keyword:query})
+            .then(res => {
+                if(res.data.data){
+                    window.console.log("woxiaole")
+                    this.options = res.data.data.subjects;
+                }else{
+                    window.console.log("wozhale")
+                }
+                this.loading = false;
+            })
+            .catch(error => {
                       
-                });
-        } else {
-            this.options = [];
-        }
+            });
     }
   }
 };
@@ -186,6 +109,10 @@ export default {
   margin-left: 30px;
   width: 1200px;
   max-height: 1210px;
+}
+.myrecsub-searchbar{
+  width: 1050px;
+  height: 50px;
 }
 .box-card {
   float: left;
@@ -201,6 +128,9 @@ export default {
 .subject-image{
   width: 234px;
   height: 130px;
+}
+.subject-top{
+  height: 20px;
 }
 .subject-bottom{
   margin-top: 13px;

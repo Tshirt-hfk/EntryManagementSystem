@@ -1,7 +1,7 @@
 <template>
   <div class="usercenter-layout">
     <div class="uc-main-header">
-      <div class="uc-base-info">
+      <!-- <div class="uc-base-info">
         <div class="uc-info-layout">
           <div class="uc-userinfo">
             <div class="uc-avatar">
@@ -56,7 +56,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
       <div class="uc-nav-tab" id="nav_tabs">
         <div class="uc-navtab-layout">
           <a @click="pageSelection(1)">我的专题</a>

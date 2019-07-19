@@ -384,7 +384,6 @@ public class UserController {
     @CrossOrigin
     public ResponseEntity<?> joinSubject(HttpServletRequest request,@RequestBody String jsonParam){
         try{
-            System.out.println(jsonParam);
             Integer userId = (Integer)request.getAttribute("userId");
             HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
             Integer subjectId = (Integer)form.get("subjectId");
@@ -416,15 +415,100 @@ public class UserController {
             HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
             String subjectName = (String)form.get("keyword");
             List<Subject> subjects = subjectRepository.findSubjectByKey(subjectName);
-            System.out.println(subjectName);
+            List<Object> tmps = new ArrayList<>();
+            HashMap<String,Object> tmp = null;
             if(subjects.size() != 0){
+                for(Subject subject: subjects){
+                    tmp = new HashMap<>();
+                    tmp.put("id", subject.getId());
+                    tmp.put("name", subject.getName());
+                    tmps.add(tmp);
+                }
                 HashMap<String,Object> result = new HashMap<>();
-                result.put("subjects", subjects);
+                result.put("subjects", tmps);
                 return new ResponseEntity<>(BaseResultFactory.build(result,"success"), HttpStatus.OK);
             }else{
                 return new ResponseEntity<>(BaseResultFactory.build("无结果"), HttpStatus.OK);
             }
         }catch (IOException e){
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    /**
+     * 用户获得推荐专题
+     * @param request
+     * @param jsonParam
+     * @return
+     */
+    @PostMapping("/api/user/getRecommendSubject")
+    @CrossOrigin
+    public ResponseEntity<?> getRecommendSubject(HttpServletRequest request,@RequestBody String jsonParam){
+        try{
+            Integer userId = (Integer) request.getAttribute("userId");
+            List<Subject> subjects = subjectRepository.findSubjectByRand(8);
+            List<Object> tmps = new ArrayList<>();
+            HashMap<String,Object> tmp = null;
+            if(subjects.size() != 0){
+                for(Subject subject: subjects){
+                    tmp = new HashMap<>();
+                    tmp.put("id", subject.getId());
+                    tmp.put("name", subject.getName());
+                    tmp.put("field", subject.getField());
+                    tmp.put("deadTime", subject.getDeadline());
+                    tmp.put("total_count", subject.getTotalCount());
+                    tmps.add(tmp);
+                }
+                HashMap<String,Object> result = new HashMap<>();
+                result.put("subjects", tmps);
+                return new ResponseEntity<>(BaseResultFactory.build(result,"success"), HttpStatus.OK);
+            }else{
+                return new ResponseEntity<>(BaseResultFactory.build("无结果"), HttpStatus.OK);
+            }
+        }catch (Exception e){
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    /**
+     * 用户获得推荐词条
+     * @param request
+     * @param jsonParam
+     * @return
+     */
+    @PostMapping("/api/user/getRecommendEntry")
+    @CrossOrigin
+    public ResponseEntity<?> getRecommendEntry(HttpServletRequest request,@RequestBody String jsonParam){
+        try{
+            Integer userId = (Integer) request.getAttribute("userId");
+            List<Assignment> assignments = assignmentRepository.findAssignmentByRand(12);
+            List<Object> tmps = new ArrayList<>();
+            HashMap<String,Object> tmp = null;
+            String reason = null;
+            String reasonResult [] = null;
+            if(assignments.size() != 0){
+                for(Assignment assignment: assignments){
+                    tmp = new HashMap<>();
+                    tmp.put("id", assignment.getId());
+                    tmp.put("name", assignment.getEntryName());
+                    tmp.put("field", assignment.getField());
+                    reason = assignment.getModifyReason();
+                    if(reason != null) {
+                        reasonResult = reason.split(";");
+                        if(reasonResult.length == 2) {
+                            tmp.put("reason1", reasonResult[0]);
+                            tmp.put("reason2", reasonResult[1]);
+                        }
+                    }
+                    tmps.add(tmp);
+                }
+                HashMap<String,Object> result = new HashMap<>();
+                result.put("assignments", tmps);
+                return new ResponseEntity<>(BaseResultFactory.build(result,"success"), HttpStatus.OK);
+            }else{
+                return new ResponseEntity<>(BaseResultFactory.build("无结果"), HttpStatus.OK);
+            }
+        }catch (Exception e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
         }
     }
