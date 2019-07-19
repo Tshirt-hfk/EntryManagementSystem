@@ -219,6 +219,7 @@ public class UserController {
             HashMap<String, Object> result = new HashMap<>();
             HashMap<String, Object> result1 = new HashMap<>();
             if(subject!=null && groupMember!=null){
+                result.put("imageUrl",subject.getImageUrl());
                 result.put("title", subject.getName());
                 result.put("creator", subject.getCreator());
                 result.put("isPublic", subject.getPublic());
