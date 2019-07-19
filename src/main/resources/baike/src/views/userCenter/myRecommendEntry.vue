@@ -64,21 +64,24 @@ export default {
       this.$router.push({ path: "/entryedit", query: { id: id } });
     },
     remoteMethod(query){
+        if(query !== ''){
         this.loading = true;
         this.$axios
-            .post("http://localhost:8081/api/user/searchSubject", {keyword:query})
+            .post("http://localhost:8081/api/user/searchEntry", {keyword:query})
             .then(res => {
                 if(res.data.data){
-                    window.console.log("woxiaole")
-                    this.options = res.data.data.subjects;
-                }else{
-                    window.console.log("wozhale")
+                    this.entrys = res.data.data.assignments;
+                    this.options = res.data.data.assignments;
                 }
                 this.loading = false;
             })
             .catch(error => {
                       
             });
+      }else{
+        this.options = [];
+        this.init();
+      }
     }
   }
 };

@@ -71,8 +71,7 @@
         });
       },
       remoteMethod(query) {
-        if (query !== '') {
-          this.$emit('remoteMethod', query);
+        this.$emit('remoteMethod', query);
           // setTimeout(() => {
           //   this.loading = false;
           //   this.options = this.list.filter(item => {
@@ -80,9 +79,6 @@
           //       .indexOf(query.toLowerCase()) > -1;
           //   });
           // }, 200);
-        }else {
-            this.options = [];
-        }
       }
     }
   }

@@ -84,17 +84,24 @@ export default {
       this.$router.push({ path: "/subject", query: { id: id } });
     },
     remoteMethod(query){
+      if(query !== ''){
         this.loading = true;
         this.$axios
             .post("http://localhost:8081/api/user/searchSubject", {keyword:query})
             .then(res => {
-                if(res.data.data)
+                if(res.data.data){
                     this.subjects = res.data.data.subjects;
+                    this.options = res.data.data.subjects;
+                }
                 this.loading = false;
             })
             .catch(error => {
                       
             });
+      }else{
+        this.options = [];
+        this.init();
+      }
     }
   }
 };
