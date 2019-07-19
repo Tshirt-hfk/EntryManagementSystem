@@ -9,9 +9,9 @@
       style="font-size: large">
       <el-option
         v-for="item in options"
-        :key="item.value"
-        :label="item.label"
-        :value="item.value">
+        :key="item.name"
+        :label="item.name"
+        :value="item.name">
       </el-option>
     </el-select>
 </template>
@@ -71,8 +71,7 @@
         });
       },
       remoteMethod(query) {
-        if (query !== '') {
-          this.$emit('remoteMethod', query);
+        this.$emit('remoteMethod', query);
           // setTimeout(() => {
           //   this.loading = false;
           //   this.options = this.list.filter(item => {
@@ -80,9 +79,6 @@
           //       .indexOf(query.toLowerCase()) > -1;
           //   });
           // }, 200);
-        }else {
-            this.options = [];
-        }
       }
     }
   }
