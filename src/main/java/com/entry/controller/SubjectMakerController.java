@@ -1,5 +1,6 @@
 package com.entry.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.entry.dto.BaseResultFactory;
 import com.entry.entity.mysql.*;
 import com.entry.entity.mysql.pk.GroupMemberPK;
@@ -101,8 +102,14 @@ public class SubjectMakerController {
             groupMemberRepository.save(groupMember);
             //初始化 专题的所有任务
             String content = HttpRequestUtil.get("http://localhost:5003/keywords_extraction");
-            HashMap<String,Object> data = new ObjectMapper().readValue(content,HashMap.class);
-            System.out.println(data.get("nodes"));
+            JSONObject data = JSONObject.parseObject(content);
+            List<JSONObject> nodes = JSONObject.parseArray(data.getJSONArray("nodes").toJSONString(), JSONObject.class);
+            for(JSONObject node : nodes){
+                String entryName = node.getString("name");
+                System.out.println(entryName);
+                Assignment assignment = new Assignment(entryName,"","",Assignment.UNPUBLISHED,subject);
+                assignmentRepository.save(assignment);
+            }
             return new ResponseEntity<>(BaseResultFactory.build("创建成功"), HttpStatus.OK);
         }catch (IOException e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
