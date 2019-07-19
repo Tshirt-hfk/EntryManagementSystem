@@ -92,7 +92,7 @@
               <div class="basic-info-intro-content">
                 <el-upload
                   class="avatar-uploader basic-info-intro-image"
-                  action="https://jsonplaceholder.typicode.com/posts/"
+                  :action="serverUrl"
                   :show-file-list="false"
                   :on-success="handleAvatarSuccess"
                   :before-upload="beforeAvatarUpload"
@@ -216,7 +216,7 @@
     <el-upload
       id="inserted-image"
       :action="serverUrl"
-      name="img"
+      name="file"
       :show-file-list="false"
       :on-success="uploadSuccess"
       :on-error="uploadError"
@@ -313,7 +313,7 @@ export default {
           }
         }
       },
-      serverUrl: "/api/upload",
+      serverUrl: "http://localhost:8081/resource/image",
       quillUpdateImg: false,
       referenceForm: {
         title: "",
@@ -395,15 +395,13 @@ export default {
       this.quillUpdateImg = true;
     },
     uploadSuccess(res, file) {
-      // res为图片服务器返回的数据
-      // 获取富文本组件实例
-      let quill = this.quill;
       // 如果上传成功
-      if (res.code == 200) {
+      window.console.log(res.data)
+      if (res.data && res.data.url) {
         // 获取光标所在位置
         let length = this.quill.getSelection().index;
         // 插入图片  res.url为服务器返回的图片地址
-        this.quill.insertEmbed(length, "image", res.url);
+        this.quill.insertEmbed(length, "image", res.data.url);
         // 调整光标到最后
         this.quill.setSelection(length + 1);
       } else {
@@ -464,7 +462,8 @@ export default {
     },
     // 词条图片上传
     handleAvatarSuccess(res, file) {
-      this.form.imageUrl = URL.createObjectURL(file.raw);
+      this.form.imageUrl = res.data.url;
+      window.console.log(this.form.imageUrl)
     },
     // 词条图片上传限制
     beforeAvatarUpload(file) {

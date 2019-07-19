@@ -41,10 +41,11 @@ public class FileUtil {
      * @param fileName 原文件名
      * @return
      */
-    public static boolean upload(MultipartFile file, String path, String fileName){
+    public static String saveFile(MultipartFile file, String path, String fileName){
 
+        String newName = getFileName(fileName);
         // 生成新的文件名
-        String realPath = path + "/" + getFileName(fileName);
+        String realPath = path + "/" + newName;
 
         //使用原文件名
         // String realPath = path + "/" + fileName;
@@ -59,13 +60,13 @@ public class FileUtil {
         try {
             //保存文件
             file.transferTo(dest);
-            return true;
+            return newName;
         } catch (IllegalStateException e) {
             e.printStackTrace();
-            return false;
+            return null;
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
 
     }
