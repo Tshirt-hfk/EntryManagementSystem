@@ -10,16 +10,16 @@
         </el-radio-group>
         <el-card style="width: 992px; height:600px">  <!--高度后期需要自适应 -->
           <div v-if="tabSelection == '1'">
-            <toBeAdmittedEntry  ref="myBeAdmittedEntry" v-on:stateChange="stateChange"></toBeAdmittedEntry>
+            <toBeAdmittedEntry  ref="myBeAdmittedEntry"></toBeAdmittedEntry>
           </div>
           <div v-else-if="tabSelection == '2'">
-            <toBeAuditedEntry ref="myBeAuditedEntry" v-on:stateChange="stateChange"></toBeAuditedEntry>
+            <toBeAuditedEntry ref="myBeAuditedEntry"></toBeAuditedEntry>
           </div>
           <div v-else-if="tabSelection == '3'">
-            <passedEntry ref="myPassedEntry" v-on:stateChange="stateChange"></passedEntry>
+            <passedEntry ref="myPassedEntry"></passedEntry>
           </div>
           <div v-else-if="tabSelection == '4'">
-            <failPassEntry ref="myFailPassEntry" v-on:stateChange="stateChange"></failPassEntry>
+            <failPassEntry ref="myFailPassEntry"></failPassEntry>
           </div>
         </el-card>
         </div>
@@ -71,7 +71,7 @@ export default {
   margin: 0 auto;
 }
 .uc-myentry-button{
-  margin-left: 395px;
+  margin-left: 260px;
   margin-top: 10px;
 }
 </style>

@@ -59,47 +59,25 @@
       </div>
       <div class="uc-nav-tab" id="nav_tabs">
         <div class="uc-navtab-layout">
-          <a href="">我的任务</a>
-          <a href="">我的词条</a>
-          <a href="">我的专题</a>
-          <a href="">我的收藏</a>
+          <a @click="pageSelection(1)">我的任务</a>
+          <a @click="pageSelection(2)">我的词条</a>
+          <a @click="pageSelection(3)">我的专题</a>
+          <a @click="pageSelection(4)">我的收藏</a>
         </div>
       </div>
     </div>
     <div class="uc-body-wrapper">
-      <div class="uc-section-task-recommended">
-        <div class="uc-tasrec-title">推荐任务</div>
-        <div class="uc-tasrec-layout">
-        <el-radio-group class="uc-tasrec-button" v-model="tabSelection1" style="margin-bottom: 30px;">
-          <el-radio-button label="left">推荐词条</el-radio-button>
-          <el-radio-button label="right">推荐专题</el-radio-button>
-        </el-radio-group>
-        <el-card style="width: 992px; height:600px">  <!--高度后期需要自适应 -->
-          <div v-if="tabSelection1 == 'right'">
-            <myEntry></myEntry>
-          </div>
-          <div v-else>
-            
-          </div>
-        </el-card>
-        </div>
+      <div v-if="pageIndex == '1'">
+        <myTask></myTask>
       </div>
-      <div class="uc-section-task-mine">
-        <div class="uc-tasrec-title">任务记录</div>
-        <div class="uc-tasrec-layout">
-        <el-radio-group class="uc-tasrec-button" v-model="tabSelection2" style="margin-bottom: 30px;">
-          <el-radio-button label="left">我参加的</el-radio-button>
-          <el-radio-button label="right">我创建的</el-radio-button>
-        </el-radio-group>
-        <el-card style="width: 992px; height:600px">  <!--高度后期需要自适应 -->
-          <div v-if="tabSelection2 == 'right'">
-            <myCreatedSubject></myCreatedSubject>
-          </div>
-          <div v-else>
-            <myJoinSubject></myJoinSubject>
-          </div>
-        </el-card>
-        </div>
+      <div v-else-if="pageIndex == '2'">
+        <myEntry></myEntry>
+      </div>
+      <div v-else-if="pageIndex == '3'">
+        
+      </div>
+      <div v-else-if="pageIndex == '4'">
+        <myEntry></myEntry>
       </div>
     </div>
     <el-container height="1000px">
@@ -130,29 +108,32 @@
 
 <script>
 
-import myCreatedSubject from "./userCenter/mySubject/createdSubject/myCreatedSubject"
-import myJoinSubject from "./userCenter/mySubject/joinedSubject/myJoinSubject"
 import myEntry from "./userCenter/myEntry"
+import myTask from "./userCenter/myTask"
+
 
 export default {
   name: "userCenter",
   components:{
-    myCreatedSubject,
-    myJoinSubject,
-    myEntry
+    myEntry,
+    myTask,
+      
   },
   data() {
     return {
       userName: this.$store.state.name,
-      tabSelection1: 'left',
-      tabSelection2: 'left',
+      pageIndex: '1',
     };
   },
-  methods: {}
+  methods: {
+    pageSelection(page){
+      this.pageIndex = page
+    }
+  }
 };
 </script>
 
-<style>
+<style scoped>
 dd,dl,dt,ul,li{
   margin: 0;
   padding: 0;
@@ -322,35 +303,11 @@ dd,dl,dt,ul,li{
   font-size: 21px;
   text-align: center;
   text-decoration: none;
-  outline: 0;
+  cursor: pointer;
 }
 .uc-body-wrapper{
   position: relative;
   overflow: hidden;
-}
-.uc-section-task-recommended{
-  padding: 20px 0 50px;
-}
-.uc-tasrec-title{
-  height: 80px;
-  text-align: center;
-  line-height: 80px;
-  font-size: 34px;
-  color: #666;
-  margin: 0;
-  padding: 0;
-}
-.uc-tasrec-layout{
-  width: 980px;
-  margin: 0 auto;
-}
-.uc-tasrec-button{
-  margin-left: 395px;
-  margin-top: 10px;
-}
-.uc-section-task-mine{
-  padding: 20px 0 50px;
-  background: #f8f8f8;
 }
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 200px;
