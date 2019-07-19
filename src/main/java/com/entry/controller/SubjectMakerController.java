@@ -93,7 +93,7 @@ public class SubjectMakerController {
             Boolean isPublic=(Boolean)form.get("isPublic");
             String introduction=(String)form.get("introduction");
             String goal=(String)form.get("goal");
-            Long deadLine= (Long)form.getOrDefault("deadline", (new Date()).getTime());
+            Long deadLine= (Long)form.getOrDefault("deadline", (new Date()).getTime()+3600*1000*24*30);
             Subject subject = new Subject(imageUrl,name,user.getName(),introduction,goal,field,new Timestamp(deadLine),isPublic);
             // 将创建人加入专题组中
             GroupMember groupMember = new GroupMember(new GroupMemberPK(subject,user),2);

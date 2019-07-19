@@ -28,7 +28,7 @@
           </el-form-item>
           <el-form-item label="截止日器">
             <el-date-picker
-              v-model="deadLine"
+              v-model="deadline"
               type="datetime"
               placeholder="选择日期时间"
               style="width:300px"
@@ -77,14 +77,14 @@
 export default {
   name: "subjectCreate",
   computed: {
-    deadLine:{
+    deadline:{
       get:function() {
-        if(this.form.deadLine == 0)
+        if(this.form.deadline == 0)
           return null;
-        return new Date(this.form.deadLine);
+        return new Date(this.form.deadline);
       },
       set:function(newValue) {
-        this.form.deadLine = newValue.getTime();
+        this.form.deadline = newValue.getTime();
       }
     }
   },
@@ -94,7 +94,7 @@ export default {
         imageUrl: "",
         name: "",
         field: "",
-        deadLine: 0,
+        deadline: 0,
         isPublic: false,
         introduction: "",
         goal: "",
