@@ -47,7 +47,7 @@ public class Subject {
     private Boolean isPublic;
 
     @OneToMany(mappedBy = "subject",cascade=CascadeType.ALL,fetch=FetchType.LAZY)
-    private List<Assignment> assignmentlist;
+    private List<Assignment> assignmentList;
 
     @OneToMany(mappedBy="subject",cascade=CascadeType.ALL, fetch=FetchType.LAZY)
     private List<Task> taskList;
@@ -156,12 +156,12 @@ public class Subject {
         isPublic = aPublic;
     }
 
-    public List<Assignment> getAssignmentlist() {
-        return assignmentlist;
+    public List<Assignment> getAssignmentList() {
+        return assignmentList;
     }
 
-    public void setAssignmentlist(List<Assignment> assignmentlist) {
-        this.assignmentlist = assignmentlist;
+    public void setAssignmentList(List<Assignment> assignmentList) {
+        this.assignmentList = assignmentList;
     }
 
     public List<Task> getTaskList() {
