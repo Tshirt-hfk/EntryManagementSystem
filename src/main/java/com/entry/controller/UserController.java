@@ -89,7 +89,7 @@ public class UserController {
                 result.put("assignments", list);
                 return new ResponseEntity<>(BaseResultFactory.build(result, "success"), HttpStatus.OK);
             }else
-                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),"用户没有词条"), HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),"用户没有词条"), HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"我真的错了"),HttpStatus.BAD_REQUEST);
         }
@@ -344,7 +344,7 @@ public class UserController {
     /**
      * 用户获取参加的专题
      * @param request
-     * @param jsonParam
+     * @param
      * @return
      */
     @PostMapping("/api/user/getSubject")
@@ -402,4 +402,31 @@ public class UserController {
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
         }
     }
+
+    /**
+     * 用户搜索专题名
+     * @param request
+     * @param jsonParam
+     * @return
+     */
+    @PostMapping("/api/user/searchSubject")
+    @CrossOrigin
+    public ResponseEntity<?> searchSubject(HttpServletRequest request,@RequestBody String jsonParam){
+        try{
+            HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
+            String subjectName = (String)form.get("keyword");
+            List<Subject> subjects = subjectRepository.findSubjectByKey(subjectName);
+            System.out.println(subjectName);
+            if(subjects.size() != 0){
+                HashMap<String,Object> result = new HashMap<>();
+                result.put("subjects", subjects);
+                return new ResponseEntity<>(BaseResultFactory.build(result,"success"), HttpStatus.OK);
+            }else{
+                return new ResponseEntity<>(BaseResultFactory.build("无结果"), HttpStatus.OK);
+            }
+        }catch (IOException e){
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

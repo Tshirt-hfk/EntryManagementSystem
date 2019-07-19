@@ -1,16 +1,13 @@
 <template>
   <div class="content">
-    <div v-if="status == '1'">
-      <div style="width:100%; font-size:20px; margin-top:15px">
-      <span>您没有权限，点击</span>
-      <el-link type="primary" @click="apply">这里</el-link>
-      <span>申请专题制作人权限</span>
-      </div>
-    </div>
-    <div v-else-if="subjects.length == 0">
-      <div style="width:100%; font-size:20px; margin-top:15px">
-      <span>您还没有创建专题，赶紧创建一个吧</span>
-      </div>
+    <div v-if="subjects.length == 0">
+      <a class="nothing-a" @click="toSubject">
+        <div class="nothing-a-display">
+          <i class="el-icon-circle-plus nothing-icon"> </i>
+          <p>您还没有创建专题</p>
+          <p>赶紧创建吧</p>
+        </div>
+      </a>
     </div>
     <div v-else>
       <template v-for="subject in subjects">
@@ -19,7 +16,7 @@
           <div style="padding: 14px;">
             <div style="display: inline;">
               <span style="color:#338de6;">{{subject.name}}</span>
-              <el-button class="button" size="mini" @click="see(subject.id)">查看</el-button>
+              <el-button class="button" size="mini" @click="entryInSubject(subject.id,subject.name)">查看</el-button>
             </div>
             <div class="subject-bottom">
               <i class="el-icon-time" style="color: #cdcfd1; font-size:14px"></i>
@@ -43,6 +40,7 @@ export default {
       subjects: [],
       deadTime: '0',
       finishedSubject: '0',
+      defaultCard: false,
     };
   },
   mounted() {
@@ -59,18 +57,24 @@ export default {
           })
           .catch(error => {
             if (error.response) {
-              this.$message({
-                message: error.response.data.msg,
-                type: "warning"
-              });
+              
             }
           });
     },
-    apply(){
-
+    entryInSubject(id, name) {
+      window.console.log(id);
+      this.$emit('entryInSubject', id, name);
     },
-    see(id) {
-      this.$router.push({ path: "./subjectmanagement", query: { id: id } });
+    toSubject(){
+      if(this.status == '1'){
+        this.$alert('您还没有专题创建权限', '提示', {
+          confirmButtonText: '确定',
+          callback: action => {
+            
+          }
+        });
+      }else
+        this.$router.push("/subjectcreate");
     }
   }
 };
@@ -79,7 +83,45 @@ export default {
 <style scoped>
 .content {
   margin-left: 10px;
-  width: 960px;
+  width: 1000px;
+}
+.nothing-a{
+  background: #f0f0f0;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+  transition: .15s linear;
+  width: 234px;
+  height: 210px;
+  display: block;
+  border: solid 1px #d5d5d5;
+  margin: 10px 12px 15px 10px;
+  font-size: 0;
+  text-decoration: none;
+}
+.nothing-a:hover {
+  border: solid 1px #52a3f5;
+}
+.nothing-a:hover .nothing-icon{
+  background: #52a3f5;
+}
+.nothing-a-display{
+  width: 100%;
+  height: 150px;
+  margin-top: 33px;
+}
+.nothing-a-display p{
+  font-size: 18px;
+  line-height: 13px;
+  color: #888;
+  display: block;
+  margin-top: 11px;
+}
+.nothing-icon{
+  font-size: 70px;
+  color: #ffffff;
+  background: #515151;
+  border-radius: 50%;
 }
 .box-card {
   float: left;
@@ -88,6 +130,9 @@ export default {
   margin-bottom: 15px;
   height: 210px;
   width: 236px;
+}
+.box-card:hover{
+  border: solid 1px #52a3f5;
 }
 .subject-image{
   width: 234px;

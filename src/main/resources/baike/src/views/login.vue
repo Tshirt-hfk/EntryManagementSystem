@@ -31,7 +31,7 @@
             <el-row>
               <el-col :span="12">
                 <div style="width:40%; margin: 0 auto">
-                  <el-button style="width:100%;" type="primary" @click="login">登陆</el-button>
+                  <el-button style="width:100%;" type="primary" @click="login">登录</el-button>
                 </div>
               </el-col>
               <el-col :span="12">

@@ -34,7 +34,7 @@
             <el-menu-item index="4" style="width: 150px; text-align: center;font-size: large;letter-spacing:12px;text-indent:8px">订单管理</el-menu-item>
             <div class="line"> </div>
             <div class="index-navbar-usercenter">
-                <a class="index-navbar-usercenter-link" href="/usercenter">
+                <a class="index-navbar-usercenter-link" @click="toUserCenter">
                 <i class="el-icon-user-solid"> </i>
                     个 人 中 心
                 </a>
@@ -67,6 +67,9 @@ export default {
         },
         handleSelect(key, keyPath) {
             console.log(key, keyPath);
+        },
+        toUserCenter(){
+            this.$router.push("/usercenter");
         }
     }
 }
@@ -117,5 +120,6 @@ export default {
     font-size: large;
     color: #f5f5f5;
     text-decoration: none;
+    cursor: pointer;
 }
 </style>

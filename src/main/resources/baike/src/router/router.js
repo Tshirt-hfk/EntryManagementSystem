@@ -36,20 +36,25 @@ export default new Router({
       name: 'userCenter',
       component: () => import('../views/userCenter'),
       children: [
-        {
-          path: 'allmysubject',
-          name: 'allMySubject',
-          component: () => import('../views/userCenter/mySubject/allMySubject')
+        { // 个人中心的推荐任务
+          path: 'mytask',
+          name: 'MyTask',
+          component: () => import('../views/userCenter/myTask')
+        },
+        { // 个人中心的我的词条
+          path: 'myentry',
+          name: 'MyEntry',
+          component: () => import('../views/userCenter/myEntry')
+        },
+        { // 个人中心的我的专题
+          path: 'mysubject',
+          name: 'MySubject',
+          component: () => import('../views/userCenter/mySubject')
         },
         {  // 专题管理
           path: 'subjectmanagement',
           name: 'subjectManagement',
           component: () => import('../views/userCenter/mySubject/createdSubject/subjectManagement')
-        },
-        {
-          path: 'allmyentry',
-          name: 'allMyEntry',
-          component: () => import('../views/userCenter/myEntry/allMyEntry')
         },
         {
           path: 'entrymanagement',

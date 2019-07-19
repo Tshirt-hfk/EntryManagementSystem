@@ -1,8 +1,8 @@
 <template>
   <div class="content">
     <div v-if="subjects.length == 0">
-      <div style="width:100%; font-size:20px; margin-top:15px">
-      <span>您还没有加入专题，赶紧加入一个吧</span>
+      <div style="width:100%; font-size:20px; margin-top:40px;margin-bottom: 40px;text-align: center">
+      <span>您还没有加入专题，赶紧加入一个吧!</span>
       </div>
     </div>
     <div v-else>
@@ -78,6 +78,9 @@ export default {
   margin-bottom: 15px;
   height: 210px;
   width: 236px;
+}
+.box-card:hover{
+  border: solid 1px #52a3f5;
 }
 .subject-image{
   width: 234px;

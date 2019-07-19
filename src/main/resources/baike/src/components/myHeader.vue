@@ -22,17 +22,15 @@
           <!-- 普通用户 -->
           <el-dropdown @command="handleCommand">
             <span class="el-dropdown-link">
-                <a @click="toUserCenter">
-                    <div class="header-icon">
-                        <img src="https://static.hdslb.com/images/member/noface.gif" class="header-face">
-                    </div>
-                </a>
-                {{this.userName}} 
+                <div class="header-icon">
+                    <img src="https://static.hdslb.com/images/member/noface.gif" class="header-face">
+                </div>
+                {{userName}} 
                 <i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item command="1">我的专题</el-dropdown-item>
-                <el-dropdown-item command="2">我的任务</el-dropdown-item>
+                <el-dropdown-item command="1">我的任务</el-dropdown-item>
+                <el-dropdown-item command="2">我的词条</el-dropdown-item>
                 <el-dropdown-item command="3">我的收藏</el-dropdown-item>
                 <el-dropdown-item command="4" divided>登出</el-dropdown-item>
             </el-dropdown-menu>
@@ -54,17 +52,16 @@
           <!-- 专题制作人 -->
           <el-dropdown @command="handleCommand">
             <span class="el-dropdown-link">
-              <a href="http:localhost:8080/#/usercenter">
-                <div class="header-icon">
-                  <img src="https://static.hdslb.com/images/member/noface.gif" class="header-face">
-                </div>
-              </a>   {{this.userName}}
+              <div class="header-icon">
+                <img src="https://static.hdslb.com/images/member/noface.gif" class="header-face">
+              </div>  
+              {{userName}}
               <i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item command="1">我的专题</el-dropdown-item>
-                <el-dropdown-item command="2">我的任务</el-dropdown-item>
-                <el-dropdown-item command="3">我的收藏</el-dropdown-item>
+                <el-dropdown-item command="2">我的词条</el-dropdown-item>
+                <el-dropdown-item command="3">我的任务</el-dropdown-item>
                 <el-dropdown-item command="4" divided>登出</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -168,18 +165,26 @@ export default {
       this.$router.push("/");
     },
     toSubject() {
-      this.$router.push("/subjectcreate");
+      if(this.status == '1'){
+        this.$alert('您还没有专题创建权限', '提示', {
+          confirmButtonText: '确定',
+          callback: action => {
+            
+          }
+        });
+      }else
+        this.$router.push("/subjectcreate");
     },
     search() {
       //TODO
     },
     handleCommand(command){
         if(command == '1')
-            this.$router.push("/usercenter/allmysubject");
+            this.$router.push("/usercenter/mysubject");
         else if(command == '2')
-            this.$router.push("/usercenter/allmyentry");
+            this.$router.push("/usercenter/myentry");
         else if(command == '3')
-            this.$router.push("/usercenter/allmyentry");
+            this.$router.push("/usercenter/mytask");
         else if(command == '4')
             this.loginOut();
     }
@@ -271,6 +276,9 @@ export default {
     color: #fff;
     border-radius: 0 0 6px 6px;
     margin-left: 10px;
+}
+.header-createsubject:hover{
+  color: #fff;
 }
 </style>
 

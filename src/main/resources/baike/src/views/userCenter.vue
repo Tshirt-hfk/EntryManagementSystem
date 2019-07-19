@@ -20,7 +20,7 @@
           <div class="uc-baikeinfo">
             <ul class="uc-lemma-info">
               <li>
-                <a href="">
+                <a href="javascript:;">
                   <dl>
                     <dd>0</dd>
                     <dt>创建版本</dt>
@@ -28,7 +28,7 @@
                 </a>
               </li>
               <li>
-                <a href="">
+                <a href="javascript:;">
                   <dl>
                     <dd>0</dd>
                     <dt>提交版本</dt>
@@ -36,7 +36,7 @@
                 </a>
               </li>
               <li>
-                <a href="">
+                <a href="javascript:;">
                   <dl>
                     <dd>0</dd>
                     <dt>通过版本</dt>
@@ -59,49 +59,28 @@
       </div>
       <div class="uc-nav-tab" id="nav_tabs">
         <div class="uc-navtab-layout">
-          <a @click="pageSelection(1)">我的任务</a>
+          <a @click="pageSelection(1)">我的专题</a>
           <a @click="pageSelection(2)">我的词条</a>
-          <a @click="pageSelection(3)">我的专题</a>
+          <a @click="pageSelection(3)">推荐任务</a>
           <a @click="pageSelection(4)">我的收藏</a>
         </div>
       </div>
     </div>
     <div class="uc-body-wrapper">
-      <div v-if="pageIndex == '1'">
-        <myTask></myTask>
+      <!-- <div v-if="pageIndex == '1'">
+        <mySubject></mySubject>
       </div>
       <div v-else-if="pageIndex == '2'">
         <myEntry></myEntry>
       </div>
       <div v-else-if="pageIndex == '3'">
-        
+        <myTask></myTask>
       </div>
-      <div v-else-if="pageIndex == '4'">
-        <myEntry></myEntry>
-      </div>
+      <div v-else-if="pageIndex == '4'">   
+         待添加
+      </div> -->
+      <router-view/>
     </div>
-    <el-container height="1000px">
-      <el-aside width="210px">
-        <el-menu :router="true" default-active="/usercenter/allmysubject" class="el-menu-vertical-demo">
-          <el-menu-item index="/usercenter/allmysubject">
-            <span slot="title">我的专题</span>
-          </el-menu-item>
-          <el-menu-item index="/usercenter/allmyentry">
-            <span slot="title">我的词条</span>
-          </el-menu-item>
-          <el-submenu index="1">
-            <template slot="title">
-              <span slot="title">个人信息</span>
-            </template>
-            <el-menu-item index="/usercenter/identityverification">修改密码</el-menu-item>
-            <el-menu-item index="/usercenter/identityverification">修改邮箱</el-menu-item>
-          </el-submenu>
-        </el-menu>
-      </el-aside>
-      <el-main style="width:100%">
-        <router-view></router-view>
-      </el-main>
-    </el-container>
   </div>
 </template>
 
@@ -110,14 +89,14 @@
 
 import myEntry from "./userCenter/myEntry"
 import myTask from "./userCenter/myTask"
-
+import mySubject from "./userCenter/mySubject"
 
 export default {
   name: "userCenter",
   components:{
     myEntry,
     myTask,
-      
+    mySubject
   },
   data() {
     return {
@@ -127,7 +106,12 @@ export default {
   },
   methods: {
     pageSelection(page){
-      this.pageIndex = page
+      if(page == '1')
+        this.$router.push('./mysubject')
+      else if(page == '2')
+        this.$router.push('./myentry')
+      else if(page == '3')
+        this.$router.push('./mytask')
     }
   }
 };
@@ -244,6 +228,7 @@ dd,dl,dt,ul,li{
   background: #fff;
   text-decoration: none;
   transition: .1s linear;
+  cursor: default;
 }
 .uc-lemma-info li a dl{
   text-align: center;
@@ -305,12 +290,16 @@ dd,dl,dt,ul,li{
   text-decoration: none;
   cursor: pointer;
 }
+.uc-nav-tab a:hover{
+  background:rgba(255, 255, 255,0.1)
+}
+.uc-nav-tab-clicked{
+  background: #0683d8;
+  font-weight: bold;
+  cursor: default;
+}
 .uc-body-wrapper{
   position: relative;
   overflow: hidden;
-}
-.el-menu-vertical-demo:not(.el-menu--collapse) {
-  width: 200px;
-  min-height: 400px;
 }
 </style>
