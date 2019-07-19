@@ -12,6 +12,11 @@ export default new Router({
       component: index
     },
     {
+      path: '/test',
+      name: 'test',
+      component: () => import('../components/myEditor')
+    },
+    {
       path: '/login',
       name: 'login',
       component: () => import('../views/login')
