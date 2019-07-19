@@ -73,39 +73,50 @@ export default {
   data() {
     return {
       basicInfo: {
-        imageUrl:
-          "https://gss0.bdstatic.com/94o3dSag_xI4khGkpoWK1HF6hhy/baike/crop%3D0%2C0%2C460%2C275%3BeWH%3D257%2C154/sign=a13a9483bd19ebc4d4372cd9bf16e3cc/37d12f2eb9389b5097c94bb48b35e5dde7116e26.jpg",
+        imageUrl: "",
         title: "",
         creator: "test",
         isPublic: true,
         currentCount: 50,
         totalCount: 100,
-        myCompletedCount: 10,
+        myCompletedCount: 0,
         deadline: 1563085500233,
         introduction: "introduction",
         goal: "goal"
       },
-      restTime: ""
+      restTime: "",
+      dt: null
     };
   },
   mounted: function() {
-    setInterval(() => {
-      var now = Date.now();
-      var timeStr = "";
-      var rt = parseInt((this.basicInfo.deadline - now) / 1000);
-      var day = parseInt(rt / (24 * 3600));
-      if (day > 0) timeStr = timeStr + day + "天";
-      var hour = parseInt((rt % (24 * 3600)) / 3600);
-      if (hour > 0) timeStr = timeStr + hour + "时";
-      var min = parseInt((rt % 3600) / 60);
-      if (min > 0) timeStr = timeStr + min + "分";
-      var sec = parseInt(rt % 60);
-      if (sec > 0) timeStr = timeStr + sec + "秒";
-      this.restTime = timeStr;
-    }, 1000);
     this.init();
   },
   methods: {
+    timer() {
+      var now = Date.now();
+      if (this.basicInfo.deadline > now) {
+        this.dt = setInterval(() => {
+          var timeStr = "";
+          var rt = parseInt((this.basicInfo.deadline - now) / 1000);
+          if (rt <= 0) {
+            this.restTime = "已过期";
+            clearInterval(this.dt);
+          }
+          var day = parseInt(rt / (24 * 3600));
+          if (day > 0) timeStr = timeStr + day + "天";
+          var hour = parseInt((rt % (24 * 3600)) / 3600);
+          if (hour > 0) timeStr = timeStr + hour + "时";
+          var min = parseInt((rt % 3600) / 60);
+          if (min > 0) timeStr = timeStr + min + "分";
+          var sec = parseInt(rt % 60);
+          if (sec > 0) timeStr = timeStr + sec + "秒";
+          this.restTime = timeStr;
+          window.console.log();
+        }, 1000);
+      } else {
+        this.restTime = "已过期";
+      }
+    },
     init() {
       this.$axios
         .post("http://localhost:8081/api/user/getSubjectBasicInfo", {
@@ -114,9 +125,7 @@ export default {
         .then(res => {
           if (res.data.data) {
             this.basicInfo = res.data.data.basicInfo;
-            //this.$message({
-              //message: res.data.msg
-            //});
+            this.timer();
           }
         })
         .catch(error => {

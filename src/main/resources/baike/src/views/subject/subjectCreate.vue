@@ -117,7 +117,6 @@ export default {
     },
     submit() {
       window.console.log(this.form)
-      return;
       this.$axios
         .post("http://localhost:8081/api/subjectMaker/createSubject", this.form)
         .then(res => {

@@ -29,7 +29,7 @@ public class Assignment {
     private String content;
 
     @Column
-        private String modifyReason;
+    private String modifyReason;
 
     @Column(nullable = false)
     private String field;
@@ -118,4 +118,5 @@ public class Assignment {
     public void setField(String field) {
         this.field = field;
     }
+
 }

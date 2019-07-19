@@ -27,6 +27,7 @@ public class GroupMember {
     public GroupMember(GroupMemberPK pk, Integer identity) {
         this.pk = pk;
         this.identity = identity;
+        this.myCompletedCount = 0;
     }
 
     public GroupMember(Subject subject, User user, Integer identity) {

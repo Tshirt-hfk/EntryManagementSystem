@@ -100,7 +100,9 @@ public class SubjectMakerController {
             subjectRepository.save(subject);
             groupMemberRepository.save(groupMember);
             //初始化 专题的所有任务
-
+            String content = HttpRequestUtil.get("http://localhost:5003/keywords_extraction");
+            HashMap<String,Object> data = new ObjectMapper().readValue(content,HashMap.class);
+            System.out.println(data.get("nodes"));
             return new ResponseEntity<>(BaseResultFactory.build("创建成功"), HttpStatus.OK);
         }catch (IOException e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
@@ -253,7 +255,5 @@ public class SubjectMakerController {
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
         }
     }
-
-
 
 }
