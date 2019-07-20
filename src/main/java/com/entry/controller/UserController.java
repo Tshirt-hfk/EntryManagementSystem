@@ -369,10 +369,13 @@ public class UserController {
             HashMap<String,Object> tmp = null;
             for(GroupMember groupMember : groupMembers){
                 Subject subject = groupMember.getSubject();
+                List<Task> tasks = taskRepository.findAllByUser_IdAndState(userId, Task.PASS);
                 tmp = new HashMap<>();
                 tmp.put("id", subject.getId());
                 tmp.put("name", subject.getName());
                 tmp.put("imgUrl", subject.getImageUrl());
+                tmp.put("deadline",subject.getDeadline());
+                tmp.put("finishNum", tasks.size());
                 tmp.put("introduction", subject.getIntroduction());
                 tmps.add(tmp);
             }
@@ -508,11 +511,14 @@ public class UserController {
             HashMap<String,Object> tmp = null;
             if(subjects.size() != 0){
                 for(Subject subject: subjects){
+                    List<GroupMember> groupMember = groupMemberRepository.findAllBySubject_IdAndIdentity(subject.getId(), GroupMember.ORDINRYUSER);
                     tmp = new HashMap<>();
                     tmp.put("id", subject.getId());
                     tmp.put("name", subject.getName());
                     tmp.put("field", subject.getField());
                     tmp.put("deadTime", subject.getDeadline());
+                    tmp.put("deadline",subject.getDeadline());
+                    tmp.put("memberCount", groupMember.size());
                     tmp.put("total_count", subject.getTotalCount());
                     tmps.add(tmp);
                 }

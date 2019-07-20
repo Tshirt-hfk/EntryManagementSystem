@@ -28,9 +28,9 @@
             </div>
             <div class="subject-bottom">
               <i class="el-icon-time" style="color: #cdcfd1; font-size:14px"></i>
-              <span style="font-size:14px; margin-right:5px; color: #cdcfd1;">剩余时间{{deadTime}}天</span>
+              <span style="font-size:14px; margin-right:5px; color: #cdcfd1;">剩余时间{{subject.deadline | getDay}}天</span>
               <i class="el-icon-coin" style="color: #cdcfd1; font-size:14px"></i>
-              <span style="font-size:14px; color: #cdcfd1;">完成词条{{finishedSubject}}个</span>
+              <span style="font-size:14px; color: #cdcfd1;">完成词条{{subject.finishNum}}个</span>
             </div>
           </div>
         </el-card>
@@ -40,6 +40,7 @@
 </template>
 
 <script>
+
 import mySearch from "../../../../components/mySearch";
 
 export default {
@@ -51,8 +52,6 @@ export default {
     return {
       status: this.$store.state.status,
       subjects: [],
-      deadTime: "0",
-      finishedSubject: "0",
       options: [],
       loading: false,
       value: []
@@ -61,13 +60,22 @@ export default {
   mounted() {
     this.init();
   },
+  filters: {
+      getDay: function (end_time) {
+        var day = Math.ceil((end_time - new Date().getTime())/86400000)
+        if(day < 0)
+          day = 0
+        return day
+      }
+  },
   methods: {
     init() {
       // 初始化数据
       this.$axios
         .post("http://localhost:8081/api/user/getSubject")
         .then(res => {
-          if (res.data.data) this.subjects = res.data.data.subjects;
+          if (res.data.data) 
+            this.subjects = res.data.data.subjects;
         })
         .catch(error => {
           if (error.response) {
@@ -127,7 +135,7 @@ export default {
   height: 130px;
 }
 .subject-bottom {
-  margin-top: 13px;
+  margin-top: 35px;
   line-height: 12px;
 }
 .clearfix:before,

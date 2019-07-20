@@ -61,6 +61,7 @@ public class SubjectMakerController {
                 tmp.put("name", subject.getName());
                 tmp.put("introduction", subject.getIntroduction());
                 tmp.put("imageUrl", subject.getImageUrl());
+                tmp.put("deadline", subject.getDeadline());
                 tmps.add(tmp);
             }
             HashMap<String,Object> result = new HashMap<>();

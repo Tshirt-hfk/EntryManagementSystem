@@ -35,9 +35,9 @@
               </div>
               <div class="subject-bottom">
                 <i class="el-icon-time" style="color: #cdcfd1; font-size:14px"></i>
-                <span style="font-size:14px; margin-right:5px; color: #cdcfd1;">剩余时间{{deadTime}}天</span>
+                <span style="font-size:14px; margin-right:5px; color: #cdcfd1;">剩余时间{{subject.deadline | getDay}}天</span>
                 <i class="el-icon-coin" style="color: #cdcfd1; font-size:14px"></i>
-                <span style="font-size:14px; color: #cdcfd1;">完成词条{{finishedSubject}}个</span>
+                <span style="font-size:14px; color: #cdcfd1;">完成词条{{subject.finishNum}}个</span>
               </div>
             </div>
           </el-card>
@@ -71,8 +71,6 @@ export default {
       subjects: [],
       subjectId: 0,
       subjectName: "",
-      deadTime: "0",
-      finishedSubject: "0",
       defaultCard: false,
       options: [],
       loading: false,
@@ -81,6 +79,14 @@ export default {
   },
   mounted() {
     this.init();
+  },
+  filters: {
+    getDay: function (end_time) {
+      var day = Math.ceil((end_time - new Date().getTime())/86400000)
+      if(day < 0)
+          day = 0
+      return day
+    }
   },
   methods: {
     init() {
