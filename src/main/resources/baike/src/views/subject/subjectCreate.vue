@@ -534,7 +534,7 @@ export default {
             this.$message({
               message: res.data.msg
             });
-            this.$router.push("/usercenter/mysubject");
+            this.$router.push("/usercenter/mysubject/createdsubject");
           }
         })
         .catch(error => {

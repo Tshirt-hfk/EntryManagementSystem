@@ -107,11 +107,11 @@ export default {
   methods: {
     pageSelection(page){
       if(page == '1')
-        this.$router.push('./mysubject')
+        this.$router.push('/userCenter/mysubject/joinedsubject')
       else if(page == '2')
-        this.$router.push('./myentry')
+        this.$router.push('/userCenter/myentry')
       else if(page == '3')
-        this.$router.push('./mytask')
+        this.$router.push('/userCenter/mytask')
     }
   }
 };

@@ -13,8 +13,19 @@
       <el-table-column align="left">
         <template slot-scope="scope">
           <el-button @click="see(scope.row)">查 看</el-button>
-          <el-button @click="audit(scope.row, true)">通 过</el-button>
-          <el-button type="danger" @click="reject(scope.row)">拒绝</el-button>
+          <el-button type="primary" @click="audit(scope.row, true)">通 过</el-button>
+          <el-button type="danger" @click="rejectFlag = true">拒绝</el-button>
+          <el-dialog title="未通过原因" :visible.sync="rejectFlag" width="600px">
+            <span>
+              <div style="margin: 15px 0;"></div>
+              <el-input type="textarea" v-model="reason" maxlength="30" show-word-limit></el-input>
+              <div style="margin: 10px 0;"></div>
+            </span>
+            <span slot="footer" class="dialog-footer">
+              <el-button @click="rejectFlag = false">返 回</el-button>
+              <el-button type="danger" @click="audit(scope.row, false)">确 定</el-button>
+            </span>
+          </el-dialog>
         </template>
       </el-table-column>
     </el-table>
@@ -29,6 +40,8 @@ export default {
   data() {
     return {
       tableData: [],
+      rejectFlag: false,
+      reason: '',
     };
   },
   mounted() {
@@ -77,8 +90,9 @@ export default {
     audit(row, pass) {
       this.$axios
         .post("http://localhost:8081/api/subjectMaker/auditTask", {
-          assignmentId: row.id,
+          assignmentId: row.assignmentId,
           userId: row.userId,
+          reason: this.reason,
           pass: pass
         })
         .then(res => {

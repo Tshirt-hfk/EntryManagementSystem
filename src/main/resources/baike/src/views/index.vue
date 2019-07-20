@@ -43,6 +43,8 @@
                 </div>
             </div>
         </div>
+        <div class="index-main">
+        </div>
     </div>
 </template>
 
@@ -130,5 +132,11 @@ export default {
     float: left;
     margin-top: 17px;
     margin-left: 35px;
+}
+.index-main{
+  width: 80%;
+  margin: 0 auto;
+  min-height: 700px;
+  margin-top: 10px;
 }
 </style>

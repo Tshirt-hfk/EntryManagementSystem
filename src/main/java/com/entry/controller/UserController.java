@@ -166,7 +166,7 @@ public class UserController {
             for (Integer id : entryIds){
                 Task task = taskRepository.findTaskById(id);
                 if(task!=null && task.getUser().getId()==userId){
-                    Assignment assignment = assignmentRepository.findAssignmentById(id);
+                    Assignment assignment = task.getAssignment();
                     task.setState(Task.TOAUDITED);
                     task.setSaveTime(new Date().getTime());
                     task.setAdmitReason(reason);
@@ -340,6 +340,7 @@ public class UserController {
             assignment.setState(Assignment.DRAWED);
             Task task = new Task(subject,user,assignment,Task.DRAWED);
             task.setSaveTime(new Date().getTime());
+            task.setJudgeTime(new Date().getTime());
             assignmentRepository.save(assignment);
             taskRepository.save(task);
             return new ResponseEntity<>(BaseResultFactory.build("领取成功"), HttpStatus.OK);
@@ -371,6 +372,7 @@ public class UserController {
                 tmp = new HashMap<>();
                 tmp.put("id", subject.getId());
                 tmp.put("name", subject.getName());
+                tmp.put("imgUrl", subject.getImageUrl());
                 tmp.put("introduction", subject.getIntroduction());
                 tmps.add(tmp);
             }

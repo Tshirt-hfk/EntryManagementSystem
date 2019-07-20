@@ -180,7 +180,7 @@ export default {
     },
     handleCommand(command){
         if(command == '1')
-            this.$router.push("/usercenter/mysubject");
+            this.$router.push("/usercenter/mysubject/joinedsubject");
         else if(command == '2')
             this.$router.push("/usercenter/myentry");
         else if(command == '3')
