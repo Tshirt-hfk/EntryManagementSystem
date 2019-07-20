@@ -43,10 +43,10 @@ public class Task {
     @Column(columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP", nullable = false)
     private Timestamp deadline;
 
-    @Column(columnDefinition = "TIMESTAMP", nullable = false)
+    @Column(columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP", nullable = false)
     private Timestamp saveTime;
 
-    @Column(columnDefinition = "TIMESTAMP", nullable = false)
+    @Column(columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP", nullable = false)
     private Timestamp judgeTime;
 
     @ManyToOne(optional=false, fetch = FetchType.LAZY)
