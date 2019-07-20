@@ -12,11 +12,11 @@
       </div>
     <template v-for="subject in subjects">
         <el-card class="box-card" :key="subject.id" :body-style="{ padding: '0px' }">
-          <img class="subject-image" src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png">
+          <img class="subject-image" src="subject.imgUrl">
           <div style="padding: 14px;">
             <div class="subject-top">
-              <span style="color:#338de6;">{{subject.name}}</span>
-              <el-button class="button" size="mini" @click="see(subject.id)">参加活动</el-button>
+              <span style="color:#338de6;float:left">{{subject.name}}</span>
+              <el-button style="float:right;" size="mini" @click="see(subject.id)">参加活动</el-button>
             </div>
             <div class="subject-bottom">
               <div v-if="subject.deadTime !== '0'" >

@@ -1,19 +1,12 @@
 <template>
-  <el-table :data="tableData" style="width: 100%" max-height="500" @row-click="jumpToPreview">
-    <el-table-column prop="name" label="词条名称" width="150"> </el-table-column>
+  <el-table :data="tableData" style="width: 100%" max-height="500">
+    <el-table-column prop="name" label="词条名称" width="250"> </el-table-column>
     <el-table-column prop="field" label="领域" width="150"> </el-table-column>
     <el-table-column label="提交时间" width="180">
       <template slot-scope="scope">{{ scope.row.saveTime | formatDate}}</template>
     </el-table-column>
     <el-table-column label="通过时间" width="180">
       <template slot-scope="scope">{{ scope.row.judgeTime | formatDate}}</template>
-    </el-table-column>
-    <el-table-column label="版本" show-overflow-tooltip>
-      <template>
-        <span class="passentry-version">
-          <a @click="toEntryExhibition">版本</a>
-        </span>
-      </template>
     </el-table-column>
   </el-table>
 </template>
@@ -62,7 +55,7 @@ export default {
         });
     },
     jumpToPreview(){
-      this.$router.push({path : "/entry", query :{id : id}});
+      
     },
     stateChange(state){
       this.$emit('stateChange', state)

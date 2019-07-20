@@ -175,6 +175,7 @@ public class SubjectMakerController {
                     User user = task.getUser();
                     result1 = new HashMap<>();
                     result1.put("id", task.getId());
+                    result1.put("assignmentId", task.getAssignment().getId());
                     result1.put("name", task.getEntryName());
                     result1.put("field", task.getField());
                     result1.put("username", user.getName());
@@ -249,11 +250,18 @@ public class SubjectMakerController {
             Integer subjectId = (Integer)form.get("subjectId");
             Task task = taskRepository.findTaskByAssignment_IdAAndUser_Id(assignmentId, userId);
             Assignment assignment = assignmentRepository.findAssignmentById(assignmentId);
+            System.out.println(assignmentId);
+            System.out.println(userId);
+            if(task == null)
+                System.out.println("haha");
+            if(assignment == null)
+                System.out.println("zah");
 //            GroupMember groupMember = groupMemberRepository.findByUser_IdAndSubject_Id(userId,subjectId);
             if(assignment != null && task != null) {
                 if(pass){
                     assignment.setState(Assignment.TOSUBMIT);
                     assignment.setContent(task.getContent());
+                    task.setJudgeTime(new Date().getTime());
                     task.setState(Task.PASS);
                     taskRepository.save(task);
                     assignmentRepository.save(assignment);
@@ -262,8 +270,11 @@ public class SubjectMakerController {
                     return new ResponseEntity<>(BaseResultFactory.build("审核通过"), HttpStatus.OK);
                 }else{
                     // TODO
+                    String reason = (String) form.get("reason");
                     assignment.setState(Assignment.PUBLISHED);
                     assignmentRepository.save(assignment);
+                    task.setJudgeTime(new Date().getTime());
+                    task.setAdmitReason(reason);
                     task.setState(Task.UNPASS);
                     taskRepository.save(task);
                     return new ResponseEntity<>(BaseResultFactory.build("审核不通过"), HttpStatus.OK);
