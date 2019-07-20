@@ -11,7 +11,7 @@
         {{subjectName}}
       </div>
     </div>
-    <el-tabs type="border-card">
+    <el-tabs type="border-card" style="width: 90% ">
       <el-tab-pane lazy>
         <span slot="label">未发布词条</span>
         <unpublishedEntry ref="myUnpublishedEntry" v-on:stateChange="stateChange" v-bind:subjectId="subjectId"></unpublishedEntry>
@@ -97,7 +97,7 @@ export default {
   height: 500px;
 }
 .manage-back{
-  width: 100%;
+  width: 90%;
   height: 100px;
   text-align: left;
 }
