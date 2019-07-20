@@ -40,11 +40,25 @@ export default new Router({
       path: '/usercenter',
       name: 'userCenter',
       component: () => import('../views/userCenter'),
+      redirect: '/userCenter/mysubject/joinedsubject',
       children: [
         { // 个人中心的推荐任务
           path: 'mytask',
-          name: 'MyTask',
-          component: () => import('../views/userCenter/myTask')
+          name: 'myTask',
+          component: () => import('../views/userCenter/myTask'),
+          redirect: '/userCenter/mytask/recommendedentry',
+          children: [
+            {
+              path: 'recommendedentry',
+              name: 'recommendedEntry',
+              component: () => import('../views/userCenter/recommendedTask/myRecommendEntry')
+            },
+            {
+              path: 'recommendedsubject',
+              name: 'recommendedSubject',
+              component: () => import('../views/userCenter/recommendedTask/myRecommendSubject')
+            }
+          ]
         },
         { // 个人中心的我的词条
           path: 'myentry',
@@ -55,6 +69,7 @@ export default new Router({
           path: 'mysubject',
           name: 'MySubject',
           component: () => import('../views/userCenter/mySubject'),
+          redirect: '/userCenter/mysubject/joinedsubject',
           children: [
             {
               path: 'joinedsubject',
