@@ -8,13 +8,6 @@
     <el-table-column label="通过时间" width="180">
       <template slot-scope="scope">{{ scope.row.judgeTime | formatDate}}</template>
     </el-table-column>
-    <el-table-column label="版本" show-overflow-tooltip>
-      <template>
-        <span class="passentry-version">
-          <a @click="toEntryExhibition">版本</a>
-        </span>
-      </template>
-    </el-table-column>
   </el-table>
 </template>
 

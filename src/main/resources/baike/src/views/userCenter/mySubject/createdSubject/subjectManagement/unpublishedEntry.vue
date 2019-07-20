@@ -590,7 +590,7 @@ export default {
             this.dialogFormVisible = false;
             this.init();
             this.stateChange(2);
-            this.publishFlag = false
+            this.publishFlag = false;
             this.$message({
               message: res.data.msg
             });

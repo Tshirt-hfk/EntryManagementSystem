@@ -54,7 +54,24 @@ export default new Router({
         { // 个人中心的我的专题
           path: 'mysubject',
           name: 'MySubject',
-          component: () => import('../views/userCenter/mySubject')
+          component: () => import('../views/userCenter/mySubject'),
+          children: [
+            {
+              path: 'joinedsubject',
+              name: 'joinedSubject',
+              component: () => import('../views/userCenter/mySubject/joinedSubject/myJoinSubject')
+            },
+            {
+              path: 'createdsubject',
+              name: 'createdSubject',
+              component: () => import('../views/userCenter/mySubject/createdSubject/myCreatedSUbject')
+            },
+            {
+              path: 'subjectmanagement',
+              name: 'subjectManagement',
+              components: () => import('../views/userCenter/mySubject/createdSubject/subjectManagement')
+            }
+          ]
         },
         {  // 专题管理
           path: 'subjectmanagement',

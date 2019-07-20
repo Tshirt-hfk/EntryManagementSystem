@@ -3,7 +3,7 @@
     <div v-if="subjects.length == 0">
       <a class="nothing-a" @click="toSubject">
         <div class="nothing-a-display">
-          <i class="el-icon-circle-plus nothing-icon"> </i>
+          <i class="el-icon-circle-plus nothing-icon"></i>
           <p>您还没有创建专题</p>
           <p>赶紧创建吧</p>
         </div>
@@ -11,100 +11,122 @@
     </div>
     <div v-else>
       <div class="mycreatesub-searchbar">
-          <mySearch style="float:right" v-on:remoteMethod="remoteMethod" :options="options" :value="value" :loading="loading"></mySearch>
+        <mySearch
+          style="float:right"
+          v-on:remoteMethod="remoteMethod"
+          :options="options"
+          :value="value"
+          :loading="loading"
+        ></mySearch>
       </div>
-      <template v-for="subject in subjects">
-        <el-card class="box-card" :key="subject.id" :body-style="{ padding: '0px' }">
-          <img class="subject-image" :src="subject.imageUrl">
-          <div style="padding: 12px 12px 0 12px;">
-            <div>
-              <span style="color:#338de6;float:left">{{subject.name}}</span>
-              <el-button style="float:right" size="mini" @click="entryInSubject(subject.id,subject.name)">查看</el-button>
-              <div class="clear"></div>
+      <template v-if="state==1">
+        <template v-for="subject in subjects">
+          <el-card class="box-card" :key="subject.id" :body-style="{ padding: '0px' }">
+            <img class="subject-image" :src="subject.imageUrl" />
+            <div style="padding: 12px 12px 0 12px;">
+              <div>
+                <span style="color:#338de6;float:left">{{subject.name}}</span>
+                <el-button
+                  style="float:right"
+                  size="mini"
+                  @click="entryInSubject(subject.id,subject.name)"
+                >查看</el-button>
+                <div class="clear"></div>
+              </div>
+              <div class="subject-bottom">
+                <i class="el-icon-time" style="color: #cdcfd1; font-size:14px"></i>
+                <span style="font-size:14px; margin-right:5px; color: #cdcfd1;">剩余时间{{deadTime}}天</span>
+                <i class="el-icon-coin" style="color: #cdcfd1; font-size:14px"></i>
+                <span style="font-size:14px; color: #cdcfd1;">完成词条{{finishedSubject}}个</span>
+              </div>
             </div>
-            <div class="subject-bottom">
-              <i class="el-icon-time" style="color: #cdcfd1; font-size:14px"></i>
-              <span style="font-size:14px; margin-right:5px; color: #cdcfd1;">剩余时间{{deadTime}}天</span>
-              <i class="el-icon-coin" style="color: #cdcfd1; font-size:14px"></i>
-              <span style="font-size:14px; color: #cdcfd1;">完成词条{{finishedSubject}}个</span>
-            </div>
-          </div>
-        </el-card>
+          </el-card>
+        </template>
+      </template>
+      <template v-else>
+        <subjectManagement
+          :subjectId="subjectId"
+          :subjectName="subjectName"
+          v-on:backToSubject="backToSubject"
+        ></subjectManagement>
       </template>
     </div>
   </div>
 </template>
 
 <script>
-
-import mySearch from "../../../../components/mySearch"
+import mySearch from "../../../../components/mySearch";
+import subjectManagement from "./subjectManagement";
 
 export default {
   name: "myCreatedSubject",
   components: {
     mySearch,
+    subjectManagement
   },
   data() {
     return {
-      status : this.$store.state.status,
+      status: this.$store.state.status,
+      state: 1,
       subjects: [],
-      deadTime: '0',
-      finishedSubject: '0',
+      subjectId: 0,
+      subjectName: "",
+      deadTime: "0",
+      finishedSubject: "0",
       defaultCard: false,
       options: [],
       loading: false,
-      value: [],
+      value: []
     };
   },
   mounted() {
-    this.init()
+    this.init();
   },
   methods: {
-    init(){
+    init() {
       // 初始化数据
-        this.$axios
-          .post("http://localhost:8081/api/subjectMaker/getSubject")
-          .then(res => {
-            if (res.data.data)
-              this.subjects = res.data.data.subjects;
-          })
-          .catch(error => {
-            if (error.response) {
-              
-            }
-          });
-    },
-    entryInSubject(id, name) {
-      window.console.log(id);
-      this.$emit('entryInSubject', id, name);
-    },
-    toSubject(){
-      if(this.status == '1'){
-        this.$alert('您还没有专题创建权限', '提示', {
-          confirmButtonText: '确定',
-          callback: action => {
-            
+      this.$axios
+        .post("http://localhost:8081/api/subjectMaker/getSubject")
+        .then(res => {
+          if (res.data.data) this.subjects = res.data.data.subjects;
+        })
+        .catch(error => {
+          if (error.response) {
           }
         });
-      }else
-        this.$router.push("/subjectcreate");
     },
-    remoteMethod(query){
-        this.loading = true;
-        this.$axios
-            .post("http://localhost:8081/api/user/searchSubject", {keyword:query})
-            .then(res => {
-                if(res.data.data){
-                    window.console.log("woxiaole")
-                    this.options = res.data.data.subjects;
-                }else{
-                    window.console.log("wozhale")
-                }
-                this.loading = false;
-            })
-            .catch(error => {
-                      
-            });
+    entryInSubject(id, name) {
+      this.subjectId = id;
+      this.subjectName = name;
+      this.state = 2;
+    },
+    backToSubject() {
+      this.state = 1;
+    },
+    toSubject() {
+      if (this.status == "1") {
+        this.$alert("您还没有专题创建权限", "提示", {
+          confirmButtonText: "确定",
+          callback: action => {}
+        });
+      } else this.$router.push("/subjectcreate");
+    },
+    remoteMethod(query) {
+      this.loading = true;
+      this.$axios
+        .post("http://localhost:8081/api/user/searchSubject", {
+          keyword: query
+        })
+        .then(res => {
+          if (res.data.data) {
+            window.console.log("woxiaole");
+            this.options = res.data.data.subjects;
+          } else {
+            window.console.log("wozhale");
+          }
+          this.loading = false;
+        })
+        .catch(error => {});
     }
   }
 };
@@ -115,16 +137,16 @@ export default {
   margin-left: 30px;
   width: 1200px;
 }
-.mycreatesub-searchbar{
+.mycreatesub-searchbar {
   width: 1060px;
   height: 60px;
 }
-.nothing-a{
+.nothing-a {
   background: #f0f0f0;
   text-align: center;
   cursor: pointer;
   position: relative;
-  transition: .15s linear;
+  transition: 0.15s linear;
   width: 234px;
   height: 210px;
   display: block;
@@ -136,22 +158,22 @@ export default {
 .nothing-a:hover {
   border: solid 1px #52a3f5;
 }
-.nothing-a:hover .nothing-icon{
+.nothing-a:hover .nothing-icon {
   background: #52a3f5;
 }
-.nothing-a-display{
+.nothing-a-display {
   width: 100%;
   height: 150px;
   margin-top: 33px;
 }
-.nothing-a-display p{
+.nothing-a-display p {
   font-size: 18px;
   line-height: 13px;
   color: #888;
   display: block;
   margin-top: 11px;
 }
-.nothing-icon{
+.nothing-icon {
   font-size: 70px;
   color: #ffffff;
   background: #515151;
@@ -165,14 +187,14 @@ export default {
   height: 210px;
   width: 236px;
 }
-.box-card:hover{
+.box-card:hover {
   border: solid 1px #52a3f5;
 }
-.subject-image{
+.subject-image {
   width: 234px;
   height: 130px;
 }
-.subject-bottom{
+.subject-bottom {
   margin-top: 13px;
   line-height: 12px;
 }

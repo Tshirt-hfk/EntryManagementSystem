@@ -4,7 +4,7 @@
         <div class="uc-tasmine-title">专题任务</div>
         <div class="uc-tasmine-layout">
           <div class="uc-tasmine-navbtn">
-            <el-radio-group class="uc-tasmine-button" v-model="tabSelection">
+            <el-radio-group class="uc-tasmine-button" v-model="tabSelection" v-on:change="change">
               <el-radio-button label="left">我参加的</el-radio-button>
               <el-radio-button label="right">我创建的</el-radio-button>
             </el-radio-group>
@@ -14,17 +14,7 @@
             </div>
           </div>
           <el-card style="width: 1200px;min-height:600px">  <!--高度后期需要自适应 -->
-            <div v-if="tabSelection == 'right'">
-              <div v-if="subjectFlag == false">
-                  <myCreatedSubject ref="mycreatedsubject" v-on:entryInSubject="entryInSubject"></myCreatedSubject>
-              </div>
-              <div v-else>
-                  <subjectManagement :subjectId="subjectId" :subjectName="subjectName" v-on:backToSubject="backToSubject"></subjectManagement>
-              </div>
-            </div>
-            <div v-else>
-              <myJoinSubject></myJoinSubject>
-            </div>
+            <router-view ></router-view>
           </el-card>
         </div>
       </div>
@@ -33,35 +23,22 @@
 
 <script>
 
-import myCreatedSubject from "./mySubject/createdSubject/myCreatedSubject"
-import myJoinSubject from "./mySubject/joinedSubject/myJoinSubject"
-import subjectManagement from "./mySubject/createdSubject/subjectManagement"
-
 export default {
     name: "mySubject",
-    components :{
-        myCreatedSubject,
-        myJoinSubject,
-        subjectManagement
-    },
     data() {
         return{
-            userName: this.$store.state.name,
             tabSelection: 'left',
-            subjectId: '0',
-            subjectName: '',
-            subjectFlag: false,
         };
     },
+    mounted(){
+    },
     methods:{
-        entryInSubject(id, name){
-            this.subjectId = id;
-            this.subjectName = name;
-            this.subjectFlag = true;
+        change() {
+          if(this.tabSelection=="left")
+            this.$router.push("./joinedsubject")
+          else if(this.tabSelection=="right")
+            this.$router.push("./createdsubject")
         },
-        backToSubject(){
-            this.subjectFlag = false;
-        }
     }
 }
 </script>
