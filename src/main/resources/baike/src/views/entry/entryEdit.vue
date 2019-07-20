@@ -103,7 +103,7 @@ export default {
           this.$message({
             message: res.data.msg
           });
-          this.$router.push("/usercenter/allmyentry");
+          this.$router.push("/usercenter/myentry");
         })
         .catch(error => {
           if (error.response) {

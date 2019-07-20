@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -73,23 +75,23 @@ public class UserController {
             HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
             Integer type = (Integer)form.get("type");
             List<Task> tasks = taskRepository.findAllByUser_IdAndState(userId,type);
-            if(tasks.size() != 0){
-                List<Object> list = new ArrayList<>();
-                HashMap<String, Object> tmp = null;
-                for(Task task: tasks){
-                    tmp = new HashMap<>();
-                    tmp.put("id", task.getId());
-                    tmp.put("content", task.getContent());
-                    tmp.put("endTime", task.getDeadline());
-                    tmp.put("name", task.getEntryName());
-                    tmp.put("field", task.getField());
-                    list.add(tmp);
-                }
-                HashMap<String, Object> result = new HashMap<>();
-                result.put("assignments", list);
-                return new ResponseEntity<>(BaseResultFactory.build(result, "success"), HttpStatus.OK);
-            }else
-                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),"用户没有词条"), HttpStatus.OK);
+            List<Object> list = new ArrayList<>();
+            HashMap<String, Object> tmp = null;
+            for(Task task: tasks){
+                tmp = new HashMap<>();
+                tmp.put("id", task.getId());
+                tmp.put("content", task.getContent());
+                tmp.put("endTime", task.getDeadline());
+                tmp.put("saveTime", task.getSaveTime());
+                tmp.put("judgeTime", task.getJudgeTime());
+                tmp.put("reason", task.getAdmitReason());
+                tmp.put("name", task.getEntryName());
+                tmp.put("field", task.getField());
+                list.add(tmp);
+            }
+            HashMap<String, Object> result = new HashMap<>();
+            result.put("assignments", list);
+            return new ResponseEntity<>(BaseResultFactory.build(result, "success"), HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"我真的错了"),HttpStatus.BAD_REQUEST);
         }
@@ -138,6 +140,7 @@ public class UserController {
             Task task = taskRepository.findTaskById(entryId);
             if(task == null || task.getUser().getId()!=userId)
                 return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"用户未拥有该词条修改权"),HttpStatus.BAD_REQUEST);
+            task.setSaveTime(new Date().getTime());
             task.setContent(content);
             taskRepository.save(task);
             return new ResponseEntity<>(BaseResultFactory.build("编辑成功"), HttpStatus.OK);
@@ -159,11 +162,14 @@ public class UserController {
             Integer userId = (Integer) request.getAttribute("userId");
             HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
             List<Integer> entryIds = (List<Integer>) form.get("entryIds");
+            String reason = (String) form.get("reason");
             for (Integer id : entryIds){
                 Task task = taskRepository.findTaskById(id);
                 if(task!=null && task.getUser().getId()==userId){
                     Assignment assignment = assignmentRepository.findAssignmentById(id);
                     task.setState(Task.TOAUDITED);
+                    task.setSaveTime(new Date().getTime());
+                    task.setAdmitReason(reason);
                     assignment.setState(Assignment.TOAUDITED);
                     taskRepository.save(task);
                     assignmentRepository.save(assignment);
@@ -333,8 +339,9 @@ public class UserController {
             }
             assignment.setState(Assignment.DRAWED);
             Task task = new Task(subject,user,assignment,Task.DRAWED);
+            task.setSaveTime(new Date().getTime());
             assignmentRepository.save(assignment);
-            taskRepository.save(task);;
+            taskRepository.save(task);
             return new ResponseEntity<>(BaseResultFactory.build("领取成功"), HttpStatus.OK);
         }catch (IOException e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);

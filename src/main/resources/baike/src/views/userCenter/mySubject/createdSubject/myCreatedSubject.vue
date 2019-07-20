@@ -111,12 +111,12 @@ export default {
 
 <style scoped>
 .content {
-  margin-left: 10px;
-  width: 1000px;
+  margin-left: 30px;
+  width: 1200px;
 }
 .mycreatesub-searchbar{
-  width: 975px;
-  height: 70px;
+  width: 1060px;
+  height: 60px;
 }
 .nothing-a{
   background: #f0f0f0;
@@ -159,7 +159,7 @@ export default {
 .box-card {
   float: left;
   margin-top: 10px;
-  margin-left: 10px;
+  margin-left: 30px;
   margin-bottom: 15px;
   height: 210px;
   width: 236px;

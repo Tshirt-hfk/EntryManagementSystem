@@ -2,12 +2,26 @@
   <el-table :data="tableData" style="width: 100%" max-height="500" @row-click="jumpToPreview">
     <el-table-column prop="name" label="词条名称" width="150"> </el-table-column>
     <el-table-column prop="field" label="领域" width="150"> </el-table-column>
-    <el-table-column prop="name" label="通过时间" width="150"> </el-table-column>
-    <el-table-column prop="name" label="被其它人修改版本" width="150"> </el-table-column>
+    <el-table-column label="提交时间" width="180">
+      <template slot-scope="scope">{{ scope.row.saveTime | formatDate}}</template>
+    </el-table-column>
+    <el-table-column label="通过时间" width="180">
+      <template slot-scope="scope">{{ scope.row.judgeTime | formatDate}}</template>
+    </el-table-column>
+    <el-table-column label="版本" show-overflow-tooltip>
+      <template>
+        <span class="passentry-version">
+          <a @click="toEntryExhibition">版本</a>
+        </span>
+      </template>
+    </el-table-column>
   </el-table>
 </template>
 
 <script>
+
+import moment from 'moment'
+
 export default {
   name: "passedEntry",
   data() {
@@ -17,6 +31,11 @@ export default {
   },
   mounted() {
     this.init();
+  },
+  filters: {
+      formatDate: function (value) {
+        return moment(value).format('YYYY-MM-DD HH:mm:ss')
+      }
   },
   methods: {
     init() {
@@ -51,3 +70,11 @@ export default {
   }
 };
 </script>
+
+<style>
+.passentry-version{
+  text-decoration: underline;
+  cursor: pointer;
+  color: #1296db;
+}
+</style>

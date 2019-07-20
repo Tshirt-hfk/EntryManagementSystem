@@ -43,6 +43,12 @@ public class Task {
     @Column(columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP", nullable = false)
     private Timestamp deadline;
 
+    @Column(columnDefinition = "TIMESTAMP", nullable = false)
+    private Timestamp saveTime;
+
+    @Column(columnDefinition = "TIMESTAMP", nullable = false)
+    private Timestamp judgeTime;
+
     @ManyToOne(optional=false, fetch = FetchType.LAZY)
     @JoinColumn(name = "assignment_id")
     private Assignment assignment;
@@ -120,11 +126,31 @@ public class Task {
         this.content = content;
     }
 
+    public String getAdmitReason() { return admitReason;}
+
+    public void setAdmitReason(String admitReason) { this.admitReason = admitReason;}
+
     public Long getDeadline() {
         return deadline.getTime();
     }
 
     public void setDeadline(Long deadline) {
         this.deadline = new Timestamp(deadline);
+    }
+
+    public Long getSaveTime() {
+        return saveTime.getTime();
+    }
+
+    public void setSaveTime(Long saveTime) {
+        this.saveTime = new Timestamp(saveTime);
+    }
+
+    public Long getJudgeTime() {
+        return judgeTime.getTime();
+    }
+
+    public void setJudgeTime(Long judgeTime) {
+        this.judgeTime = new Timestamp(judgeTime);
     }
 }

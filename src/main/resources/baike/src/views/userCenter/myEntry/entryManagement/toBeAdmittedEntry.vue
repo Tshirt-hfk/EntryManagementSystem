@@ -15,9 +15,19 @@
             </el-table-column>
             <el-table-column prop="name" label="词条名称" width="100"> </el-table-column>
             <el-table-column prop="field" label="领域" width="80"> </el-table-column>
-            <el-table-column prop="time" label="保存时间" width="180"> </el-table-column>
-            <el-table-column prop="endTime" label="结束时间" width="180"> </el-table-column>
-            <el-table-column prop="name" label="状态" show-overflow-tooltip> </el-table-column>
+            <el-table-column label="保存时间" width="180">
+              <template slot-scope="scope">{{ scope.row.saveTime | formatDate}}</template>
+            </el-table-column>
+            <el-table-column label="结束时间" width="180">
+              <template slot-scope="scope">{{ scope.row.endTime | formatDate}}</template>
+            </el-table-column>
+            <el-table-column label="版本" show-overflow-tooltip>
+              <template>
+                <span class="admitentry-version">
+                  <a @click="toEntryExhibition">版本</a>
+                </span>
+              </template>
+            </el-table-column>
             <el-table-column align="right">
               <template>
                 <el-button size="mini" type="primary" @click="jumpToEdit">编辑</el-button>
@@ -59,6 +69,9 @@
 </template>
 
 <script>
+
+import moment from 'moment'
+
 export default {
   name: "toBeAdmittedEntry",
   data() {
@@ -75,6 +88,11 @@ export default {
   mounted() {
     this.init();
   },
+  filters: {
+      formatDate: function (value) {
+        return moment(value).format('YYYY-MM-DD HH:mm:ss')
+      }
+  },
   methods: {
     init() {
       this.$axios
@@ -84,10 +102,6 @@ export default {
         .then(res => {
           if (res.data.data) {
             this.tableData = res.data.data.assignments;
-          } else {
-            //this.$message({
-              //message: res.data.msg
-            //});
           }
         })
         .catch(error => {
@@ -124,7 +138,8 @@ export default {
       }
       this.$axios
         .post("http://localhost:8081/api/user/admitEntry", {
-          entryIds: array
+          entryIds: array,
+          reason: this.reason
         })
         .then(res => {
           if (res.data) {
@@ -172,24 +187,32 @@ export default {
           }
         });
     },
+    toEntryExhibition(){
+      //待添加
+    },
     stateChange(state){
       this.$emit('stateChange', state)
-    }
+    },
   }
 };
 </script>
 
 <style>
-  .demo-table-expand {
-    font-size: 0;
-  }
-  .demo-table-expand label {
-    width: 90px;
-    color: #99a9bf;
-  }
-  .demo-table-expand .el-form-item {
-    margin-right: 0;
-    margin-bottom: 0;
-    width: 50%;
-  }
+.demo-table-expand {
+  font-size: 0;
+}
+.demo-table-expand label {
+  width: 90px;
+  color: #99a9bf;
+}
+.demo-table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 50%;
+}
+.admitentry-version{
+  text-decoration: underline;
+  cursor: pointer;
+  color: #1296db;
+}
 </style>

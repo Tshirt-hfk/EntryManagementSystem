@@ -13,7 +13,7 @@
                   <p style="font-style:normal;font-size: 10px; margin-top: 13px;">获得众智化系统认证，享受更多权限!</p>
             </div>
           </div>
-          <el-card style="width: 1050px;min-height:600px">  <!--高度后期需要自适应 -->
+          <el-card style="width: 1200px;min-height:600px">  <!--高度后期需要自适应 -->
             <div v-if="tabSelection == 'right'">
               <div v-if="subjectFlag == false">
                   <myCreatedSubject ref="mycreatedsubject" v-on:entryInSubject="entryInSubject"></myCreatedSubject>
@@ -77,7 +77,7 @@ export default {
   padding: 0;
 }
 .uc-tasmine-layout{
-  width: 1050px;
+  width: 1200px;
   margin: 0 auto;
 }
 .uc-tasmine-navbtn{
@@ -86,7 +86,7 @@ export default {
   margin-bottom: 30px;
 }
 .uc-tasmine-button{
-  margin-left: 430px;
+  margin-left: 500px;
   margin-top: 10px;
 }
 .uc-apply-info{
