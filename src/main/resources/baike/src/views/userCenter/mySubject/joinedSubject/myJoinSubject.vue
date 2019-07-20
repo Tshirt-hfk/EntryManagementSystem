@@ -2,7 +2,7 @@
   <div class="content">
     <div v-if="subjects.length == 0">
       <div
-        style="width:100%; font-size:20px; margin-top:40px;margin-bottom: 40px;text-align: center"
+        style="width:95%; font-size:20px; margin-top:40px;margin-bottom: 40px;text-align: center"
       >
         <span>您还没有加入专题，赶紧加入一个吧!</span>
       </div>
