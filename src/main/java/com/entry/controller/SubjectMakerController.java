@@ -91,12 +91,18 @@ public class SubjectMakerController {
             HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
             String imageUrl=(String)form.getOrDefault("imageUrl","");
             String name=(String)form.get("name");
-            String field=(String)form.get("field");
+            List<String> fields = (ArrayList<String>) form.get("field");
+            String fieldStr = "";
+            int len = fields.size();
+            for(int i=0;i<len-1;i++){
+                fieldStr = fieldStr + fields.get(i);
+            }
+            fieldStr = fieldStr + fields.get(len-1);
             Boolean isPublic=(Boolean)form.get("isPublic");
             String introduction=(String)form.get("introduction");
             String goal=(String)form.get("goal");
             Long deadLine= (Long)form.getOrDefault("deadline", (new Date()).getTime()+3600*1000*24*30);
-            Subject subject = new Subject(imageUrl,name,user.getName(),introduction,goal,field,new Timestamp(deadLine),isPublic);
+            Subject subject = new Subject(imageUrl,name,user.getName(),introduction,goal,fieldStr,new Timestamp(deadLine),isPublic);
             // 将创建人加入专题组中
             GroupMember groupMember = new GroupMember(new GroupMemberPK(subject,user),2);
             subjectRepository.save(subject);
