@@ -111,7 +111,7 @@ export default {
       else if(page == '2')
         this.$router.push('/userCenter/myentry')
       else if(page == '3')
-        this.$router.push('/userCenter/mytask')
+        this.$router.push('/userCenter/mytask/recommendedentry')
     }
   }
 };

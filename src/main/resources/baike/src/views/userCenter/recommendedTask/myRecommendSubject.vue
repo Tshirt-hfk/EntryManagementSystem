@@ -38,7 +38,7 @@
 
 <script>
 
-import mySearch from "../../components/mySearch"
+import mySearch from "../../../components/mySearch"
 
 export default {
   name: "myRecommendSubject",
