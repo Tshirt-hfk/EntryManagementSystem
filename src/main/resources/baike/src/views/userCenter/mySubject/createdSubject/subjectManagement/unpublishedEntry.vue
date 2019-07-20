@@ -19,13 +19,19 @@
       <el-button @click="dialogFormVisible = true">新建词条</el-button>
       <el-button @click="publishFlag = true">发布词条</el-button>
     </div>
-    <el-dialog title="新建词条" :visible.sync="dialogFormVisible" center width="500px">
+    <el-dialog title="新建词条" :visible.sync="dialogFormVisible" center width="400px">
       <el-form :model="form" label-width="100px">
         <el-form-item label="名称" label-width="50px">
           <el-input v-model="form.name" autocomplete="on"></el-input>
         </el-form-item>
         <el-form-item label="分类" label-width="50px">
-          <el-cascader v-model="form.field" placeholder="请选择领域" :options="options" filterable></el-cascader>
+          <el-cascader
+            placeholder="请选择领域"
+            :options="options"
+            v-model="form.field"
+            :props="{ multiple: true, checkStrictly: true }"
+            clearable
+          ></el-cascader>
         </el-form-item>
       </el-form>
       <div class="dialog-footer">
@@ -35,16 +41,32 @@
     </el-dialog>
     <el-dialog title="发布原因" :visible.sync="publishFlag" width="650px">
       <span>
-        <el-button style="margin-bottom:10px" size="mini" @click="inputValue='词条新建';handleInputConfirm()" plain>词条新建</el-button>
+        <el-button
+          style="margin-bottom:10px"
+          size="mini"
+          @click="inputValue='词条新建';handleInputConfirm()"
+          plain
+        >词条新建</el-button>
         <el-button size="mini" @click="inputValue='正文缺少图片';handleInputConfirm()" plain>正文缺少图片</el-button>
         <el-button size="mini" @click="inputValue='参考资料缺失';handleInputConfirm()" plain>参考资料缺失</el-button>
         <el-button size="mini" @click="inputValue='基本信息栏缺失';handleInputConfirm()" plain>基本信息栏缺失</el-button>
         <el-button size="mini" @click="inputValue='概述图不清晰';handleInputConfirm()" plain>概述图不清晰</el-button>
-        <el-button style="margin-left: -1px" size="mini" @click="inputValue='概述缺失或过短';handleInputConfirm()" plain>概述缺失或过短</el-button>
+        <el-button
+          style="margin-left: -1px"
+          size="mini"
+          @click="inputValue='概述缺失或过短';handleInputConfirm()"
+          plain
+        >概述缺失或过短</el-button>
         <div style="margin: 15px 0;"></div>
-        <div class="publish-tag" >
-          <el-tag style="font-size: 15px" :key="tag" v-for="tag in dynamicTags" closable
-            :disable-transitions="false" @close="handleClose(tag)">{{tag}}</el-tag>
+        <div class="publish-tag">
+          <el-tag
+            style="font-size: 15px"
+            :key="tag"
+            v-for="tag in dynamicTags"
+            closable
+            :disable-transitions="false"
+            @close="handleClose(tag)"
+          >{{tag}}</el-tag>
         </div>
         <div style="margin: 10px 0;"></div>
       </span>
@@ -58,13 +80,13 @@
 
 
 <script>
-import subjectIndexVue from '../../../../subject/subjectIndex.vue';
+import subjectIndexVue from "../../../../subject/subjectIndex.vue";
 export default {
   name: "unpublishedEntry",
   props: ["subjectId"],
   data() {
     return {
-      reason: '',
+      reason: "",
       tableData: [],
       multipleSelection: [],
       form: {
@@ -74,11 +96,11 @@ export default {
       dialogFormVisible: false,
       publishFlag: false,
       dynamicTags: [],
-      inputValue: '',
+      inputValue: "",
       options: [
         {
-          value: '动物',
-          label: '动物'
+          value: "动物",
+          label: "动物"
         }
       ]
     };
@@ -99,7 +121,7 @@ export default {
             this.tableData = res.data.data.assignments;
           } else {
             //this.$message({
-              //message: res.data.msg
+            //message: res.data.msg
             //});
           }
         })
@@ -150,9 +172,9 @@ export default {
         });
     },
     publishEntry() {
-      var array = new Array
-      for(var i=0;i<this.multipleSelection.length;i++){
-        array.push(this.multipleSelection[i].id)
+      var array = new Array();
+      for (var i = 0; i < this.multipleSelection.length; i++) {
+        array.push(this.multipleSelection[i].id);
       }
       this.$axios
         .post("http://localhost:8081/api/subjectMaker/publishAssignment", {
@@ -178,30 +200,30 @@ export default {
           }
         });
     },
-    stateChange(state){
-      window.console.log(state)
-      this.$emit('stateChange', state)
+    stateChange(state) {
+      window.console.log(state);
+      this.$emit("stateChange", state);
     },
     handleInputConfirm() {
-        let inputValue = this.inputValue;
-        if (inputValue && this.dynamicTags.indexOf(inputValue) === -1) {
-            this.dynamicTags.push(inputValue);
-        }
-        this.inputValue = '';
+      let inputValue = this.inputValue;
+      if (inputValue && this.dynamicTags.indexOf(inputValue) === -1) {
+        this.dynamicTags.push(inputValue);
+      }
+      this.inputValue = "";
     },
     handleClose(tag) {
-        this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
-    },
+      this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
+    }
   }
 };
 </script>
 
 <style>
 .el-tag + .el-tag {
-    margin-left: 10px;
-    margin-top: 5px;
+  margin-left: 10px;
+  margin-top: 5px;
 }
-.publish-tag{
+.publish-tag {
   width: 610px;
   height: 80px;
   border: solid 1px #cdcdcd;

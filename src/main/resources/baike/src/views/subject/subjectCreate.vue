@@ -17,7 +17,7 @@
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
-        <div style="float:left;margin-left:48px">
+        <div style="float:left;margin-left:28px">
           <el-form-item label="专题名称">
             <el-input v-model="form.name" style="width:300px"></el-input>
           </el-form-item>
@@ -188,14 +188,14 @@ export default {
 .avatar-uploader .avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;
-  width: 220px;
+  width: 240px;
   height: 220px;
   line-height: 220px;
   text-align: center;
 }
 .avatar-uploader .avatar {
-  width: 220px;
-  height: 220px;
+  width: 240px;
+  height: 240px;
   display: block;
 }
 

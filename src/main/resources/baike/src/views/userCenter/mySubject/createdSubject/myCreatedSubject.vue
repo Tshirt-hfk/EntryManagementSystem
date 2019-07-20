@@ -15,11 +15,12 @@
       </div>
       <template v-for="subject in subjects">
         <el-card class="box-card" :key="subject.id" :body-style="{ padding: '0px' }">
-          <img class="subject-image" src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png">
-          <div style="padding: 14px;">
-            <div style="display: inline;">
-              <span style="color:#338de6;">{{subject.name}}</span>
-              <el-button class="button" size="mini" @click="entryInSubject(subject.id,subject.name)">查看</el-button>
+          <img class="subject-image" :src="subject.imageUrl">
+          <div style="padding: 12px 12px 0 12px;">
+            <div>
+              <span style="color:#338de6;float:left">{{subject.name}}</span>
+              <el-button style="float:right" size="mini" @click="entryInSubject(subject.id,subject.name)">查看</el-button>
+              <div class="clear"></div>
             </div>
             <div class="subject-bottom">
               <i class="el-icon-time" style="color: #cdcfd1; font-size:14px"></i>
@@ -109,7 +110,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scope>
 .content {
   margin-left: 10px;
   width: 1000px;
@@ -175,9 +176,6 @@ export default {
   margin-top: 13px;
   line-height: 12px;
 }
-.button{
-  float: right;
-}
 .clearfix:before,
 .clearfix:after {
   display: table;
@@ -185,6 +183,14 @@ export default {
 }
 .clearfix:after {
   clear: both;
+}
+.clear {
+  clear: both;
+  width: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
 }
 </style>
 

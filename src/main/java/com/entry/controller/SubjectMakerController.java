@@ -60,6 +60,7 @@ public class SubjectMakerController {
                 tmp.put("id", subject.getId());
                 tmp.put("name", subject.getName());
                 tmp.put("introduction", subject.getIntroduction());
+                tmp.put("imageUrl", subject.getImageUrl());
                 tmps.add(tmp);
             }
             HashMap<String,Object> result = new HashMap<>();
@@ -128,11 +129,17 @@ public class SubjectMakerController {
         try{
             HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
             String name = (String) form.get("name");
-            String field = (String) form.get("field");
+            List<String> fields = (ArrayList<String>) form.get("field");
+            String fieldStr = "";
+            int len = fields.size();
+            for(int i=0;i<len-1;i++){
+                fieldStr = fieldStr + fields.get(i);
+            }
+            fieldStr = fieldStr + fields.get(len-1);
             Integer subjectId = (Integer)form.get("subjectId");
             // TODO 判断该词条是否已经被创建
             Subject subject = subjectRepository.findSubjectById(subjectId);
-            Assignment assignment = new Assignment(name,"",field,Assignment.UNPUBLISHED,subject);
+            Assignment assignment = new Assignment(name,"",fieldStr,Assignment.UNPUBLISHED,subject);
             assignmentRepository.save(assignment);
             return new ResponseEntity<>(BaseResultFactory.build("创建成功"), HttpStatus.OK);
         }catch (IOException e){

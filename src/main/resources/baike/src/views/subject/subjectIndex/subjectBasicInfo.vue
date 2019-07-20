@@ -97,6 +97,7 @@ export default {
       if (this.basicInfo.deadline > now) {
         this.dt = setInterval(() => {
           var timeStr = "";
+          var now = Date.now();
           var rt = parseInt((this.basicInfo.deadline - now) / 1000);
           if (rt <= 0) {
             this.restTime = "已过期";
@@ -111,7 +112,6 @@ export default {
           var sec = parseInt(rt % 60);
           if (sec > 0) timeStr = timeStr + sec + "秒";
           this.restTime = timeStr;
-          window.console.log();
         }, 1000);
       } else {
         this.restTime = "已过期";
