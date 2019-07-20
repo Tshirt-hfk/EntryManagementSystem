@@ -31,6 +31,11 @@ export default {
         };
     },
     mounted(){
+      if(this.$router.history.current.name=="joinedSubject")
+        this.tabSelection="left"
+      else if(this.$router.history.current.name=="createdSubject")
+        this.tabSelection="right"
+      
     },
     methods:{
         change() {

@@ -31,7 +31,12 @@ export default {
       subjectFlag: false
     };
   },
-  mounted() {},
+  mounted() {
+    if (this.$router.history.current.name == "recommendedEntry")
+      this.tabSelection = "left";
+    else if (this.$router.history.current.name == "recommendedSubject")
+      this.tabSelection = "right";
+  },
   methods: {
     change() {
       if (this.tabSelection == "left") {

@@ -1,0 +1,16 @@
+{
+	"nodes": [
+		{
+			"name": "洞庭湖",
+			"in_db":True,
+			"url": "e.g.localhost:8080/wiki/item/洞庭湖",
+			"relations":[
+				{
+					"node":"青海湖",
+					"rel_type":"is-a" 
+				}
+			]
+		},
+		{}
+	]
+}

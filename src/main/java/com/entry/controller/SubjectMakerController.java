@@ -109,15 +109,15 @@ public class SubjectMakerController {
             subjectRepository.save(subject);
             groupMemberRepository.save(groupMember);
             //初始化 专题的所有任务
-            String content = HttpRequestUtil.get("http://localhost:5003/keywords_extraction");
-            JSONObject data = JSONObject.parseObject(content);
-            List<JSONObject> nodes = JSONObject.parseArray(data.getJSONArray("nodes").toJSONString(), JSONObject.class);
-            for(JSONObject node : nodes){
-                String entryName = node.getString("name");
-                System.out.println(entryName);
-                Assignment assignment = new Assignment(entryName,"","",Assignment.UNPUBLISHED,subject);
-                assignmentRepository.save(assignment);
-            }
+//            String content = HttpRequestUtil.get("http://localhost:5003/keywords_extraction");
+//            JSONObject data = JSONObject.parseObject(content);
+//            List<JSONObject> nodes = JSONObject.parseArray(data.getJSONArray("nodes").toJSONString(), JSONObject.class);
+//            for(JSONObject node : nodes){
+//                String entryName = node.getString("name");
+//                System.out.println(entryName);
+//                Assignment assignment = new Assignment(entryName,"","",Assignment.UNPUBLISHED,subject);
+//                assignmentRepository.save(assignment);
+//            }
             return new ResponseEntity<>(BaseResultFactory.build("创建成功"), HttpStatus.OK);
         }catch (IOException e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);

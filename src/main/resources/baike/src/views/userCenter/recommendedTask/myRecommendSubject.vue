@@ -12,7 +12,7 @@
       </div>
     <template v-for="subject in subjects">
         <el-card class="box-card" :key="subject.id" :body-style="{ padding: '0px' }">
-          <img class="subject-image" src="subject.imgUrl">
+          <img class="subject-image" :src="subject.imgUrl">
           <div style="padding: 14px;">
             <div class="subject-top">
               <span style="color:#338de6;float:left">{{subject.name}}</span>
