@@ -90,6 +90,7 @@ export default {
     audit(row, pass) {
       this.$axios
         .post("http://localhost:8081/api/subjectMaker/auditTask", {
+          taskId: row.id,
           assignmentId: row.assignmentId,
           userId: row.userId,
           reason: this.reason,

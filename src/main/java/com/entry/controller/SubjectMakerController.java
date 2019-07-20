@@ -230,6 +230,7 @@ public class SubjectMakerController {
                 // TODO logo
             }finally {
                 subject.setTotalCount(subject.getTotalCount()+num);
+                subjectRepository.save(subject);
             }
             return new ResponseEntity<>(BaseResultFactory.build("发布成功"), HttpStatus.OK);
         }catch (IOException e){
@@ -245,19 +246,16 @@ public class SubjectMakerController {
     public ResponseEntity<?> auditTask(HttpServletRequest request, @RequestBody String jsonParam){
         try{
             HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
-            Integer assignmentId = (Integer) form.get("assignmentId");
             Boolean pass = (Boolean)form.get("pass");
             Integer userId = (Integer)form.get("userId");
-            Integer subjectId = (Integer)form.get("subjectId");
-            Task task = taskRepository.findTaskByAssignment_IdAAndUser_Id(assignmentId, userId);
-            Assignment assignment = assignmentRepository.findAssignmentById(assignmentId);
-            System.out.println(assignmentId);
+            Integer taskId = (Integer)form.get("taskId");
+            Task task = taskRepository.findTaskById(taskId);
+            Assignment assignment = task.getAssignment();
+            Subject subject = task.getSubject();
             System.out.println(userId);
             if(task == null)
-                System.out.println("haha");
-            if(assignment == null)
-                System.out.println("zah");
-//            GroupMember groupMember = groupMemberRepository.findByUser_IdAndSubject_Id(userId,subjectId);
+                System.out.println("haha");;
+            GroupMember groupMember = groupMemberRepository.findByUser_IdAndSubject_Id(userId,subject.getId());
             if(assignment != null && task != null) {
                 if(pass){
                     assignment.setState(Assignment.TOSUBMIT);
@@ -266,8 +264,10 @@ public class SubjectMakerController {
                     task.setState(Task.PASS);
                     taskRepository.save(task);
                     assignmentRepository.save(assignment);
-//                    groupMember.setMyCompletedCount(groupMember.getMyCompletedCount()+1);
-//                    groupMemberRepository.save(groupMember);
+                    groupMember.setMyCompletedCount(groupMember.getMyCompletedCount()+1);
+                    groupMemberRepository.save(groupMember);
+                    subject.setCurrentCount(subject.getCurrentCount()+1);
+                    subjectRepository.save(subject);
                     return new ResponseEntity<>(BaseResultFactory.build("审核通过"), HttpStatus.OK);
                 }else{
                     // TODO
