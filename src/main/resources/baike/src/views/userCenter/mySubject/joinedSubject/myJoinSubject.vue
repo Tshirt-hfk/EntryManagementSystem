@@ -97,17 +97,17 @@ export default {
 
 <style scoped>
 .content {
-  margin-left: 10px;
-  width: 960px;
+  margin-left: 30px;
+  width: 1200px;
 }
 .myjoinsub-searchbar{
-  width: 975px;
-  height: 70px;
+  width: 1060px;
+  height: 60px;
 }
 .box-card {
   float: left;
   margin-top: 10px;
-  margin-left: 10px;
+  margin-left: 30px;
   margin-bottom: 15px;
   height: 210px;
   width: 236px;
