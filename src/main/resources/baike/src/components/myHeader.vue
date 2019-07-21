@@ -25,7 +25,7 @@
                 <div class="header-icon">
                     <img src="https://static.hdslb.com/images/member/noface.gif" class="header-face">
                 </div>
-                {{userName}} 
+                  {{userName}} 
                 <i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
@@ -55,7 +55,7 @@
               <div class="header-icon">
                 <img src="https://static.hdslb.com/images/member/noface.gif" class="header-face">
               </div>  
-              {{userName}}
+                {{userName}}
               <i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
@@ -99,7 +99,6 @@ export default {
   },
   data() {
     return {
-      userName: this.$store.state.name,
       circleUrl:
         "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
       squareUrl:
@@ -114,7 +113,7 @@ export default {
     status() {
       return this.$store.state.status;
     },
-    name() {
+    userName() {
       return this.$store.state.name;
     }
   },
@@ -124,7 +123,6 @@ export default {
         .get("http://localhost:8081/api/user/islogin")
         .then(res => {
           if (res.data.data) {
-            window.console.log(res.data.data.status);
             this.$store.commit("status", res.data.data.status);
             this.$store.commit("name", res.data.data.name);
             window.console.log(this.$store.state.status);

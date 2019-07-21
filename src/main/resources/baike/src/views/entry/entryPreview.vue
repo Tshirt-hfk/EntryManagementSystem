@@ -18,11 +18,11 @@ export default {
 	},
 	methods:{
 		init(){
-			window.console.log("test")
+			window.console.log(this.name)
 			// 获取词条数据 
 			this.$axios.get(
-                "http://127.0.0.1:5000/fetchPageById",{params:{
-					entryId:new Number(this.name)
+                "http://127.0.0.1:5000/fetchPageByName",{params:{
+					name:this.name
 				}}
             ).then(res => {
                 if(res.data){
