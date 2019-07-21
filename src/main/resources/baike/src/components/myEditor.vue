@@ -47,7 +47,7 @@
         <span class="ql-formats">
           <button class="ql-list" value="ordered"></button>
           <button class="ql-list" value="bullet"></button>
-          <button class="ql-table"></button>
+          <!-- <button class="ql-table"></button> -->
         </span>
         <span class="ql-formats">
           <button class="ql-link"></button>
@@ -168,15 +168,7 @@
         <div class="maincontent">
           <div class="maincontent-header">正文</div>
           <div class="maincontent-body">
-            <quill-editor
-              ref="quillEditor"
-              v-model="form.content"
-              :options="editorOption"
-              @blur="onEditorBlur($event)"
-              @focus="onEditorFocus($event)"
-              @ready="onEditorReady($event)"
-              @change="onEditorChange($event)"
-            ></quill-editor>
+            <div id="editor"></div>
           </div>
         </div>
         <div class="reference">
@@ -246,18 +238,15 @@
 <script>
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
-import { quillEditor } from "vue-quill-editor";
+import Quill from "quill";
+import katex from "katex";
+import ImageResize from "quill-image-resize-module";
+import "katex/dist/katex.min.css";
+window.console.log(ImageResize)
+window.Quill.register("modules/imageResize", ImageResize);
 
 export default {
   name: "myEditor",
-  components: {
-    quillEditor
-  },
-  computed: {
-    quill() {
-      return this.$refs.quillEditor.quill;
-    }
-  },
   data() {
     return {
       entryId: 1,
@@ -270,18 +259,38 @@ export default {
           ["hel", "ehl"],
           ["hel", "ehl"],
           ["hel", "ehl"],
-          ["hel", "ehl"],
+          ["hel", "ehl"]
         ],
-        editableProperties: [["", ""], ["", ""],["", ""]],
+        editableProperties: [["", ""], ["", ""], ["", ""]],
         catalog: [],
         content: "",
         references: []
       },
       catalogOpen: true, // 目录显示控制
-      editorOption: {
+      serverUrl: "http://localhost:8081/resource/image",
+      quillUpdateImg: false,
+      referenceForm: {
+        title: "",
+        author: "",
+        url: "",
+        type: 1,
+        aim: 1
+      },
+      dialogFormVisible: false
+    };
+  },
+  mounted() {
+    this.init();
+  },
+  methods: {
+    init() {
+      window.katex = katex;
+      this.quill = new Quill("#editor", {
         theme: "snow",
         placeholder: "",
         modules: {
+          formula: true,
+          imageResize: {},
           toolbar: {
             container: "#toolbar",
             handlers: {
@@ -304,6 +313,7 @@ export default {
               formula: function(value) {
                 if (value) {
                   var href = prompt("请输入公式：");
+                  window.console.log(href);
                   this.quill.format("formula", href);
                 } else {
                   this.quill.format("formula", false);
@@ -312,42 +322,19 @@ export default {
             }
           }
         }
-      },
-      serverUrl: "http://localhost:8081/resource/image",
-      quillUpdateImg: false,
-      referenceForm: {
-        title: "",
-        author: "",
-        url: "",
-        type: 1,
-        aim: 1
-      },
-      dialogFormVisible: false
-    };
-  },
-  mounted() {
-    this.init();
-  },
-  methods: {
-    init() {
-      // TODO 初始化数据
-      this.refreshCatalog();
+      });
+      this.quill.on("text-change", (delta, oldDelta, source) => {
+        if (source == "api") {
+          console.log("An API call triggered this change.");
+        } else if (source == "user") {
+          this.refreshCatalog();
+          window.console.log(delta);
+        }
+      });
     },
     save() {
       // TODO 上传数据
-      window.console.log(this.form.content);
-    },
-    onEditorBlur(quill) {
-      // console.log('editor blur!', editor)
-    },
-    onEditorFocus(quill) {
-      // console.log('editor focus!', editor)
-    },
-    onEditorReady(quill) {
-      // console.log('editor ready!', editor)
-    },
-    onEditorChange() {
-      this.refreshCatalog();
+      //window.console.log(this.form.content);
     },
     // 目录显示控制
     catalogHanlder() {
@@ -396,7 +383,7 @@ export default {
     },
     uploadSuccess(res, file) {
       // 如果上传成功
-      window.console.log(res.data)
+      window.console.log(res.data);
       if (res.data && res.data.url) {
         // 获取光标所在位置
         let length = this.quill.getSelection().index;
@@ -431,7 +418,6 @@ export default {
     },
     deleteReference(id) {
       // 删除参考资料
-      window.console.log(id);
       if (this.form.references.length > id) {
         this.form.references.splice(id, 1);
       }
@@ -463,7 +449,7 @@ export default {
     // 词条图片上传
     handleAvatarSuccess(res, file) {
       this.form.imageUrl = res.data.url;
-      window.console.log(this.form.imageUrl)
+      window.console.log(this.form.imageUrl);
     },
     // 词条图片上传限制
     beforeAvatarUpload(file) {

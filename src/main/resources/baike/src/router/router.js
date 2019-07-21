@@ -88,11 +88,6 @@ export default new Router({
             }
           ]
         },
-        {  // 专题管理
-          path: 'subjectmanagement',
-          name: 'subjectManagement',
-          component: () => import('../views/userCenter/mySubject/createdSubject/subjectManagement')
-        },
         {
           path: 'entrymanagement',
           name: 'entryManagement',
