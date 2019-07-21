@@ -224,23 +224,26 @@ public class UserController {
             GroupMember groupMember = groupMemberRepository.findByUser_IdAndSubject_Id(userId,subjectId);
             HashMap<String, Object> result = new HashMap<>();
             HashMap<String, Object> result1 = new HashMap<>();
-            if(subject!=null && groupMember!=null){
+            if(subject!=null){
                 result.put("imageUrl",subject.getImageUrl());
                 result.put("title", subject.getName());
                 result.put("creator", subject.getCreator());
                 result.put("isPublic", subject.getPublic());
-                result.put("myCompletedCount",groupMember.getMyCompletedCount());
+
                 result.put("currentCount",subject.getCurrentCount());
                 result.put("totalCount",subject.getTotalCount());
                 result.put("deadline", subject.getDeadline());
                 result.put("introduction",subject.getIntroduction());
                 result.put("goal",subject.getGoal());
                 result1.put("basicInfo",result);
-                return new ResponseEntity<>(BaseResultFactory.build(result1, "success"), HttpStatus.OK);
-            }else if(subject==null)
-                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),"该专题不存在"), HttpStatus.NOT_FOUND);
+            }else {
+                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(), "该专题不存在"), HttpStatus.NOT_FOUND);
+            }
+            if(groupMember!=null)
+                result.put("myCompletedCount",groupMember.getMyCompletedCount());
             else
-                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),"未加入该专题"), HttpStatus.NOT_FOUND);
+                result.put("myCompletedCount",0);
+            return new ResponseEntity<>(BaseResultFactory.build(result1, "success"), HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"我真的错了"),HttpStatus.BAD_REQUEST);
         }

@@ -1,5 +1,5 @@
 <template>
-  <div class="layout">
+  <div>
     <!-- 任务词条 -->
     <div class="taskLemma">
       <div class="theaderWrap">
@@ -32,7 +32,7 @@
             <template v-if="status===0">
               <div class="empty">
                 快来参加专题，点击
-                <a @click="join">加入</a>~
+                <a @click="join" style="cursor:pointer">加入</a>~
               </div>
             </template>
             <template v-else>
@@ -89,9 +89,6 @@ export default {
               this.tasks.push(res.data.data.tasks[i]);
             }
           }
-          //this.$message({
-            //message: res.data.msg
-          //});
         })
         .catch(error => {
           if (error.response) {
@@ -108,15 +105,11 @@ export default {
           subjectId: new Number(this.subjectId)
         })
         .then(res => {
-          //window.console.log(res.data.data)
           if (res.data.data) {
             for (var i = 0; i < res.data.data.assignments.length; i++) {
               this.assignments.push(res.data.data.assignments[i]);
             }
           }
-          //this.$message({
-            //message: res.data.msg
-          //});
         })
         .catch(error => {
           if (error.response) {
@@ -128,7 +121,6 @@ export default {
         });
     },
     deleteTask(id) {
-      window.console.log(id);
       for (var i = 0; i < this.tasks.length; i++) {
         if (this.tasks[i].id == id) {
           this.tasks.splice(i, 1);
@@ -163,7 +155,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 /*! CSS Used from: https://bkssl.bdimg.com/static/wiki-common/pkg/wiki-common-base_66a9374.css */
 input {
   font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC",
@@ -236,12 +228,6 @@ a {
   color: #459df5;
 }
 a:focus {
-  outline: 0;
-}
-input {
-  border: 1px solid #e2e7ea;
-}
-input:focus {
   outline: 0;
 }
 .dib {
@@ -343,6 +329,49 @@ a:hover {
   width: 595px;
   margin-top: 30px;
 }
+input {
+  font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+}
+input {
+  font-size: 100%;
+}
+input {
+  margin: 0;
+  padding: 0;
+}
+input {
+  vertical-align: middle;
+}
+input {
+  line-height: normal;
+}
+input::-moz-focus-inner {
+  border: 0;
+}
+/*! CSS Used from: https://bkssl.bdimg.com/static/wiki-task/taskBase/taskBase_9b28203.css */
+input {
+  border: 1px solid #e2e7ea;
+}
+input:focus {
+  outline: 0;
+}
+/*! CSS Used from: https://bkssl.bdimg.com/static/wiki-task/taskInfo-c2c/taskInfo-c2c_bb8c671.css */
+.taskLemma .searchBox {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  margin-top: -15px;
+  padding: 7px 10px 7px 30px;
+  width: 250px;
+  border: 1px solid #e2e7ea;
+  background: url(https://bkssl.bdimg.com/static/wiki-task/taskInfo-c2c/resource/img/search_bf61ad0.png)
+    no-repeat 5px;
+}
+.taskLemma .searchBox:focus {
+  border-color: #459df5;
+}
+
 /*! CSS Used from: https://bkssl.bdimg.com/static/wiki-task/widget/taskPager/taskPager_ab8217b.css */
 [pager-type="tpager"] {
   text-align: center;

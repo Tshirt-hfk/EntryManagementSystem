@@ -1,5 +1,5 @@
 <template>
-  <div class="layout">
+  <div>
     <div class="taskIntro">
       <div class="cmn-clearfix">
         <div class="taskPic">
@@ -25,7 +25,9 @@
                 <div class="btmDesc">完成词条</div>
               </div>
               <div class="boxInfo">
-                <div class="box">{{basicInfo.myCompletedCount}}</div>
+                <div class="box">
+                    {{basicInfo.myCompletedCount}}
+                </div>
                 <div class="btmDesc">我的进度</div>
               </div>
             </div>
@@ -77,10 +79,10 @@ export default {
         title: "",
         creator: "test",
         isPublic: true,
-        currentCount: 50,
-        totalCount: 100,
+        currentCount: 0,
+        totalCount: 0,
         myCompletedCount: 0,
-        deadline: 1563085500233,
+        deadline: 0,
         introduction: "introduction",
         goal: "goal"
       },
@@ -388,49 +390,6 @@ a:hover {
 }
 .descContent::-webkit-scrollbar-thumb:hover {
   background-color: #adadad;
-}
-/*! CSS Used from: https://bkssl.bdimg.com/static/wiki-common/pkg/wiki-common-base_66a9374.css */
-input {
-  font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC",
-    "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
-}
-input {
-  font-size: 100%;
-}
-input {
-  margin: 0;
-  padding: 0;
-}
-input {
-  vertical-align: middle;
-}
-input {
-  line-height: normal;
-}
-input::-moz-focus-inner {
-  border: 0;
-}
-/*! CSS Used from: https://bkssl.bdimg.com/static/wiki-task/taskBase/taskBase_9b28203.css */
-input {
-  border: 1px solid #e2e7ea;
-}
-input:focus {
-  outline: 0;
-}
-/*! CSS Used from: https://bkssl.bdimg.com/static/wiki-task/taskInfo-c2c/taskInfo-c2c_bb8c671.css */
-.taskLemma .searchBox {
-  position: absolute;
-  top: 50%;
-  right: 0;
-  margin-top: -15px;
-  padding: 7px 10px 7px 30px;
-  width: 250px;
-  border: 1px solid #e2e7ea;
-  background: url(https://bkssl.bdimg.com/static/wiki-task/taskInfo-c2c/resource/img/search_bf61ad0.png)
-    no-repeat 5px;
-}
-.taskLemma .searchBox:focus {
-  border-color: #459df5;
 }
 </style>
 

@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 public class SubjectMakerController {
@@ -39,7 +40,7 @@ public class SubjectMakerController {
     TaskRepository taskRepository;
 
     /**
-     * 获取所有的专题的信息列表
+     * 获取创建的所有的专题的信息列表
      * @param request
      * @return
      */
@@ -95,12 +96,7 @@ public class SubjectMakerController {
             String imageUrl=(String)form.getOrDefault("imageUrl","");
             String name=(String)form.get("name");
             List<String> fields = (ArrayList<String>) form.get("field");
-            String fieldStr = "";
-            int len = fields.size();
-            for(int i=0;i<len-1;i++){
-                fieldStr = fieldStr + fields.get(i);
-            }
-            fieldStr = fieldStr + fields.get(len-1);
+            String fieldStr = fields.stream().collect(Collectors.joining(","));
             Boolean isPublic=(Boolean)form.get("isPublic");
             String introduction=(String)form.get("introduction");
             String goal=(String)form.get("goal");
@@ -139,12 +135,7 @@ public class SubjectMakerController {
             HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
             String name = (String) form.get("name");
             List<String> fields = (ArrayList<String>) form.get("field");
-            String fieldStr = "";
-            int len = fields.size();
-            for(int i=0;i<len-1;i++){
-                fieldStr = fieldStr + fields.get(i);
-            }
-            fieldStr = fieldStr + fields.get(len-1);
+            String fieldStr = fields.stream().collect(Collectors.joining(","));
             Integer subjectId = (Integer)form.get("subjectId");
             // TODO 判断该词条是否已经被创建
             Subject subject = subjectRepository.findSubjectById(subjectId);
