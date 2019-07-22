@@ -53,7 +53,6 @@
           <button class="ql-link"></button>
           <button class="ql-image"></button>
           <button class="ql-formula"></button>
-          <button class="ql-code"></button>
         </span>
       </div>
     </div>
@@ -179,23 +178,17 @@
             </a>
           </div>
           <div class="reference-body">
-            <div style="margin:0px 20px">
+            <div style="margin:0px 20px;padding-top:20px">
               <template v-for="(reference, index) in form.references">
-                <el-row :key="index+2000" :gutter="20">
-                  <el-col :span="20">
-                    <p>{{reference.title+" . "+reference.author}}</p>
-                    <p>
-                      <a :href="reference.url">{{reference.url}}</a>
-                    </p>
+                <el-row :key="index+2000" style="margin-bottom:10px">
+                  <el-col :span="6">{{reference.title+" . "+reference.author}}</el-col>
+                  <el-col :span="10">
+                    <a :href="reference.url" style="outline: none;">{{reference.url}}</a>
                   </el-col>
-                  <el-col :span="4">
-                    <p>
-                      <a @click="editReference(index)">编辑</a>
-                      <a @click="deleteReference(index)">删除</a>
-                    </p>
-                    <p>
-                      <a>插入正文</a>
-                    </p>
+                  <el-col :span="8" style="height:100%">
+                    <el-button @click="editReference(index)" size="mini">编辑</el-button>
+                    <el-button @click="deleteReference(index)" size="mini" type="danger">删除</el-button>
+                    <el-button size="mini">插入正文</el-button>
                   </el-col>
                 </el-row>
               </template>
@@ -215,7 +208,7 @@
       :before-upload="beforeUpload"
     ></el-upload>
     <!-- 添加参考资料 -->
-    <el-dialog title="添加参考资料" :visible.sync="dialogFormVisible">
+    <el-dialog title="添加参考资料" :visible.sync="dialogFormVisible" width="500px">
       <el-form :model="referenceForm">
         <el-form-item label="标题" label-width="60px">
           <el-input v-model="referenceForm.title" autocomplete="off"></el-input>
@@ -242,7 +235,6 @@ import Quill from "quill";
 import katex from "katex";
 import ImageResize from "quill-image-resize-module";
 import "katex/dist/katex.min.css";
-window.console.log(ImageResize)
 window.Quill.register("modules/imageResize", ImageResize);
 
 export default {
@@ -262,9 +254,21 @@ export default {
           ["hel", "ehl"]
         ],
         editableProperties: [["", ""], ["", ""], ["", ""]],
+
         catalog: [],
         content: "",
-        references: []
+        references: [
+          {
+            title: "标题一",
+            author: "作者一",
+            url: "http://localhost:8080/#/test"
+          },
+          {
+            title: "标题二",
+            author: "作者二",
+            url: "http://localhost:8080/#/test"
+          }
+        ]
       },
       catalogOpen: true, // 目录显示控制
       serverUrl: "http://localhost:8081/resource/image",
@@ -313,7 +317,6 @@ export default {
               formula: function(value) {
                 if (value) {
                   var href = prompt("请输入公式：");
-                  window.console.log(href);
                   this.quill.format("formula", href);
                 } else {
                   this.quill.format("formula", false);
@@ -328,7 +331,6 @@ export default {
           console.log("An API call triggered this change.");
         } else if (source == "user") {
           this.refreshCatalog();
-          window.console.log(delta);
         }
       });
     },
@@ -383,7 +385,6 @@ export default {
     },
     uploadSuccess(res, file) {
       // 如果上传成功
-      window.console.log(res.data);
       if (res.data && res.data.url) {
         // 获取光标所在位置
         let length = this.quill.getSelection().index;
@@ -449,7 +450,6 @@ export default {
     // 词条图片上传
     handleAvatarSuccess(res, file) {
       this.form.imageUrl = res.data.url;
-      window.console.log(this.form.imageUrl);
     },
     // 词条图片上传限制
     beforeAvatarUpload(file) {
@@ -463,7 +463,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .myEditor {
   position: absolute;
   left: 0px;
@@ -566,7 +566,8 @@ export default {
 .basic-info-property-item {
   float: left;
   margin-top: 10px;
-  margin-right: 70px;
+  margin-right: 40px;
+  margin-left: 20px;
 }
 .basic-info-property-item .el-form-item {
   margin-bottom: 0;
