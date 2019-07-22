@@ -32,7 +32,6 @@
                     <el-menu-item index="2-11" style="padding-left: 20px">历史</el-menu-item>
                 </el-submenu>
                 <el-menu-item index="3" style="width: 150px; text-align: center;font-size: large;letter-spacing:12px;text-indent:10px">专 题</el-menu-item>
-                <el-menu-item index="4" style="width: 150px; text-align: center;font-size: large;letter-spacing:12px;text-indent:8px">订单管理</el-menu-item>
                 </el-menu>
                 <div class="index-navbar-usercenter">
                     <div class="line"> </div>
@@ -44,6 +43,17 @@
             </div>
         </div>
         <div class="index-main">
+            <div class="index-main-wrap">
+                <el-carousel indicator-position="outside">
+                    <el-carousel-item v-for="item in 4" :key="item">
+                    <h3>{{ item }}</h3>
+                    </el-carousel-item>
+                </el-carousel>
+            </div>
+
+            <div class="index-side-wrap">
+
+            </div>
         </div>
     </div>
 </template>
@@ -51,7 +61,6 @@
 <script>
 
 import mySearch from "../components/mySearch";
-
 
 export default {
     name:'index',
@@ -110,7 +119,7 @@ export default {
 }
 .index-navbar-menu{
   margin: 0 auto;
-  width: 1100px;
+  width: 1050px;
   height: 61px;
 }
 .line{
@@ -134,9 +143,32 @@ export default {
     margin-left: 35px;
 }
 .index-main{
-  width: 80%;
+  width: 1170px;
   margin: 0 auto;
   min-height: 700px;
   margin-top: 10px;
+}
+.index-main-wrap{
+  float: left;
+  width: 710px;
+}
+.el-carousel__item h3 {
+  color: #475669;
+  font-size: 18px;
+  opacity: 0.75;
+  line-height: 300px;
+  margin: 0 auto;
+}
+  
+.el-carousel__item:nth-child(2n) {
+    background-color: #99a9bf;
+}
+  
+.el-carousel__item:nth-child(2n+1) {
+    background-color: #d3dce6;
+}
+.index-sied-wrap{
+  width: 280px;
+  float: right;
 }
 </style>

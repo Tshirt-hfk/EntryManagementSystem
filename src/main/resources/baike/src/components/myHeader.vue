@@ -1,5 +1,5 @@
 <template>
-  <header class="header">
+  <header class="header" id="header">
     <div class="header-middle">
       <div class="header-l">
         <h1 @click="toIndex" style="cursor: pointer">众智化词条系统</h1>

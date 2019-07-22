@@ -463,7 +463,7 @@ export default {
 };
 </script>
 
-<style scope>
+<style scoped>
 .myEditor {
   position: absolute;
   left: 0px;

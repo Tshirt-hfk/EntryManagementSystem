@@ -17,6 +17,11 @@ export default new Router({
       component: () => import('../components/myEditor')
     },
     {
+      path: '/test1',
+      name: 'test1',
+      component: () => import('../components/entryExhibition')
+    },
+    {
       path: '/login',
       name: 'login',
       component: () => import('../views/login')
