@@ -3,7 +3,7 @@
         <div class="index-searchbar">
             <div class="logo-headl">
                 <a title="首页" href="/">
-                <img src="https://wx3.sinaimg.cn/mw690/ad5be381gy1g51mw04nn2j206t01mgli.jpg">
+                <img style="width: 120px; height: 70px" src="/static/image/logo.png">
                 </a>
             </div>
             <div class="index-search">
@@ -72,8 +72,18 @@
                     <div class="index-side-recom-title">
                         <h3>推荐专题</h3>
                     </div>
-                    <div class="index-side-recom-subject" v-for="">
-
+                    <div class="index-side-recom-subject" v-for="item in recommendSubject" :key="item.id">
+                        <div class="subject-title">
+                            <span class="subject-identification">推荐</span>
+                            <a class="title-name">{{item.name}}</a>
+                        </div>
+                        <div class="subject-description">
+                            <img style="width: 133px;height: 100px" :src="item.src">
+                            <div class="subject-ctn">
+                                <p>{{item.intro}}</p>
+                                <a>{{item.field}}</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -117,25 +127,28 @@ export default {
                 },{
                     name: '哪吒',
                     intro: '魔童降世，你还在等什么，不一样的小哪吒',
-                    src: '/static/image/logo.png',
+                    src: 'http://img2.imgtn.bdimg.com/it/u=999955696,3117746350&fm=11&gp=0.jpg',
                 },
             ],
             recommendSubject:[
                 {
                     id: '1',
                     name: '游戏青春',
+                    field: '方磊',
                     intro: '谁还没有窝在寝室打游戏的时光呢',
                     src: 'https://gss0.bdstatic.com/94o3dSag_xI4khGkpoWK1HF6hhy/baike/eWH%3D150%2C100/sign=abd9a92af936afc31c664268822cdbe8/9a504fc2d56285354d4b36cb9eef76c6a6ef63b5.jpg'
                 },{
                     id: '2',
                     name: '游戏青春',
+                    field: '方磊',
                     intro: '谁还没有窝在寝室打游戏的时光呢',
                     src: 'https://gss0.bdstatic.com/94o3dSag_xI4khGkpoWK1HF6hhy/baike/eWH%3D150%2C100/sign=abd9a92af936afc31c664268822cdbe8/9a504fc2d56285354d4b36cb9eef76c6a6ef63b5.jpg'
                 },{
                     id: '3',
                     name: '游戏青春',
+                    field: '方磊',
                     intro: '谁还没有窝在寝室打游戏的时光呢',
-                    src: '/static/image/logo.png'
+                    src: 'https://gss0.bdstatic.com/94o3dSag_xI4khGkpoWK1HF6hhy/baike/eWH%3D150%2C100/sign=abd9a92af936afc31c664268822cdbe8/9a504fc2d56285354d4b36cb9eef76c6a6ef63b5.jpg'
                 }
             ]
         }
@@ -177,8 +190,8 @@ h2,p,h3{
   position: relative;
 }
 .index-searchbar{
-  width: 808px;
-  height: 105px;
+  width: 700px;
+  height: 120px;
   margin: 0 auto;
   position: relative;
   font-family: arial;
@@ -314,7 +327,7 @@ h2,p,h3{
 }
 .index-side-recom{
     background-color: #fafafa;
-    margin-top: 12px;
+    margin-top: 25px;
     padding: 10px 20px;
 }
 .index-side-recom-title{
@@ -324,7 +337,7 @@ h2,p,h3{
 }
 .index-side-recom-title h3{
     font-weight: 400;
-    font-size: 18px;
+    font-size: 17px;
     display: inline-block;
     border-bottom: #4d95dc solid 3px;
     line-height: 1.1;
@@ -333,5 +346,67 @@ h2,p,h3{
 .index-side-recom-subject{
     min-height: 95px;
     margin-top: 15px;
+}
+.index-side-recom-subject .subject-title{
+    position: relative;
+    overflow: hidden;
+    height: 22px;
+    line-height: 22px;
+    font-size: 22px;
+}
+.index-side-recom-subject .subject-identification{
+    position: absolute;
+    top: 2px;
+    left: 0;
+    padding: 0 3px;
+    color: #f5f5f5;
+    font-size: 13px;
+    line-height: 1.5;
+    background-color: #f18167;
+}
+.index-side-recom-subject .title-name{
+    margin-left: 48px;
+    color: #333;
+    text-decoration: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+.index-side-recom-subject .title-name:hover{
+    color: #409EFF;
+}
+.index-side-recom-subject .subject-description{
+    margin-top: 15px;
+    position: relative;
+    width: 280px;
+    height: 100px;
+}
+.index-side-recom-subject  .subject-ctn{
+    float: right;
+    width: 130px;
+}
+.index-side-recom-subject  .subject-ctn p{
+    height: 60px;
+    overflow: hidden;
+    line-height: 20px;
+    font-size: 14px;
+    color: #888;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.index-side-recom-subject  .subject-ctn a{
+    color: #666;
+    border: solid 1px #e2e2e2;
+    border-radius: 2px;
+    background: #fff;
+    text-align: center;
+    line-height: 1;
+    padding: 5px 8px;
+    font-size: 14px;
+    float: right;
+    margin-top: 14px;
+    cursor: pointer;
+}
+.index-side-recom-subject  .subject-ctn a:hover{
+    color: #409EFF;
+    border: solid 1px #409EFF;
 }
 </style>
