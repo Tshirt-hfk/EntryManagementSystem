@@ -204,6 +204,7 @@ h2,p,h3{
 .index-search{
   float: left;
   padding: 37px 0;
+  margin-left: 10px;
 }
 .index-navbar{
     position: relative;
