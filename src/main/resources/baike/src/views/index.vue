@@ -44,15 +44,38 @@
         </div>
         <div class="index-main">
             <div class="index-main-wrap">
-                <el-carousel indicator-position="outside">
-                    <el-carousel-item v-for="item in 4" :key="item">
-                    <h3>{{ item }}</h3>
+                <el-carousel height="350px" indicator-position="outside" interval="5000">
+                    <el-carousel-item v-for="item in homePageEntry" :key="item.id">
+                        <img style="width: 710px; height: 350px" :src="item.src">
+                        <div class="index-focus-intro">
+                            <div class="index-focus-summary">
+                                <h2>
+                                    <a @click="toEntryExhibition(item.name)">{{item.name}}</a>
+                                </h2>
+                                <p>{{item.intro}}</p>
+                            </div>
+                        </div>
                     </el-carousel-item>
                 </el-carousel>
             </div>
 
             <div class="index-side-wrap">
+                <div class="index-side-rightbox">
+                    <div class="index-side-rightbox-title">
+                        <div class="name">众智化词条</div>
+                        <div class="slogan">集大家智慧认识世界</div>
+                    </div>
+                    <a @click="toEntryCreate">创建词条</a>
+                    <a @click="toRecommendEntry">完善词条</a>
+                </div>
+                <div class="index-side-recom">
+                    <div class="index-side-recom-title">
+                        <h3>推荐专题</h3>
+                    </div>
+                    <div class="index-side-recom-subject" v-for="">
 
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -69,6 +92,52 @@ export default {
     },
     data(){
         return {
+            //数据都要从数据库取
+            homePageEntry: [
+                {
+                    id: '1',
+                    name: '哪吒',
+                    intro: '魔童降世，你还在等什么，不一样的小哪吒',
+                    src: 'http://img2.imgtn.bdimg.com/it/u=999955696,3117746350&fm=11&gp=0.jpg',
+                },{
+                    id: '2',
+                    name: '哪吒',
+                    intro: '魔童降世，你还在等什么，不一样的小哪吒',
+                    src: 'http://img2.imgtn.bdimg.com/it/u=999955696,3117746350&fm=11&gp=0.jpg',
+                },{
+                    id: '3',
+                    name: '哪吒',
+                    intro: '魔童降世，你还在等什么，不一样的小哪吒',
+                    src: 'http://img2.imgtn.bdimg.com/it/u=999955696,3117746350&fm=11&gp=0.jpg',
+                },{
+                    id: '4',
+                    name: '哪吒',
+                    intro: '魔童降世，你还在等什么，不一样的小哪吒',
+                    src: 'http://img2.imgtn.bdimg.com/it/u=999955696,3117746350&fm=11&gp=0.jpg',
+                },{
+                    name: '哪吒',
+                    intro: '魔童降世，你还在等什么，不一样的小哪吒',
+                    src: '/static/image/logo.png',
+                },
+            ],
+            recommendSubject:[
+                {
+                    id: '1',
+                    name: '游戏青春',
+                    intro: '谁还没有窝在寝室打游戏的时光呢',
+                    src: 'https://gss0.bdstatic.com/94o3dSag_xI4khGkpoWK1HF6hhy/baike/eWH%3D150%2C100/sign=abd9a92af936afc31c664268822cdbe8/9a504fc2d56285354d4b36cb9eef76c6a6ef63b5.jpg'
+                },{
+                    id: '2',
+                    name: '游戏青春',
+                    intro: '谁还没有窝在寝室打游戏的时光呢',
+                    src: 'https://gss0.bdstatic.com/94o3dSag_xI4khGkpoWK1HF6hhy/baike/eWH%3D150%2C100/sign=abd9a92af936afc31c664268822cdbe8/9a504fc2d56285354d4b36cb9eef76c6a6ef63b5.jpg'
+                },{
+                    id: '3',
+                    name: '游戏青春',
+                    intro: '谁还没有窝在寝室打游戏的时光呢',
+                    src: '/static/image/logo.png'
+                }
+            ]
         }
     },
     mounted(){
@@ -83,12 +152,25 @@ export default {
         },
         toUserCenter(){
             this.$router.push("/usercenter/mysubject");
+        },
+        toEntryExhibition(name){
+
+        },
+        toEntryCreate(){
+
+        },
+        toRecommendEntry(){
+
         }
     }
 }
 </script>
 
-<style>
+<style scoped>
+h2,p,h3{
+    margin: 0;
+    padding: 0;
+}
 .index-layout {
   width: 100%;
   margin: 0 auto;
@@ -143,7 +225,7 @@ export default {
     margin-left: 35px;
 }
 .index-main{
-  width: 1170px;
+  width: 1050px;
   margin: 0 auto;
   min-height: 700px;
   margin-top: 10px;
@@ -152,23 +234,104 @@ export default {
   float: left;
   width: 710px;
 }
-.el-carousel__item h3 {
-  color: #475669;
-  font-size: 18px;
-  opacity: 0.75;
-  line-height: 300px;
-  margin: 0 auto;
+.index-focus-intro{
+    background-color: rgba(0,0,0,.6);
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 710px;
+    height: 100px;
+    color: #fff;
+    font-family: Arial, Helvetica, sans-serif;
 }
-  
-.el-carousel__item:nth-child(2n) {
-    background-color: #99a9bf;
+.index-focus-summary{
+    bottom: 5px;
+    left: 0;
+    position: absolute;
+    padding-left: 20px;
+    padding-right: 20px;
 }
-  
-.el-carousel__item:nth-child(2n+1) {
-    background-color: #d3dce6;
+.index-focus-summary h2{
+    font-size: 24px;
+    line-height: 40px;
+    color: #fff;
+    font-weight: 400;
 }
-.index-sied-wrap{
-  width: 280px;
+.index-focus-summary a{
+    cursor: pointer;
+    text-decoration: none;
+}
+.index-focus-summary a:hover{
+    text-decoration: underline;
+}
+.index-focus-summary p{
+    font-size: 14px;
+    font-weight: 400;
+    height: 50px;
+    overflow: hidden;
+    line-height: 22px;
+    color: #ddd;
+}
+.index-side-wrap{
+  width: 320px;
   float: right;
+}
+.index-side-rightbox{
+    background-color: #fafafa;
+    padding: 10px 20px;
+}
+.index-side-rightbox-title{
+    position: relative;
+    margin-top: 15px;
+    text-align: center;
+    font-weight: 400;
+}
+.index-side-rightbox-title .name{
+    margin-bottom: 10px;
+    line-height: 1.2;
+    font-size: 30px;
+    color: #459df5;
+}
+.index-side-rightbox-title .slogan{
+    margin-bottom: 17px;
+    line-height: 1;
+    font-size: 18px;
+    color: #459df5;
+}
+.index-side-rightbox a{
+    position: relative;
+    display: block;
+    margin: 10px auto 0;
+    width: 204px;
+    height: 40px;
+    line-height: 40px;
+    color: #fff;
+    font-size: 18px;
+    text-align: center;
+    border-radius: 3px;
+    background: #409EFF;
+    cursor: pointer;
+}
+.index-side-recom{
+    background-color: #fafafa;
+    margin-top: 12px;
+    padding: 10px 20px;
+}
+.index-side-recom-title{
+    border-bottom: #e6e8eb solid 2px;
+    height: 28px;
+    line-height: 28px;
+}
+.index-side-recom-title h3{
+    font-weight: 400;
+    font-size: 18px;
+    display: inline-block;
+    border-bottom: #4d95dc solid 3px;
+    line-height: 1.1;
+    padding-bottom: 5px;
+}
+.index-side-recom-subject{
+    min-height: 95px;
+    margin-top: 15px;
 }
 </style>
