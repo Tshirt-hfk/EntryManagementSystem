@@ -94,7 +94,7 @@
 				<div class="preview-picture">
 					<img style="margin: 0 auto" :src="form.imageUrl">
 				</div>
-				<div class="preview-side-catalog" style="visibility: visible;bottom: 10px;" id="sideRoller">
+				<div class="preview-side-catalog" style="visibility: hidden;bottom: 10px;" id="sideRoller">
 					<div class="preview-side-bar">
 						<i class="el-icon-help circle-start"></i>
 						<i class="el-icon-help circle-end"></i>
