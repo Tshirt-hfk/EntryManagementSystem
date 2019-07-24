@@ -108,7 +108,7 @@ export default {
                     id: '1',
                     name: '哪吒',
                     intro: '魔童降世，你还在等什么，不一样的小哪吒',
-                    src: 'http://img2.imgtn.bdimg.com/it/u=999955696,3117746350&fm=11&gp=0.jpg',
+                    src: 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2576670729,629322128&fm=26&gp=0.jpg',
                 },{
                     id: '2',
                     name: '哪吒',

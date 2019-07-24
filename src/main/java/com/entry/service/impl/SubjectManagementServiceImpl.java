@@ -36,34 +36,32 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
         // TODO 判断该词条是否以及在数据库中
         this.testIdentity(user,subject,GroupMember.SUBJECTMAKER);
         String fieldStr = fieldList.stream().collect(Collectors.joining(","));
-        Assignment assignment = new Assignment(Entryname,"",fieldStr,Assignment.UNPUBLISHED,subject);
+        Assignment assignment = new Assignment(Entryname,fieldStr,subject);
         assignmentRepository.save(assignment);
     }
     @Override
     public void publishAssignment(User user, Subject subject, String reason, Integer deadline, List<Integer> entryIds) throws MyException  {
         this.testIdentity(user, subject, GroupMember.SUBJECTMAKER);
         Integer num = 0;
-        try {
-            for (Integer id : entryIds) {
-                Assignment assignment = assignmentRepository.findAssignmentById(id);
-                assignment.setState(Assignment.PUBLISHED);
-                assignment.setDeadline(deadline);
-                assignment.setModifyReason(reason);
-                assignmentRepository.save(assignment);
-                num = num + 1;
-            }
-        }catch (Exception e){
-            // TODO logo
-        }finally {
-            subject.setTotalCount(subject.getTotalCount() + num);
-            subjectRepository.save(subject);
+        for (Integer id : entryIds) {
+            Assignment assignment = assignmentRepository.findAssignmentById(id);
+            assignment.setState(Assignment.PUBLISHED);
+            assignment.setDeadline(deadline);
+            assignment.setModifyReason(reason);
+            assignmentRepository.save(assignment);
+            num = num + 1;
         }
+        subject.setTotalCount(subject.getTotalCount() + num);
+        subjectRepository.save(subject);
     }
     @Override
     public void drawAssignment(User user, Subject subject, Assignment assignment) throws MyException  {
         this.testIdentity(user, subject, GroupMember.ORDINRYUSER);
+        List<Task> tasks = taskRepository.findAllBySubject_IdAndUser_IdAAndState(subject.getId(),user.getId(),Task.DRAWED);
+        if(tasks.size() > 0)
+            throw new MyException("用户已领取一个词条");
         assignment.setState(Assignment.DRAWED);
-        Task task = new Task(subject,user,assignment,Task.DRAWED);
+        Task task = new Task(subject,user,assignment);
         task.setSaveTime(new Date().getTime());
         task.setJudgeTime(new Date().getTime());
         assignmentRepository.save(assignment);
@@ -72,6 +70,8 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
     @Override
     public void saveTask(User user, Subject subject, Task task, String content) throws MyException {
         this.testIdentity(user, subject, GroupMember.ORDINRYUSER);
+        if(task == null || task.getUser().getId() != user.getId())
+            throw new MyException("用户未拥有该专题词条修改权");
         task.setSaveTime(new Date().getTime());
         task.setContent(content);
         taskRepository.save(task);
@@ -79,6 +79,8 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
     @Override
     public void submitTask(User user, Subject subject, Task task, String content, String reason) throws MyException {
         this.testIdentity(user, subject, GroupMember.ORDINRYUSER);
+        if(task == null || task.getUser().getId() != user.getId())
+            throw new MyException("用户未拥有该专题词条修改权");
         Assignment assignment = task.getAssignment();
         task.setState(Task.TOAUDITED);
         task.setSaveTime(new Date().getTime());

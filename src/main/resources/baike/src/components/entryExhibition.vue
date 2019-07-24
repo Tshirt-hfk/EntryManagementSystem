@@ -99,6 +99,9 @@
 						<i class="el-icon-help circle-start"></i>
 						<i class="el-icon-help circle-end"></i>
 					</div>
+					<div class="preview-side-relation">
+						
+					</div>
 					<div class="preview-side-roller">
 						<div class="inner-container">
 						<ol class="preview-side-catalist">
@@ -160,7 +163,7 @@ export default {
 				intro: "黑龙江省，简称“黑”，中华人民共和国省级行政区，省会哈尔滨。位于中国东北地区北部，界于北纬43°26′—53°33′，东经121°11′—135°05′之间，北、东部与俄罗斯相望，西部与内蒙古相邻，南部与吉林接壤，是中国最北端以及陆地最东端的省级行政区。总面积47.3万平方千米。",
 				filed: "",
 				properties: [
-				["中文名称", "方磊"],
+				["中文名称llllllllllllllllll", "方磊"],
 				["身高", "150cm"],
 				["体重", "180kg"],
 				["爱好", "搞黄色"]
@@ -522,6 +525,9 @@ dl,dd,ol,h1,h2,p{
     margin: 0;
     float: left;
 	text-align: center;
+	white-space: nowrap;
+	overflow: hidden; 
+	text-overflow: ellipsis;
 }
 .preview-entry-attribute dd{
 	color: #333;
@@ -532,6 +538,9 @@ dl,dd,ol,h1,h2,p{
 	line-height: 26px;
     display: block;
 	margin-left: 10px;
+	white-space: nowrap;
+	overflow: hidden; 
+	text-overflow: ellipsis;
 }
 .preview-catalog{
 	margin-bottom: 35px;

@@ -3,6 +3,7 @@ package com.entry.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.entry.dto.BaseResultFactory;
 import com.entry.entity.mysql.*;
+import com.entry.exception.MyException;
 import com.entry.entity.mysql.pk.GroupMemberPK;
 import com.entry.repository.mysql.*;
 import com.entry.service.impl.SubjectManagementServiceImpl;
@@ -218,6 +219,8 @@ public class SubjectMakerController {
             User user = userRepository.findUserById(userId);
             subjectManagementServiceImpl.publishAssignment(user, subject, reason, time, entryIds);
             return new ResponseEntity<>(BaseResultFactory.build("发布成功"), HttpStatus.OK);
+        }catch (MyException me){
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),me.getMessage()),HttpStatus.BAD_REQUEST);
         }catch (Exception e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
         }
@@ -244,6 +247,8 @@ public class SubjectMakerController {
             }else{
                 return new ResponseEntity<>(BaseResultFactory.build("审核不通过"), HttpStatus.OK);
             }
+        }catch (MyException me){
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),me.getMessage()),HttpStatus.BAD_REQUEST);
         }catch (Exception e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
         }

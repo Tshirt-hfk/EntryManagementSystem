@@ -55,22 +55,12 @@
         <el-button size="mini" @click="inputValue='参考资料缺失';handleInputConfirm()" plain>参考资料缺失</el-button>
         <el-button size="mini" @click="inputValue='基本信息栏缺失';handleInputConfirm()" plain>基本信息栏缺失</el-button>
         <el-button size="mini" @click="inputValue='概述图不清晰';handleInputConfirm()" plain>概述图不清晰</el-button>
-        <el-button
-          style="margin-left: -1px"
-          size="mini"
-          @click="inputValue='概述缺失或过短';handleInputConfirm()"
-          plain
-        >概述缺失或过短</el-button>
+        <el-button style="margin-left: -1px" size="mini"
+          @click="inputValue='概述缺失或过短';handleInputConfirm()" plain>概述缺失或过短</el-button>
         <div style="margin: 15px 0;"></div>
         <div class="publish-tag">
-          <el-tag
-            style="font-size: 15px"
-            :key="tag"
-            v-for="tag in dynamicTags"
-            closable
-            :disable-transitions="false"
-            @close="handleClose(tag)"
-          >{{tag}}</el-tag>
+          <el-tag style="font-size: 15px" :key="tag" v-for="tag in dynamicTags"
+            closable :disable-transitions="false" @close="handleClose(tag)">{{tag}}</el-tag>
         </div>
         <div style="margin: 10px 0;"></div>
       </span>
@@ -91,7 +81,6 @@ export default {
   props: ["subjectId"],
   data() {
     return {
-      reason: "",
       tableData: [],
       multipleSelection: [],
       form: {
@@ -580,10 +569,15 @@ export default {
       for (var i = 0; i < this.multipleSelection.length; i++) {
         array.push(this.multipleSelection[i].id);
       }
+      var reason = '';
+      for(var i = 0; i < this.dynamicTags.length; i++){
+        reason += this.dynamicTags[i] + ';';
+      }
       this.$axios
         .post("http://localhost:8081/api/subjectMaker/publishAssignment", {
           entryIds: array,
-          subjectId: new Number(this.subjectId)
+          subjectId: new Number(this.subjectId),
+          reason: reason
         })
         .then(res => {
           if (res.data) {

@@ -1,6 +1,7 @@
 package com.entry.controller;
 
 import com.entry.entity.mysql.*;
+import com.entry.exception.MyException;
 import com.entry.repository.mysql.*;
 import com.entry.dto.BaseResultFactory;
 import com.entry.service.impl.SubjectManagementServiceImpl;
@@ -139,13 +140,14 @@ public class UserController {
             HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
             Integer entryId = (Integer) form.get("entryId");
             String content = (String) form.get("content");
+
             User user = userRepository.findUserById(userId);
             Task task = taskRepository.findTaskById(entryId);
             Subject subject = task.getSubject();
-            if(task == null || task.getUser().getId()!=userId)
-                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"用户未拥有该词条修改权"),HttpStatus.BAD_REQUEST);
             subjectManagementServiceImpl.saveTask(user, subject, task, content);
             return new ResponseEntity<>(BaseResultFactory.build("编辑成功"), HttpStatus.OK);
+        }catch (MyException me){
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),me.getMessage()),HttpStatus.BAD_REQUEST);
         }catch (Exception e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"编辑错误"),HttpStatus.BAD_REQUEST);
         }
@@ -161,17 +163,16 @@ public class UserController {
     @CrossOrigin
     public ResponseEntity<?> admitEntry(HttpServletRequest request, @RequestBody String jsonParam) {
         try{
-            Integer userId = (Integer) request.getAttribute("userId");
             HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
             List<Integer> entryIds = (List<Integer>) form.get("entryIds");
             String reason = (String) form.get("reason");
             for (Integer id : entryIds){
                 Task task = taskRepository.findTaskById(id);
-                if(task != null && task.getUser().getId() == userId){
-                    subjectManagementServiceImpl.submitTask(task.getUser(), task.getSubject(), task, task.getContent(), reason);
-                }
+                subjectManagementServiceImpl.submitTask(task.getUser(), task.getSubject(), task, task.getContent(), reason);
             }
             return new ResponseEntity<>(BaseResultFactory.build("提交成功"), HttpStatus.OK);
+        }catch (MyException me){
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),me.getMessage()),HttpStatus.BAD_REQUEST);
         }catch (Exception e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"提交错误"),HttpStatus.BAD_REQUEST);
         }
@@ -324,15 +325,14 @@ public class UserController {
             Integer userId = (Integer)request.getAttribute("userId");
             HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
             Integer assignmentId = (Integer)form.get("assignmentId");
+
             User user = userRepository.findUserById(userId);
             Assignment assignment = assignmentRepository.findAssignmentById(assignmentId);
             Subject subject = assignment.getSubject();
-            List<Task> tasks = taskRepository.findAllBySubject_IdAndUser_IdAAndState(subject.getId(),userId,Task.DRAWED);
-            if(tasks.size()>0){
-                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),"已领取了一个任务"), HttpStatus.NOT_FOUND);
-            }
             subjectManagementServiceImpl.drawAssignment(user, subject, assignment);
             return new ResponseEntity<>(BaseResultFactory.build("领取成功"), HttpStatus.OK);
+        }catch (MyException me){
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),me.getMessage()),HttpStatus.BAD_REQUEST);
         }catch (Exception e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
         }
