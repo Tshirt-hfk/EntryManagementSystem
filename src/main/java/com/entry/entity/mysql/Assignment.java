@@ -1,6 +1,5 @@
 package com.entry.entity.mysql;
 
-
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
@@ -28,16 +27,16 @@ public class Assignment {
     @Column(columnDefinition ="varchar(255)", nullable = false)
     private String field;
 
-    @Column(columnDefinition = "text defalut \"\"")
+    @Column
     private String intro;
 
-    @Column(columnDefinition = "varchar(255) default \"\"")
+    @Column
     private String imageUrl;
 
-    @Column(columnDefinition = "text default \"\"")
+    @Column
     private String infoBox;
 
-    @Column(columnDefinition = "text default \"\"")
+    @Column
     private String content;
 
     @Column(columnDefinition = "TINYINT default 1", nullable = false)
