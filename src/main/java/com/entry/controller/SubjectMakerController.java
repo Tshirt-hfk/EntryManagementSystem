@@ -139,7 +139,7 @@ public class SubjectMakerController {
             Integer subjectId = (Integer)form.get("subjectId");
             // TODO 判断该词条是否已经被创建
             Subject subject = subjectRepository.findSubjectById(subjectId);
-            Assignment assignment = new Assignment(name,"",fieldStr,Assignment.UNPUBLISHED,subject);
+            Assignment assignment = new Assignment(name,fieldStr,subject);
             assignmentRepository.save(assignment);
             return new ResponseEntity<>(BaseResultFactory.build("创建成功"), HttpStatus.OK);
         }catch (IOException e){

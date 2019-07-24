@@ -19,26 +19,35 @@ public class Assignment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column
+    @Column(columnDefinition = "INT default -1", nullable = false)
     private Integer originalId;
 
-    @Column(columnDefinition = "varchar(50)")
+    @Column(columnDefinition = "varchar(50)", nullable = false)
     private String entryName;
 
-    @Column(columnDefinition = "text")
+    @Column(columnDefinition ="varchar(255)", nullable = false)
+    private String field;
+
+    @Column(columnDefinition = "text defalut \"\"")
+    private String intro;
+
+    @Column(columnDefinition = "varchar(255) default \"\"")
+    private String imageUrl;
+
+    @Column(columnDefinition = "text default \"\"")
+    private String infoBox;
+
+    @Column(columnDefinition = "text default \"\"")
     private String content;
+
+    @Column(columnDefinition = "TINYINT default 1", nullable = false)
+    private Integer state; //1:未发布；2：已发布，3：被领取
+
+    @Column
+    private Integer deadline;
 
     @Column
     private String modifyReason;
-
-    @Column(nullable = false)
-    private String field;
-
-    @Column(columnDefinition = "TINYINT")
-    private Integer state; //1:未发布；2：已发布，3：被领取
-
-    @Column(columnDefinition = "INT default 864000000")
-    private Integer deadline;
 
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "subject_id")
@@ -51,11 +60,27 @@ public class Assignment {
 
     }
 
-    public Assignment(String entryName, String content, String field, Integer state, Subject subject) {
+    public Assignment(String entryName, String field, Subject subject) {
+        this.originalId = -1;
         this.entryName = entryName;
-        this.content = content;
         this.field = field;
-        this.state = state;
+        this.intro = "";
+        this.imageUrl = "";
+        this.infoBox = "";
+        this.content = "";
+        this.state = 0;
+        this.subject = subject;
+    }
+
+    public Assignment(Integer originalId, String entryName, String field, String intro, String imageUrl, String infoBox, String content, Subject subject) {
+        this.originalId = originalId;
+        this.entryName = entryName;
+        this.field = field;
+        this.intro = intro;
+        this.imageUrl = imageUrl;
+        this.infoBox = infoBox;
+        this.content = content;
+        this.state = 0;
         this.subject = subject;
     }
 
@@ -63,36 +88,8 @@ public class Assignment {
         return id;
     }
 
-    public String getEntryName() {
-        return this.entryName;
-    }
-
-    public String getModifyReason(){ return this.modifyReason;}
-
-    public void setModifyReason(String modifyReason){ this.modifyReason = modifyReason;}
-
-    public String getContent() {
-        return content;
-    }
-
-    public String getField() {
-        return field;
-    }
-
-    public Subject getSubject() {
-        return subject;
-    }
-
-    public List<Task> getTask() {
-        return tasks;
-    }
-
-    public Integer getState() {
-        return state;
-    }
-
-    public void setState(Integer state){
-        this.state = state;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Integer getOriginalId() {
@@ -103,6 +100,62 @@ public class Assignment {
         this.originalId = originalId;
     }
 
+    public String getEntryName() {
+        return entryName;
+    }
+
+    public void setEntryName(String entryName) {
+        this.entryName = entryName;
+    }
+
+    public String getField() {
+        return field;
+    }
+
+    public void setField(String field) {
+        this.field = field;
+    }
+
+    public String getIntro() {
+        return intro;
+    }
+
+    public void setIntro(String intro) {
+        this.intro = intro;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getInfoBox() {
+        return infoBox;
+    }
+
+    public void setInfoBox(String infoBox) {
+        this.infoBox = infoBox;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public Integer getState() {
+        return state;
+    }
+
+    public void setState(Integer state) {
+        this.state = state;
+    }
+
     public Integer getDeadline() {
         return deadline;
     }
@@ -111,12 +164,27 @@ public class Assignment {
         this.deadline = deadline;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public String getModifyReason() {
+        return modifyReason;
     }
 
-    public void setField(String field) {
-        this.field = field;
+    public void setModifyReason(String modifyReason) {
+        this.modifyReason = modifyReason;
     }
 
+    public Subject getSubject() {
+        return subject;
+    }
+
+    public void setSubject(Subject subject) {
+        this.subject = subject;
+    }
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
+    }
 }

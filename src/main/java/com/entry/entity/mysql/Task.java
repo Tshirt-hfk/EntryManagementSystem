@@ -17,25 +17,29 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(columnDefinition = "TINYINT default 0", nullable = false)
-    private Integer state; // 待提交  // 4：待提交, 5：待审核
+    @Column(columnDefinition = "INT default -1", nullable = false)
+    private Integer originalId;
 
-    public String getField() {
-        return field;
-    }
-
-    public void setField(String field) {
-        this.field = field;
-    }
-
-    @Column(columnDefinition = "varchar(50)")
+    @Column(columnDefinition = "varchar(50)", nullable = false)
     private String entryName;
 
-    @Column(columnDefinition = "varchar(255)")
+    @Column(columnDefinition ="varchar(255)", nullable = false)
     private String field;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "text defalut \"\"")
+    private String intro;
+
+    @Column(columnDefinition = "varchar(255) default \"\"")
+    private String imageUrl;
+
+    @Column(columnDefinition = "text default \"\"")
+    private String infoBox;
+
+    @Column(columnDefinition = "text default \"\"")
     private String content;
+
+    @Column(columnDefinition = "TINYINT default 3", nullable = false)
+    private Integer state;
 
     @Column
     private String admitReason;
@@ -65,24 +69,17 @@ public class Task {
 
     }
 
-    public Task(Subject subject, User user, Assignment assignment,String entryName, Integer state, String content, Timestamp deadline) {
+    public Task(Subject subject,User user, Assignment assignment){
         this.subject = subject;
         this.user = user;
         this.assignment =assignment;
-        this.entryName = entryName;
-        this.state = state;
-        this.content = content;
-        this.deadline = deadline;
-    }
-
-    public Task(Subject subject,User user, Assignment assignment, Integer state){
-        this.subject = subject;
-        this.user = user;
-        this.assignment =assignment;
+        this.originalId = assignment.getOriginalId();
         this.entryName = assignment.getEntryName();
         this.field = assignment.getField();
-        this.state = state;
+        this.intro = assignment.getIntro();
+        this.infoBox = assignment.getInfoBox();
         this.content = assignment.getContent();
+        this.state = Task.DRAWED;
         this.deadline = new Timestamp((new Date()).getTime()+assignment.getDeadline());
     }
 
@@ -90,24 +87,16 @@ public class Task {
         return id;
     }
 
-    public Subject getSubject() {
-        return this.subject;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public User getUser() {
-        return this.user;
+    public Integer getOriginalId() {
+        return originalId;
     }
 
-    public Assignment getAssignment() {
-        return  this.assignment;
-    }
-
-    public Integer getState() {
-        return state;
-    }
-
-    public void setState(Integer state) {
-        this.state = state;
+    public void setOriginalId(Integer originalId) {
+        this.originalId = originalId;
     }
 
     public String getEntryName() {
@@ -118,6 +107,38 @@ public class Task {
         this.entryName = entryName;
     }
 
+    public String getField() {
+        return field;
+    }
+
+    public void setField(String field) {
+        this.field = field;
+    }
+
+    public String getIntro() {
+        return intro;
+    }
+
+    public void setIntro(String intro) {
+        this.intro = intro;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getInfoBox() {
+        return infoBox;
+    }
+
+    public void setInfoBox(String infoBox) {
+        this.infoBox = infoBox;
+    }
+
     public String getContent() {
         return content;
     }
@@ -126,9 +147,21 @@ public class Task {
         this.content = content;
     }
 
-    public String getAdmitReason() { return admitReason;}
+    public Integer getState() {
+        return state;
+    }
 
-    public void setAdmitReason(String admitReason) { this.admitReason = admitReason;}
+    public void setState(Integer state) {
+        this.state = state;
+    }
+
+    public String getAdmitReason() {
+        return admitReason;
+    }
+
+    public void setAdmitReason(String admitReason) {
+        this.admitReason = admitReason;
+    }
 
     public Long getDeadline() {
         return deadline.getTime();
@@ -152,5 +185,29 @@ public class Task {
 
     public void setJudgeTime(Long judgeTime) {
         this.judgeTime = new Timestamp(judgeTime);
+    }
+
+    public Assignment getAssignment() {
+        return assignment;
+    }
+
+    public void setAssignment(Assignment assignment) {
+        this.assignment = assignment;
+    }
+
+    public Subject getSubject() {
+        return subject;
+    }
+
+    public void setSubject(Subject subject) {
+        this.subject = subject;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

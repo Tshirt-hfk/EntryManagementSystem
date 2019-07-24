@@ -341,7 +341,7 @@ public class UserController {
                 return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),"已领取了一个任务"), HttpStatus.NOT_FOUND);
             }
             assignment.setState(Assignment.DRAWED);
-            Task task = new Task(subject,user,assignment,Task.DRAWED);
+            Task task = new Task(subject,user,assignment);
             task.setSaveTime(new Date().getTime());
             task.setJudgeTime(new Date().getTime());
             assignmentRepository.save(assignment);
