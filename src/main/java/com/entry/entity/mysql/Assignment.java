@@ -67,7 +67,7 @@ public class Assignment {
         this.imageUrl = "";
         this.infoBox = "";
         this.content = "";
-        this.state = 0;
+        this.state = 1;
         this.subject = subject;
     }
 

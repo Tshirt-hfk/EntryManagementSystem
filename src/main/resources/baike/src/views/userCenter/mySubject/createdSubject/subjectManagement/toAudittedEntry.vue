@@ -23,7 +23,7 @@
             </span>
             <span slot="footer" class="dialog-footer">
               <el-button @click="rejectFlag = false">返 回</el-button>
-              <el-button type="danger" @click="audit(scope.row, false)">确 定</el-button>
+              <el-button type="danger" @click="audit(scope.row, false);rejectFlag=false">确 定</el-button>
             </span>
           </el-dialog>
         </template>

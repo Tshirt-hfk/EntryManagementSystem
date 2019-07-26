@@ -233,9 +233,9 @@ public class SubjectMakerController {
     @CrossOrigin
     public ResponseEntity<?> auditTask(HttpServletRequest request, @RequestBody String jsonParam){
         try{
+            Integer userId = (Integer) request.getAttribute("userId");
             HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
             Boolean pass = (Boolean)form.get("pass");
-            Integer userId = (Integer)form.get("userId");
             Integer taskId = (Integer)form.get("taskId");
             String reason = (String) form.get("reason");
             Task task = taskRepository.findTaskById(taskId);
