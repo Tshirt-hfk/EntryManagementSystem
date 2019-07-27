@@ -1,71 +1,14 @@
 <template>
-  <div class="myEditor">
-    <!-- 工具栏 -->
-    <div class="editor-toolbar">
-      <div ref="toolbar" id="toolbar">
-        <span class="ql-formats">
-          <button
-            ref="catalogButton"
-            class="custom-buttom"
-            style="width:45px;color:#06c"
-            @click="catalogHanlder"
-          >目录</button>
-          <button class="custom-buttom" style="width:45px" @click="save">保存</button>
-          <button class="custom-buttom" style="width:45px">预览</button>
-        </span>
-        <span class="ql-formats">
-          <button class="ql-clean"></button>
-        </span>
-        <span class="ql-formats">
-          <button class="ql-bold"></button>
-          <button class="ql-italic"></button>
-          <button class="ql-underline"></button>
-        </span>
-        <span class="ql-formats">
-          <select class="ql-color">
-            <option selected></option>
-            <option value="red"></option>
-            <option value="orange"></option>
-            <option value="yellow"></option>
-            <option value="green"></option>
-            <option value="blue"></option>
-            <option value="purple"></option>
-          </select>
-          <select class="ql-background">
-            <option selected></option>
-            <option value="red"></option>
-            <option value="orange"></option>
-            <option value="yellow"></option>
-            <option value="green"></option>
-            <option value="blue"></option>
-            <option value="purple"></option>
-          </select>
-        </span>
-        <span class="ql-formats">
-          <button class="ql-header" value="1"></button>
-          <button class="ql-header" value="2"></button>
-        </span>
-        <span class="ql-formats">
-          <button class="ql-list" value="ordered"></button>
-          <button class="ql-list" value="bullet"></button>
-          <!-- <button class="ql-table"></button> -->
-        </span>
-        <span class="ql-formats">
-          <button class="ql-link"></button>
-          <button class="ql-image"></button>
-          <button class="ql-formula"></button>
-        </span>
-      </div>
-    </div>
-    <!-- 编辑区域 -->
+  <div class="my-ck-editor">
+    <div class="editor-toolbar" ref="toolbar"></div>
     <div class="editor-content">
       <!-- 目录 -->
-      <div ref="catalogSide" class="catalog-side" style="display: block;">
+      <div class="catalog-side" style="display: block;">
         <div class="catalog-header">
           <h5>目录</h5>
         </div>
         <div class="catalog-holder">
-          <template v-for="(item,index) in form.catalog">
+          <template v-for="(item,index) in others.catalog">
             <div :key="index+3000">
               <template v-if="item.type==1">
                 <h2>
@@ -87,7 +30,7 @@
           <el-form class="basic-info-form">
             <div class="basic-info-intro">
               <div class="basic-info-intro-header">
-                <h2>概叙</h2>
+                <h2>概述</h2>
               </div>
               <div class="basic-info-intro-content">
                 <el-upload
@@ -100,7 +43,15 @@
                   <img v-if="form.imageUrl" :src="form.imageUrl" class="avatar" />
                   <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
-                <div class="basic-info-intro-text" id="introEditor"></div>
+                <div class="basic-info-intro-text">
+                  <ckeditor
+                    class="my-editor"
+                    :editor="basicInfoEditor.editor"
+                    :config="basicInfoEditor.editorConfig"
+                    :value="basicInfoEditor.intro"
+                    @onEditorInput="onIntroEditorInput"
+                  ></ckeditor>
+                </div>
               </div>
             </div>
             <div class="basic-info-property">
@@ -108,26 +59,28 @@
                 <h2>属性</h2>
               </div>
               <div>
-                <template v-for="(item,index) in form.infobox">
-                  <div :key="index" class="basic-info-property-item" v-if="item.type==1">
-                    <el-form-item :label="item.key" label-width="75px" style="width:350px">
+                <template v-for="(item,index) in others.properties">
+                  <div :key="index" class="basic-info-property-item">
+                    <el-form-item :label="item[0]" label-width="75px" style="width:350px">
                       <el-input
                         type="text"
                         size="mini"
                         maxlength="20"
                         show-word-limit
-                        v-model="form.infobox[index].value"
+                        v-model="others.properties[index][1]"
                       ></el-input>
                     </el-form-item>
                   </div>
-                  <div :key="index" class="basic-info-property-item" v-else>
+                </template>
+                <template v-for="(item,index) in others.editableProperties">
+                  <div :key="index+1000" class="basic-info-property-item">
                     <el-form-item style="width:65px;float:left">
                       <el-input
                         class="basic-info-property-label"
                         type="text"
                         size="mini"
                         maxlength="5"
-                        v-model="form.infobox[index].key"
+                        v-model="others.editableProperties[index][0]"
                       ></el-input>
                     </el-form-item>
                     <el-form-item style="width:275px;float:left;margin-left:10px">
@@ -136,7 +89,7 @@
                         size="mini"
                         maxlength="20"
                         show-word-limit
-                        v-model="form.infobox[index].value"
+                        v-model="others.editableProperties[index][1]"
                       ></el-input>
                     </el-form-item>
                     <div class="clear"></div>
@@ -145,7 +98,7 @@
                 <div class="basic-info-property-item">
                   <a
                     style="margin-left:230px;cursor:pointer;color: #3b7cff;"
-                    @click="form.infobox.push({key:'',value:'',type:2})"
+                    @click="form.editableProperties.push(['',''])"
                   >
                     <i class="el-icon-edit"></i> 添加自定义项
                   </a>
@@ -155,10 +108,17 @@
             </div>
           </el-form>
         </div>
-        <div class="maincontent">
-          <div class="maincontent-header">正文</div>
-          <div class="maincontent-body">
-            <div id="editor"></div>
+        <div class="main-content">
+          <div class="main-content-header">正文</div>
+          <div class="main-content-body">
+            <ckeditor
+              class="my-editor"
+              :editor="contentEditor.editor"
+              :config="contentEditor.editorConfig"
+              :value="contentEditor.content"
+              @ready="onReady"
+              @input="onContentEditorInput"
+            >></ckeditor>
           </div>
         </div>
         <div class="reference">
@@ -188,15 +148,6 @@
         </div>
       </div>
     </div>
-    <!-- 图片上传 -->
-    <el-upload
-      id="inserted-image"
-      :action="others.serverUrl"
-      name="file"
-      :show-file-list="false"
-      :on-success="uploadSuccess"
-      :on-error="uploadError"
-    ></el-upload>
     <!-- 添加参考资料 -->
     <el-dialog title="添加参考资料" :visible.sync="others.dialogFormVisible" width="500px">
       <el-form :model="others.referenceForm">
@@ -219,63 +170,106 @@
 </template>
 
 <script>
-import "quill/dist/quill.core.css";
-import "quill/dist/quill.snow.css";
-import "quill/dist/quill.Bubble.css";
-import Quill from "quill";
-import katex from "katex";
-import ImageResize from "quill-image-resize-module";
-import "katex/dist/katex.min.css";
-window.Quill.register("modules/imageResize", ImageResize);
+import {
+  DecoupledEditor,
+  InlineEditor
+} from "@ckeditor/ckeditor5-build-decoupled-document";
+import "@ckeditor/ckeditor5-build-decoupled-document/build/translations/zh-cn.js";
+import MyUploadAdapter from "./myUploadAdapter.js";
 
 export default {
-  name: "myEditor",
+  name: "entryEditor",
   data() {
     return {
+      id: 0,
       form: {
-        entryId: 1,
-        entryName: "哈哈",
-        field: [],
+        entryName: "",
         imageUrl: "",
+        field: [],
         intro: "",
-        infoBox: [
-          {
-            key: "test1",
-            value: "test1",
-            type: 1
-          },
-          {
-            key: "test2",
-            value: "test2",
-            type: 2
-          }
-        ],
+        infoBox: [],
         content: "",
-        reference: [
-          {
-            title: "标题一",
-            author: "作者一",
-            url: "http://localhost:8080/#/test"
-          },
-          {
-            title: "标题二",
-            author: "作者二",
-            url: "http://localhost:8080/#/test"
+        reference: []
+      },
+      basicInfoEditor: {
+        intro:"",
+        editorObject: null,
+        editor: InlineEditor,
+        editorConfig: {
+          language: "zh-cn",
+          toolbar: [
+            "bold",
+            "italic",
+            "underline",
+            "strikethrough",
+            "|",
+            "fontColor",
+            "fontBackgroundColor",
+            "|",
+            "link",
+            "blockquote",
+            "|",
+            "removeFormat",
+            "|",
+            "undo",
+            "redo"
+          ]
+        }
+      },
+      contentEditor: {
+        content:"",
+        editorObject: null,
+        editor: DecoupledEditor,
+        editorConfig: {
+          language: "zh-cn",
+          toolbar: [
+            "heading",
+            "|",
+            "bold",
+            "italic",
+            "underline",
+            "strikethrough",
+            "|",
+            "fontColor",
+            "fontBackgroundColor",
+            "|",
+            "numberedList",
+            "bulletedList",
+            "|",
+            "link",
+            "blockquote",
+            "imageUpload",
+            "insertTable",
+            "|",
+            "removeFormat",
+            "|",
+            "undo",
+            "redo"
+          ],
+          heading: {
+            options: [
+              {
+                model: "paragraph",
+                title: "Paragraph",
+                class: "ck-heading_paragraph"
+              },
+              {
+                model: "heading1",
+                view: "h2",
+                title: "Heading 1",
+                class: "ck-heading_heading1"
+              },
+              {
+                model: "heading2",
+                view: "h3",
+                title: "Heading 2",
+                class: "ck-heading_heading2"
+              }
+            ]
           }
-        ]
-      },
-      introEditor: {
-        editor: null,
-        content: ""
-      },
-      contenteditor: {
-        editor: null,
-        content: ""
+        }
       },
       others: {
-        catalog:[],
-        catalogOpen: true, // 目录显示控制
-        serverUrl: "http://localhost:8081/resource/image",
         dialogFormVisible: false,
         referenceForm: {
           title: "",
@@ -283,69 +277,31 @@ export default {
           url: "",
           type: 1,
           aim: 1
-        }
+        },
+        serverUrl: "http://localhost:8081/resource/image",
+        catalog: [],
+        properties: [
+          ["hel", "ehl"],
+          ["hel", "ehl"],
+          ["hel", "ehl"],
+          ["hel", "ehl"]
+        ],
+        editableProperties: [["", ""], ["", ""], ["", ""]]
       }
     };
   },
-  mounted() {
-    this.initIntroEditor();
-    this.initContentEditor();
-  },
   methods: {
-    initIntroEditor() {
-      this.introEditor.editor = new Quill("#introEditor", {
-        theme: "bubble",
-        placeholder: this.introEditor.content,
-        modules: {
-          toolbar: ["bold", "italic", "underline", "strike", "link"]
-        }
-      });
+    onReady(editor) {
+      // Insert the toolbar
+      this.$refs.toolbar.appendChild(editor.ui.view.toolbar.element);
+      editor.plugins.get("FileRepository").createUploadAdapter = loader => {
+        return new MyUploadAdapter(loader);
+      };
+      this.contentEditor.editorObject = editor;
     },
-    initContentEditor() {
-      this.contenteditor.editor = new Quill("#editor", {
-        theme: "snow",
-        placeholder: this.contenteditor.content,
-        modules: {
-          formula: true,
-          imageResize: {},
-          toolbar: {
-            container: "#toolbar",
-            handlers: {
-              link: function(value) {
-                if (value) {
-                  var href = prompt("请输入链接：");
-                  this.contenteditor.editor.format("link", href);
-                } else {
-                  this.contenteditor.editor.format("link", false);
-                }
-              },
-              image: function(value) {
-                if (value) {
-                  // 触发input框选择图片文件
-                  document.querySelector("#inserted-image input").click();
-                } else {
-                  this.contenteditor.editor.format("image", false);
-                }
-              },
-              formula: function(value) {
-                if (value) {
-                  var href = prompt("请输入公式：");
-                  this.contenteditor.editor.format("formula", href);
-                } else {
-                  this.contenteditor.editor.format("formula", false);
-                }
-              }
-            }
-          }
-        }
-      });
-      this.contenteditor.editor.on("text-change", (delta, oldDelta, source) => {
-        if (source == "api") {
-          console.log("An API call triggered this change.");
-        } else if (source == "user") {
-          this.refreshCatalog();
-        }
-      });
+    // 词条图片上传
+    handleAvatarSuccess(res, file) {
+      this.form.imageUrl = res.data.url;
     },
     // 词条图片上传限制
     beforeAvatarUpload(file) {
@@ -355,37 +311,29 @@ export default {
       }
       return isLt2M;
     },
-    save() {
-      // TODO 上传数据
-      //window.console.log(this.form.content);
+    // 绑定词条内容
+    onContentEditorInput(editor) {
+      this.form.content = editor;
+      this.refreshCatalog();
     },
-    // 目录显示控制
-    catalogHanlder() {
-      if (this.others.catalogOpen == false) {
-        this.$refs.catalogSide.style.display = "block";
-        this.others.catalogOpen = true;
-        this.$refs.catalogButton.style.color = "#06c";
-      } else {
-        this.$refs.catalogSide.style.display = "none";
-        this.others.catalogOpen = false;
-        this.$refs.catalogButton.style.color = "";
-      }
+    // 绑定词条介绍
+    onIntroEditorInput(editor) {
+      this.form.intro = editor;
     },
+    // 保存
+    save() {},
     // 更新目录
     refreshCatalog() {
-      var leaf = this.contenteditor.editor.getLine(0)[0];
+      var leafs = this.contentEditor.editorObject.sourceElement.childNodes;
       this.others.catalog.splice(0, this.others.catalog.length);
       var i = 1;
-      while (leaf != null) {
-        var dom = leaf.domNode;
-        leaf = leaf.next;
+      for (var leaf of leafs) {
+        var dom = leaf;
         var type;
-        if (dom.tagName == "H1") {
+        if (dom.tagName == "H2") {
           type = 1;
-        } else if (dom.tagName == "H2") {
+        } else if (dom.tagName == "H3") {
           type = 2;
-        } else if (leaf == null) {
-          break;
         } else {
           continue;
         }
@@ -399,33 +347,13 @@ export default {
         i = i + 1;
       }
     },
-    uploadSuccess(res, file) {
-      // 如果上传成功
-      if (res.data && res.data.url) {
-        // 获取光标所在位置
-        let length = this.contenteditor.editor.getSelection().index;
-        // 插入图片  res.url为服务器返回的图片地址
-        this.contenteditor.editor.insertEmbed(length, "image", res.data.url);
-        // 调整光标到最后
-        this.contenteditor.editor.setSelection(length + 1);
-      } else {
-        this.$message.error("图片插入失败");
-      }
-    },
-    // 富文本图片上传失败
-    uploadError() {
-      this.$message.error("图片插入失败");
-    },
-    // 词条图片上传
-    handleAvatarSuccess(res, file) {
-      this.form.imageUrl = res.data.url;
-    },
     // 参考资料
     addReference() {
       this.others.referenceForm.type = 1;
       this.others.dialogFormVisible = true;
     },
     editReference(id) {
+      // 修改参考资料
       this.others.referenceForm.type = 2;
       this.others.referenceForm.aim = id;
       this.others.referenceForm.title = this.form.reference[id].title;
@@ -434,6 +362,7 @@ export default {
       this.others.dialogFormVisible = true;
     },
     deleteReference(id) {
+      // 删除参考资料
       if (this.form.reference.length > id) {
         this.form.reference.splice(id, 1);
       }
@@ -467,7 +396,7 @@ export default {
 </script>
 
 <style>
-.myEditor {
+.my-ck-editor {
   position: absolute;
   left: 0px;
   right: 0px;
@@ -482,10 +411,7 @@ export default {
   position: absolute;
   z-index: 999;
   width: 100%;
-  height: 42px;
-}
-.editor-toolbar .custom-buttom {
-  outline: none;
+  height: 40px;
 }
 
 /* 编辑器 */
@@ -493,7 +419,7 @@ export default {
   position: absolute;
   width: 100%;
   overflow-y: auto;
-  top: 42px;
+  top: 40px;
   bottom: 0px;
   background: rgb(240, 240, 240);
 }
@@ -506,7 +432,7 @@ export default {
 }
 
 .basic-info,
-.maincontent,
+.main-content,
 .reference {
   margin-bottom: 7px;
   min-height: 800px;
@@ -565,14 +491,8 @@ export default {
   border-radius: 4px;
   border: 1px solid #dcdfe6;
 }
-.basic-info-intro-text p {
-  margin-bottom: 5px;
-  text-indent: 2em;
-  word-wrap: break-word;
-  line-height: 24px;
-}
 .basic-info-property {
-  min-height: 300px;
+  min-height: 200px;
   padding-bottom: 15px;
 }
 .basic-info-property-item {
@@ -592,7 +512,7 @@ export default {
 .reference {
   min-height: 200px;
 }
-.maincontent-header,
+.main-content-header,
 .reference-header {
   font-size: 20px;
   color: #333;
@@ -609,31 +529,29 @@ export default {
   float: right;
   cursor: pointer;
 }
-.maincontent-body,
+
+.main-content-body,
 .reference-body {
   font-family: sans-serif;
-  font-size: 16px;
+  font-size: 14px;
   overflow: hidden;
-  padding: 0 16px;
+  padding: 0 21px;
 }
 
-.ql-container.ql-snow {
+/* 正文 */
+.my-editor {
   border: 0px;
-}
-
-.ql-snow .ql-editor {
-  margin: 0 15px;
   background: #fff;
   color: #000;
   padding: 0px;
 }
-.ql-snow .ql-editor p {
-  margin-bottom: 5px;
+.my-editor p {
   text-indent: 2em;
   word-wrap: break-word;
   line-height: 24px;
+  font-size: 14px;
 }
-.ql-snow .ql-editor h1 {
+.my-editor h2 {
   font-size: 16px;
   font-weight: bold;
   line-height: 24px;
@@ -642,7 +560,7 @@ export default {
   margin: 35px 0 15px;
   clear: both;
 }
-.ql-snow .ql-editor h2 {
+.my-editor h3 {
   font-size: 15px;
   font-family: Arial;
   line-height: 22px;
@@ -652,7 +570,7 @@ export default {
 /* 菜单栏 */
 .catalog-side {
   position: fixed;
-  top: 84px;
+  top: 82px;
   left: 0px;
   bottom: 7px;
   width: 240px;

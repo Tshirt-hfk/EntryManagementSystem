@@ -31,19 +31,18 @@
 				</div>
 				<div class="clearfloat"></div>
 				<div class="preview-entryName">
-					<h1>{{entryName}}</h1>
-					<h2>({{field}})</h2>
+					<h1>{{form.entryName}}</h1>
+					<h2>({{form.field}})</h2>
 					<el-button size="mini" @click="toEntryEdit">编辑</el-button>
 				</div>
-				<div class="preview-entryintro">
-					{{form.intro}}
+				<div class="preview-entryintro"  v-html="form.intro">
 				</div>
 				<div class="preview-entry-attribute">
 					<div class="preview-basicinfo-title">
 						<h2 class="preview-basicinfo-h2">基本信息</h2>
 					</div>
 					<dl class="preview-attribute-left">
-						<div v-for="(prop, index) in form.properties" :key="prop[0]">
+						<div v-for="(prop, index) in form.infoBox" :key="index">
 							<div v-if="index % 2 == 0">
 							<dt>{{prop[0]}}</dt>
 							<span style="float:left">:</span>
@@ -67,7 +66,7 @@
 					</div>
 					<div class="preview-cataloglist">
 						<ol v-for="n in columns" :key="n">
-							<li style="line-height: 28px" v-for="(cata, index) in form.catalog.slice((n-1)*12)" :key="index">
+							<li style="line-height: 28px" v-for="(cata, index) in catalog.slice((n-1)*12)" :key="index">
 								<div v-if="index < 12">
 								<template v-if="cata.type == 1">
 									<span class="catalog-index1">{{indexNum++}}</span>
@@ -156,19 +155,18 @@ export default {
 			sideIndex: 1,
 			columns: 4,
 			entryId: 1,
-			entryName: '方磊',
-			field: '动物',
 			form: {
+				entryName: '方磊',
+				field: '动物',
 				imageUrl: "https://gss3.bdstatic.com/-Po3dSag_xI4khGkpoWK1HF6hhy/baike/w%3D268%3Bg%3D0/sign=6841e3a2464a20a4311e3bc1a869ff1f/71cf3bc79f3df8dcfa573421c411728b47102813.jpg",
 				intro: "黑龙江省，简称“黑”，中华人民共和国省级行政区，省会哈尔滨。位于中国东北地区北部，界于北纬43°26′—53°33′，东经121°11′—135°05′之间，北、东部与俄罗斯相望，西部与内蒙古相邻，南部与吉林接壤，是中国最北端以及陆地最东端的省级行政区。总面积47.3万平方千米。",
 				filed: "",
-				properties: [
-				["中文名称llllllllllllllllll", "方磊"],
-				["身高", "150cm"],
-				["体重", "180kg"],
-				["爱好", "搞黄色"]
+				infobox: [
 				],
-				catalog: [
+				content: '<h1 id="t1">方磊</h1> <h2 id="t2">色情</h2> <p>黑龙江省是中国位置最北、最东，纬度最高，经度最东的省份，西起121°11′E，东至135°05′E，南起43°26′N，北至53°33′N，东西跨14个经度，南北跨10个纬度，2个热量带；东西跨14个经度，3个湿润区。面积47.3万平方千米（含加格达奇区和松岭区）。北部和东部与俄罗斯相邻，边境线长3045千米，是亚洲与太平洋地区陆路通往俄罗斯远东和欧洲大陆的重要通道，西部与南部分别与内蒙古和吉林省相邻，东部近日本海。</p>',
+				reference: []
+			},
+			catalog: [
 					{
 						title: '历史沿革',
 						url: '#t1',
@@ -185,63 +183,8 @@ export default {
 						title: '位置境遇',
 						url: '#t1',
 						type: 2
-					},{
-						title: 'hh',
-						url: '#t1',
-						type: 2
-					},{
-						title: 'hh',
-						url: '#t1',
-						type: 2
-					},{
-						title: 'hh',
-						url: '#t1',
-						type: 2
-					},{
-						title: 'hh',
-						url: '#t1',
-						type: 2
-					},{
-						title: 'hh',
-						url: '#t1',
-						type: 2
-					},{
-						title: 'hh',
-						url: '#t1',
-						type: 2
-					},{
-						title: 'hh',
-						url: '#t1',
-						type: 2
-					},{
-						title: '自然资源',
-						url: '#t1',
-						type: 1
-					},{
-						title: 'hh',
-						url: '#t1',
-						type: 2
-					},{
-						title: 'hh',
-						url: '#t1',
-						type: 2
-					},{
-						title: 'hh',
-						url: '#t1',
-						type: 2
-					},{
-						title: 'hh',
-						url: '#t1',
-						type: 2
-					},{
-						title: 'hh',
-						url: '#t1',
-						type: 2
-					},
+					}
 				],
-				content: '<h1 id="t1">方磊</h1> <h2 id="t2">色情</h2> <p>黑龙江省是中国位置最北、最东，纬度最高，经度最东的省份，西起121°11′E，东至135°05′E，南起43°26′N，北至53°33′N，东西跨14个经度，南北跨10个纬度，2个热量带；东西跨14个经度，3个湿润区。面积47.3万平方千米（含加格达奇区和松岭区）。北部和东部与俄罗斯相邻，边境线长3045千米，是亚洲与太平洋地区陆路通往俄罗斯远东和欧洲大陆的重要通道，西部与南部分别与内蒙古和吉林省相邻，东部近日本海。</p>',
-				references: []
-			},
 		}
 	},
 	mounted(){
@@ -251,29 +194,28 @@ export default {
 	methods:{
 		init(){
 			window.console.log(this.name)
-			// 获取词条数据 
-			// this.$axios.get(
-            //     "http://127.0.0.1:5000/fetchPageByName",{params:{
-			// 		name:this.name
-			// 	}}
-            // ).then(res => {
-            //     if(res.data){
-			// 		window.console.log("test")
-            //         this.value = res.data.page_content
-            //     } else {
-            //     this.$message({
-            //         message:res.data.msg,
-            //         type:"warning"
-            //     });
-            //     }
-            // }).catch(error => {
-            //     if(error.response){
-            //         this.$message({
-            //             message:error.response.data.msg,
-            //             type:"warning"
-            //         });
-            //     }
-			// });	
+			this.$axios.get(
+                "http://192.168.1.121:9000/fetchPageByName",{params:{
+					name:this.name
+				}}
+            ).then(res => {
+                if(res.data){
+					window.console.log("test")
+                    this.value = res.data.page_content
+                } else {
+                this.$message({
+                    message:res.data.msg,
+                    type:"warning"
+                });
+                }
+            }).catch(error => {
+                if(error.response){
+                    this.$message({
+                        message:error.response.data.msg,
+                        type:"warning"
+                    });
+                }
+			});	
 		},
 
 		toEntryEdit(){
