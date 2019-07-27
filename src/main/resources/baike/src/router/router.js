@@ -12,11 +12,6 @@ export default new Router({
       component: index
     },
     {
-      path: '/test1',
-      name: 'test1',
-      component: () => import('../components/entryExhibition')
-    },
-    {
       path: '/login',
       name: 'login',
       component: () => import('../views/login')

@@ -187,6 +187,34 @@
           </div>
         </div>
       </div>
+      <!-- 上下位关系 -->
+      <div class="relationship-side">
+        <div class="relationship-side-title">
+          <h5>词条关系</h5>
+        </div>
+        <div class="relationship-side-operation">
+          <el-alert title="请谨慎选择词条关系" type="warning" show-icon :closable="false"
+          style="width: 250px;margin: 0 auto;margin-bottom: 10px;" center></el-alert>
+          <mySearch style="margin-left: 15px;width: 210px;" v-on:remoteMethod="remoteMethod" 
+          :options="options" :value="value" :loading="loading"></mySearch>
+          <el-select v-model="relation" placeholder="关系选择" style="width: 150px">
+            <el-option v-for="item in optionInRelation" :key="item"
+              :label="item" :value="item"></el-option>
+          </el-select>
+          <el-button class="relation-button-add" type="primary" @click="toAddRelation">添加</el-button>
+        </div>
+        <div class="relation-table">
+          <el-table :data="tableData" style="width: 100%">
+            <el-table-column prop="name" label="词条名" width="150px"></el-table-column>
+            <el-table-column prop="relation" label="关系" width="150px"> </el-table-column>
+            <el-table-column label="操作">
+              <template slot-scope="scope">
+                <el-button size="mini" type="danger" @click="toDeleteRelation(scope.$index)">删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </div>
     </div>
     <!-- 图片上传 -->
     <el-upload
@@ -219,6 +247,9 @@
 </template>
 
 <script>
+
+import mySearch from "../../components/mySearch"
+
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import "quill/dist/quill.Bubble.css";
@@ -230,8 +261,28 @@ window.Quill.register("modules/imageResize", ImageResize);
 
 export default {
   name: "myEditor",
+  components:{
+    mySearch
+  },
   data() {
     return {
+      options: [],
+      loading: false,
+      value: [],
+      relation: '',
+      optionInRelation: ["上位词","下位词","同位词"],
+      tableData: [
+        {
+          name: '哈哈',
+          relation: '上位词'
+        },{
+          name: '嘻嘻',
+          relation: '下位词'
+        },{
+          name: '呵呵',
+          relation: '同位词'
+        }
+      ],
       taskId: this.$route.query.id,
       form: {
         entryName: "哈哈",
@@ -380,7 +431,7 @@ export default {
       }
       return isLt2M;
     },
-    save() {
+    save() {             // 未完成， 需要把关系写入数据库
       this.$axios
         .post("http://localhost:8081/api/user/saveTaskContent", {
           taskId: new Number(this.taskId),
@@ -505,6 +556,39 @@ export default {
       this.others.referenceForm.author = "";
       this.others.referenceForm.url = "";
       this.others.dialogFormVisible = false;
+    },
+    remoteMethod(query){
+      if(query !== ''){
+        this.loading = true;
+        this.value = query;
+        this.$axios
+            .post("http://192.168.1.121:9000/", {keyword:query}) //向远程服务器模糊搜索
+            .then(res => {
+                if(res.data.data){
+                    this.options = res.data.data.entrys;
+                }
+                this.loading = false;
+            })
+            .catch(error => {
+                      
+            });
+      }else{
+        this.options = [];
+      }
+    },
+    toAddRelation(){
+      let arr = [
+        {
+          name : this.aimEntry,
+          relation: this.relation
+        }
+      ]
+      tableData.push(arr);
+
+    },
+    toDeleteRelation(index){
+      this.tableData.splice(index, 1);
+      window.console.log("nmh")
     }
   }
 };
@@ -699,18 +783,18 @@ export default {
   top: 84px;
   left: 0px;
   bottom: 7px;
-  width: 240px;
+  width: 400px;
   background: rgb(255, 255, 255);
 }
 .catalog-header {
   background-color: #fafafa;
+  text-align: center;
 }
 .catalog-header h5 {
   height: 38px;
   line-height: 38px;
   font-size: 18px;
   font-weight: bold;
-  padding-left: 20px;
   padding-bottom: 10px;
   margin-top: 12px;
   border-bottom: 1px solid #e3e3e6;
@@ -769,6 +853,42 @@ export default {
   width: 178px;
   height: 178px;
   display: block;
+}
+/* 上下位关系 */
+.relationship-side{
+    display: block;
+    position: fixed;
+    top: 84px;
+    right: 0px;
+    bottom: 7px;
+    width: 400px;
+    background: rgb(255, 255, 255);
+}
+.relationship-side-title{
+  height: 45px;
+  border-bottom: 2px solid #e3e3e6;
+  text-align: center
+}
+.relationship-side-title h5{
+    height: 38px;
+    line-height: 38px;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 12px;
+}
+.relationship-side-operation{
+  margin-top: 15px;
+  border-bottom: 2px dashed #e3e3e6;
+  padding-bottom: 5px;
+}
+.relation-button-add{
+  margin: 0 auto;
+  margin-top: 8px;
+  width: 80px;
+  margin-left: 305px;
+}
+.relation-table{
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .clear {

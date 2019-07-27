@@ -35,6 +35,11 @@
         handler(n, o){
           this.loadingSearch = n;
         }
+      },
+      value:{
+        handler(n, o){
+          this.searchValue = n;
+        }
       }
     },
     data() {

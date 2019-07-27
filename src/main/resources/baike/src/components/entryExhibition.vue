@@ -93,13 +93,25 @@
 				<div class="preview-picture">
 					<img style="margin: 0 auto" :src="form.imageUrl">
 				</div>
+				<!-- 上下位关系-->
+				<div class="preview-relation">
+					<div class="relation-title">
+						<h3 style="margin-left: 50px">词条名</h3>
+						<h3 style="margin-left: 80px">关系</h3>
+					</div>
+					<ul>
+						<li v-for="item in tableData" :key="item.name">
+							<div>
+								<h4 style="margin-left: 60px">{{item.name}}</h4>
+								<h4 style="margin-left: 88px">{{item.relation}}</h4>
+							</div>
+						</li>
+					</ul>
+				</div>
 				<div class="preview-side-catalog" style="visibility: hidden;bottom: 10px;" id="sideRoller">
 					<div class="preview-side-bar">
 						<i class="el-icon-help circle-start"></i>
 						<i class="el-icon-help circle-end"></i>
-					</div>
-					<div class="preview-side-relation">
-						
 					</div>
 					<div class="preview-side-roller">
 						<div class="inner-container">
@@ -139,7 +151,7 @@ import mySearch from "../components/mySearch";
 export default {
 	name:"entryExhibition",
 	components:{
-		mySearch
+		mySearch,
 	},
 	computed:{
 		// columns:function(){		
@@ -155,13 +167,25 @@ export default {
 			sideIndex: 1,
 			columns: 4,
 			entryId: 1,
+			tableData: [
+				{
+				name: '哈哈',
+				relation: '上位词'
+				},{
+				name: '嘻嘻',
+				relation: '下位词'
+				},{
+				name: '呵呵',
+				relation: '同位词'
+				}
+			],
 			form: {
 				entryName: '方磊',
 				field: '动物',
 				imageUrl: "https://gss3.bdstatic.com/-Po3dSag_xI4khGkpoWK1HF6hhy/baike/w%3D268%3Bg%3D0/sign=6841e3a2464a20a4311e3bc1a869ff1f/71cf3bc79f3df8dcfa573421c411728b47102813.jpg",
 				intro: "黑龙江省，简称“黑”，中华人民共和国省级行政区，省会哈尔滨。位于中国东北地区北部，界于北纬43°26′—53°33′，东经121°11′—135°05′之间，北、东部与俄罗斯相望，西部与内蒙古相邻，南部与吉林接壤，是中国最北端以及陆地最东端的省级行政区。总面积47.3万平方千米。",
 				filed: "",
-				infobox: [
+				infoBox: [
 				],
 				content: '<h1 id="t1">方磊</h1> <h2 id="t2">色情</h2> <p>黑龙江省是中国位置最北、最东，纬度最高，经度最东的省份，西起121°11′E，东至135°05′E，南起43°26′N，北至53°33′N，东西跨14个经度，南北跨10个纬度，2个热量带；东西跨14个经度，3个湿润区。面积47.3万平方千米（含加格达奇区和松岭区）。北部和东部与俄罗斯相邻，边境线长3045千米，是亚洲与太平洋地区陆路通往俄罗斯远东和欧洲大陆的重要通道，西部与南部分别与内蒙古和吉林省相邻，东部近日本海。</p>',
 				reference: []
@@ -247,7 +271,7 @@ export default {
 @import "quill/dist/quill.snow.css";
 @import "katex/dist/katex.min.css";
 
-dl,dd,ol,h1,h2,p{
+dl,dd,ol,ul,h1,h2,h3,h4,p{
 	margin:0;   
 	padding:0; 
 }
@@ -690,6 +714,37 @@ dl,dd,ol,h1,h2,p{
 }
 .preview-side-up:hover{
 	background:rgba(82, 163, 245,0.1)
+}
+.preview-relation{
+	position: relative;
+	height: 300px;
+	width: 270px;
+	border: solid 1px #e3e3e6;
+}
+.relation-title{
+  height: 40px;
+  border-bottom: 2px dashed #e3e3e6;
+  text-align: center
+}
+.relation-title h3{
+	height: 38px;
+    line-height: 38px;
+    font-size: 18px;
+	float: left;
+	margin-top: 2px;
+}
+.preview-relation li{
+    height: 38px;
+    border-bottom: 1px solid #e9e7e6;
+    list-style: none;
+}
+.preview-relation h4{
+	height: 38px;
+    line-height: 38px;
+    font-size: 16px;
+	font-weight: 400;
+	float: left;
+	margin-top: 2px;
 }
 </style>
 

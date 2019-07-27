@@ -7,7 +7,8 @@
                 </a>
             </div>
             <div class="index-search">
-                <mySearch style="width: 440px;"></mySearch>
+                <mySearch style="width: 440px;" v-on:remoteMethod="remoteMethod" :options="options"
+                :value="value" :loading="loading"></mySearch>
                 <el-button type="primary" @click="search" style="margin-left: 10px">搜索词条</el-button>
             </div>
         </div>
@@ -57,8 +58,29 @@
                         </div>
                     </el-carousel-item>
                 </el-carousel>
+                <div class="index-main-classification">
+                    <div class="classification-title">
+                        <h2>分类推荐</h2>
+                        <el-tabs v-model="field" @tab-click="handleClick">
+                            <el-tab-pane name="人物">
+                                <span slot="label">人物</span>
+                            </el-tab-pane>
+                            <el-tab-pane name="自然">
+                                <span slot="label">自然</span>
+                            </el-tab-pane>
+                            <el-tab-pane name="文化">
+                                <span slot="label">文化</span>
+                            </el-tab-pane>
+                            <el-tab-pane name="科技">
+                                <span slot="label">科技</span>
+                            </el-tab-pane>
+                        </el-tabs>
+                        <div class="classification-content">
+                            <classificationEntry :field="field"></classificationEntry>
+                        </div>
+                    </div>
+                </div>
             </div>
-
             <div class="index-side-wrap">
                 <div class="index-side-rightbox">
                     <div class="index-side-rightbox-title">
@@ -94,14 +116,20 @@
 <script>
 
 import mySearch from "../components/mySearch";
+import classificationEntry from "./classificationEntry";
 
 export default {
     name:'index',
     components:{
-        mySearch
+        mySearch,
+        classificationEntry
     },
     data(){
         return {
+            options: [],
+            loading: false,
+            value: [],
+            field: '人物',
             //数据都要从数据库取
             homePageEntry: [
                 {
@@ -158,7 +186,17 @@ export default {
     },
     methods:{
         search() {
-        //TODO
+            //TODO
+            const { href } = this.$router.resolve({
+                path: "/entry",
+                query: {
+                    name: this.value
+                }
+            });
+            window.open(href, '_blank');
+            this.options = [];
+            this.loading = false;
+            this.value = [];
         },
         handleSelect(key, keyPath) {
             console.log(key, keyPath);
@@ -174,6 +212,22 @@ export default {
         },
         toRecommendEntry(){
 
+        },
+        remoteMethod(query) {
+            this.loading = true;
+            this.value = query;
+            this.$axios
+                .post("http://localhost:8081/api/user/searchSubject", {
+                keyword: query
+                })
+                .then(res => {
+                if (res.data.data) {
+                    this.options = res.data.data.subjects;
+                } else {
+                }
+                this.loading = false;
+                })
+                .catch(error => {});
         }
     }
 }
@@ -409,5 +463,28 @@ h2,p,h3{
 .index-side-recom-subject  .subject-ctn a:hover{
     color: #409EFF;
     border: solid 1px #409EFF;
+}
+.index-main-classification{
+    margin-top: 25px;
+    width: 710px;
+}
+.classification-title{
+    height: 28px;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e2e2e2;
+}
+.classification-title h2{
+    float: left;
+    margin-right: 50px;
+    margin-top: 6px;
+    padding-bottom: 1px;
+    font-size: 16px;
+    line-height: 30px;
+    color: #336;
+    border-bottom: 3px solid #336;
+}
+.classification-content{
+    margin-top: 20px;
 }
 </style>
