@@ -7,7 +7,8 @@
                 </a>
             </div>
             <div class="index-search">
-                <mySearch style="width: 440px;"></mySearch>
+                <mySearch style="width: 440px;" v-on:remoteMethod="remoteMethod" :options="options"
+                :value="value" :loading="loading"></mySearch>
                 <el-button type="primary" @click="search" style="margin-left: 10px">搜索词条</el-button>
             </div>
         </div>
@@ -125,6 +126,9 @@ export default {
     },
     data(){
         return {
+            options: [],
+            loading: false,
+            value: [],
             field: '人物',
             //数据都要从数据库取
             homePageEntry: [
@@ -182,7 +186,17 @@ export default {
     },
     methods:{
         search() {
-        //TODO
+            //TODO
+            const { href } = this.$router.resolve({
+                path: "/entry",
+                query: {
+                    name: this.value
+                }
+            });
+            window.open(href, '_blank');
+            this.options = [];
+            this.loading = false;
+            this.value = [];
         },
         handleSelect(key, keyPath) {
             console.log(key, keyPath);
@@ -199,8 +213,21 @@ export default {
         toRecommendEntry(){
 
         },
-        handleClick(){
-
+        remoteMethod(query) {
+            this.loading = true;
+            this.value = query;
+            this.$axios
+                .post("http://localhost:8081/api/user/searchSubject", {
+                keyword: query
+                })
+                .then(res => {
+                if (res.data.data) {
+                    this.options = res.data.data.subjects;
+                } else {
+                }
+                this.loading = false;
+                })
+                .catch(error => {});
         }
     }
 }

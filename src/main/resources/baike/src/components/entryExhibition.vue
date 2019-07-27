@@ -95,10 +95,20 @@
 				</div>
 				<!-- 上下位关系-->
 				<div class="preview-relation">
-					<el-table :data="tableData" style="width: 30%;margin-top: 50px;">
-						<el-table-column prop="name" label="词条名" width="120px"></el-table-column>
-						<el-table-column prop="relation" label="关系" width="120px"> </el-table-column>
+					<el-card>
+					<el-table :data="tableData" style="width: 100%">
+						<el-table-column label="词条名" width="120px">
+							<template slot-scope="scope">
+								<span style="margin-left: 10px">{{ scope.row.name}}</span>
+							</template>
+						</el-table-column>
+						<el-table-column label="关系" width="120px">
+							<template slot-scope="scope">
+								<span style="margin-left: 10px">{{ scope.row.relation}}</span>
+							</template>
+						</el-table-column>
 					</el-table>
+					</el-card>
 				</div>
 				<div class="preview-side-catalog" style="visibility: hidden;bottom: 10px;" id="sideRoller">
 					<div class="preview-side-bar">
@@ -143,7 +153,7 @@ import mySearch from "../components/mySearch";
 export default {
 	name:"entryExhibition",
 	components:{
-		mySearch
+		mySearch,
 	},
 	computed:{
 		// columns:function(){		
@@ -159,15 +169,17 @@ export default {
 			sideIndex: 1,
 			columns: 4,
 			entryId: 1,
-			tableData: [
-			],
+			tableData: [{
+				name: '1',
+				relation: '2'
+			}],
 			form: {
 				entryName: '方磊',
 				field: '动物',
 				imageUrl: "https://gss3.bdstatic.com/-Po3dSag_xI4khGkpoWK1HF6hhy/baike/w%3D268%3Bg%3D0/sign=6841e3a2464a20a4311e3bc1a869ff1f/71cf3bc79f3df8dcfa573421c411728b47102813.jpg",
 				intro: "黑龙江省，简称“黑”，中华人民共和国省级行政区，省会哈尔滨。位于中国东北地区北部，界于北纬43°26′—53°33′，东经121°11′—135°05′之间，北、东部与俄罗斯相望，西部与内蒙古相邻，南部与吉林接壤，是中国最北端以及陆地最东端的省级行政区。总面积47.3万平方千米。",
 				filed: "",
-				infobox: [
+				infoBox: [
 				],
 				content: '<h1 id="t1">方磊</h1> <h2 id="t2">色情</h2> <p>黑龙江省是中国位置最北、最东，纬度最高，经度最东的省份，西起121°11′E，东至135°05′E，南起43°26′N，北至53°33′N，东西跨14个经度，南北跨10个纬度，2个热量带；东西跨14个经度，3个湿润区。面积47.3万平方千米（含加格达奇区和松岭区）。北部和东部与俄罗斯相邻，边境线长3045千米，是亚洲与太平洋地区陆路通往俄罗斯远东和欧洲大陆的重要通道，西部与南部分别与内蒙古和吉林省相邻，东部近日本海。</p>',
 				reference: []
