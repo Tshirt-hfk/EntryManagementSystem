@@ -51,7 +51,7 @@
 						</div>
 					</dl>
 					<dl class="preview-attribute-right">
-						<div v-for="(prop, index) in form.properties" :key="prop[0]">
+						<div v-for="(prop, index) in form.properties" :key="index">
 							<div v-if="index % 2 !== 0">
 							<dt>{{prop[0]}}</dt>
 							<span style="float:left">:</span>
@@ -86,7 +86,7 @@
 					</div>
 				</div>
 				<div class="preview-content" id="mainContent">
-					<div v-html="form.content" class="ql-editor ql-snow"></div>
+					<div ref="editor" v-html="form.content" class="ql-editor ql-snow"></div>
 				</div>
 			</div>
 			<div class="preview-side-wrap">
@@ -95,10 +95,18 @@
 				</div>
 				<!-- 上下位关系-->
 				<div class="preview-relation">
-					<el-table :data="relationData" style="width: 100%;background: #000;margin-top: 50px;">
-						<el-table-column prop="name" label="词条名" width="120px"></el-table-column>
-						<el-table-column prop="relation" label="关系" width="120px"> </el-table-column>
-					</el-table>
+					<div class="relation-title">
+						<h3 style="margin-left: 50px">词条名</h3>
+						<h3 style="margin-left: 80px">关系</h3>
+					</div>
+					<ul>
+						<li v-for="item in tableData" :key="item.name">
+							<div>
+								<h4 style="margin-left: 60px">{{item.name}}</h4>
+								<h4 style="margin-left: 88px">{{item.relation}}</h4>
+							</div>
+						</li>
+					</ul>
 				</div>
 				<div class="preview-side-catalog" style="visibility: hidden;bottom: 10px;" id="sideRoller">
 					<div class="preview-side-bar">
@@ -143,7 +151,7 @@ import mySearch from "../../components/mySearch";
 export default {
 	name:"entryPreview",
 	components:{
-		mySearch
+		mySearch,
 	},
 	computed:{
 		// columns:function(){		
@@ -159,7 +167,17 @@ export default {
 			sideIndex: 1,
 			columns: 4,
 			entryId: 1,
-			relationData: [
+			tableData: [
+				{
+				name: '哈哈',
+				relation: '上位词'
+				},{
+				name: '嘻嘻',
+				relation: '下位词'
+				},{
+				name: '呵呵',
+				relation: '同位词'
+				}
 			],
 			form: {
 				entryName: '方磊',
@@ -169,7 +187,7 @@ export default {
 				filed: "",
 				infoBox: [
 				],
-				content: '<h1 id="t1">方磊</h1> <h2 id="t2">色情</h2> <p>黑龙江省是中国位置最北、最东，纬度最高，经度最东的省份，西起121°11′E，东至135°05′E，南起43°26′N，北至53°33′N，东西跨14个经度，南北跨10个纬度，2个热量带；东西跨14个经度，3个湿润区。面积47.3万平方千米（含加格达奇区和松岭区）。北部和东部与俄罗斯相邻，边境线长3045千米，是亚洲与太平洋地区陆路通往俄罗斯远东和欧洲大陆的重要通道，西部与南部分别与内蒙古和吉林省相邻，东部近日本海。</p>',
+				content: '<h1 id="t1">方磊</h1><h2 id="t2">色情</h2><p>黑龙江省是中国位置最北、最东，纬度最高，经度最东的省份，西起121°11′E，东至135°05′E，南起43°26′N，北至53°33′N，东西跨14个经度，南北跨10个纬度，2个热量带；东西跨14个经度，3个湿润区。面积47.3万平方千米（含加格达奇区和松岭区）。北部和东部与俄罗斯相邻，边境线长3045千米，是亚洲与太平洋地区陆路通往俄罗斯远东和欧洲大陆的重要通道，西部与南部分别与内蒙古和吉林省相邻，东部近日本海。</p>',
 				reference: []
 			},
 			catalog: [
@@ -199,7 +217,6 @@ export default {
 	},
 	methods:{
 		init(){
-			window.console.log(this.name)
 			this.$axios.get(
                 "http://192.168.1.121:9000/fetchPageByName",{params:{
 					name:this.name
@@ -207,7 +224,8 @@ export default {
             ).then(res => {
                 if(res.data){
 					window.console.log("test")
-                    this.value = res.data.page_content
+					this.value = res.data.page_content
+					this.refreshCatalog();
                 } else {
                 this.$message({
                     message:res.data.msg,
@@ -243,6 +261,29 @@ export default {
 				var fbox = document.getElementById("sideRoller");
 				fbox.style.visibility = "hidden";
 			}
+		},
+		refreshCatalog() {
+			var nodes = this.$refs.editor.childNodes;
+			this.catalog.splice(0, this.catalog.length);
+			var i = 1;
+			for (var node of nodes) {
+				var type;
+				if (node.tagName == "H1") {
+					type = 1;
+				} else if (node.tagName == "H2") {
+					type = 2;
+				} else {
+					continue;
+				}
+				node.id = "t" + i;
+				var title = node.textContent;
+				this.catalog.push({
+					title: title,
+					url: "#t" + i,
+					type: type
+				});
+				i = i + 1;
+			}
 		}
 	}
 }
@@ -253,7 +294,7 @@ export default {
 @import "quill/dist/quill.snow.css";
 @import "katex/dist/katex.min.css";
 
-dl,dd,ol,h1,h2,p{
+dl,dd,ol,ul,h1,h2,h3,h4,p{
 	margin:0;   
 	padding:0; 
 }
@@ -288,6 +329,7 @@ dl,dd,ol,h1,h2,p{
   line-height: 22px;
   font-weight: 400;
   margin: 0;
+  margin-top: 20px;
   color: #333;
 }
 .preview-content>>> p{
@@ -296,6 +338,7 @@ dl,dd,ol,h1,h2,p{
     word-wrap: break-word;
     color: #333;
 	margin: 0;
+	margin-top: 15px;
     text-indent: 2em;
     line-height: 24px;
     zoom: 1;
@@ -557,14 +600,14 @@ dl,dd,ol,h1,h2,p{
     padding-left: 41px;
     padding-right: 5px;
     width: 5px;
-    line-height: 16px;
+    line-height: 14px;
     font-size: 12px;
     vertical-align: top;
     color: #ccc;
 }
 .catalog-text2{
 	display: inline-block;
-    line-height: 16px;
+    line-height: 14px;
     font-size: 12px;
     width: 115px;
     vertical-align: top;
@@ -698,8 +741,36 @@ dl,dd,ol,h1,h2,p{
 	background:rgba(82, 163, 245,0.1)
 }
 .preview-relation{
+	position: relative;
 	height: 300px;
 	width: 270px;
 	border: solid 1px #e3e3e6;
 }
+.relation-title{
+  height: 40px;
+  border-bottom: 2px dashed #e3e3e6;
+  text-align: center
+}
+.relation-title h3{
+	height: 38px;
+    line-height: 38px;
+    font-size: 18px;
+	float: left;
+	margin-top: 2px;
+}
+.preview-relation li{
+    height: 38px;
+    border-bottom: 1px solid #e9e7e6;
+    list-style: none;
+}
+.preview-relation h4{
+	height: 38px;
+    line-height: 38px;
+    font-size: 16px;
+	font-weight: 400;
+	float: left;
+	margin-top: 2px;
+}
 </style>
+
+
