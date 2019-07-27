@@ -115,7 +115,21 @@ public class SubjectMakerController {
             subjectRepository.save(subject);
             groupMemberRepository.save(groupMember);
             //初始化 专题的所有任务
-//            String url = "";
+            String url = "http://192.168.1.120:5005/keywords_extraction";
+
+            String data = HttpRequestUtil.post(url,"");
+            JSONObject result = JSONObject.parseObject(data);
+            JSONArray nodes = result.getJSONArray("nodes");
+            int len = nodes.size();
+            for(int i=0;i<len;i++){
+                JSONObject node = nodes.getJSONObject(i);
+                String entryName = node.getString("name");
+//                Integer originId = node.getInteger("originId");
+                System.out.println(entryName);
+                Assignment assignment = new Assignment(entryName,field,subject);
+                assignmentRepository.save(assignment);
+            }
+
 //            JSONObject jsonObject = new JSONObject();
 //            jsonObject.put("topic_name",name);
 //            jsonObject.put("need_domain", field);
@@ -123,10 +137,17 @@ public class SubjectMakerController {
 //            jsonObject.put("documents",documents);
 //            jsonObject.put("need_domain",0);
 //            String msg = HttpRequestUtil.postHttpJsonDataAsyn(url,jsonObject,(ResponseEntity<JSONObject> result) -> {
-//                    System.out.println("("+result.getStatusCode()+ ":"+result.getStatusCode().getReasonPhrase()+ "):"+result.getBody());
-//                }, (Throwable ex) -> {
-//                    System.out.println(ex);
-//                });
+//                JSONArray nodes = result.getBody().getJSONArray("nodes");
+//                int len = nodes.size();
+//                for(int i=0;i<len;i++){
+//                    JSONObject node = nodes.getJSONObject(i);
+//                    String entryName = node.getString("name");
+//                    Integer originId = node.getInteger("originId");
+//                    System.out.println(entryName);
+//                }
+//            }, (Throwable ex) -> {
+//                System.out.println(ex);
+//            });
 //            String msg = HttpRequestUtil.postHttpJsonDataAsyn(url,jsonObject,new SuccessCallback<ResponseEntity<JSONObject>>() {
 //                @Override
 //                public void onSuccess(ResponseEntity<JSONObject> result) {

@@ -16,6 +16,7 @@ import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.SuccessCallback;
 import org.springframework.web.client.AsyncRestTemplate;
 
+import javax.xml.ws.Response;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -120,7 +121,7 @@ public class HttpRequestUtil {
     public static String postHttpJsonDataAsyn(String URL, JSONObject jsonObject, SuccessCallback<ResponseEntity<JSONObject>> successCallback, FailureCallback failureCallback) throws IOException {
 
         AsyncRestTemplate client = new AsyncRestTemplate();
-        ListenableFuture<ResponseEntity<JSONObject>> listenableFuture = client.postForEntity(URL, new HttpEntity<Object>(jsonObject), JSONObject.class);
+        ListenableFuture<ResponseEntity<JSONObject>> listenableFuture = client.postForEntity(URL, new HttpEntity<>(jsonObject), JSONObject.class);
         listenableFuture.addCallback(successCallback,failureCallback);
         return "finish postHttpJsonDataAsyn post";
     }
