@@ -1,5 +1,7 @@
 package com.entry.entity.mysql;
 
+import com.alibaba.fastjson.JSONArray;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
@@ -59,13 +61,13 @@ public class Subject {
 
     }
 
-    public Subject(String imageUrl,String  name,String creator, String introduction, String goal, String field,Timestamp deadline, boolean isPublic) {
+    public Subject(String imageUrl, String  name, String creator, String introduction, String goal, JSONArray field, Timestamp deadline, boolean isPublic) {
         this.imageUrl = imageUrl;
         this.name = name;
         this.creator = creator;
         this.introduction = introduction;
         this.goal = goal;
-        this.field = field;
+        this.field = field.toJSONString();
         this.deadline = deadline;
         this.isPublic = isPublic;
         this.currentCount = 0;
@@ -132,12 +134,12 @@ public class Subject {
         this.goal = goal;
     }
 
-    public String getField() {
-        return field;
+    public JSONArray getField() {
+        return JSONArray.parseArray(field);
     }
 
-    public void setField(String field) {
-        this.field = field;
+    public void setField(JSONArray field) {
+        this.field = field.toJSONString();
     }
 
     public Long getDeadline() {
