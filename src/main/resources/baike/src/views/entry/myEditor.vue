@@ -239,29 +239,9 @@ export default {
         imageUrl: "",
         intro: "",
         infoBox: [
-          {
-            key: "test1",
-            value: "test1",
-            type: 1
-          },
-          {
-            key: "test2",
-            value: "test2",
-            type: 2
-          }
         ],
         content: "",
         reference: [
-          {
-            title: "标题一",
-            author: "作者一",
-            url: "http://localhost:8080/#/test"
-          },
-          {
-            title: "标题二",
-            author: "作者二",
-            url: "http://localhost:8080/#/test"
-          }
         ]
       },
       introEditor: {
@@ -298,10 +278,17 @@ export default {
         })
         .then(res => {
           if (res.data.data) {
-            this.form = res.data.data;
-            window.console.log(this.form)
+            this.form.entryName = res.data.data.entryName;
+            this.form.imageUrl = res.data.data.imageUrl;
+            this.form.intro = res.data.data.intro;
+            for(var field of res.data.data.field){
+              this.form.field.push(field)
+            }
+            for(var info of res.data.data.infoBox){
+              this.form.infoBox.push(info)
+            }
+            this.form.content = res.data.data.content;
             this.introEditor.intro = this.form.intro;
-            window.console.log(this.introEditor.intro)
             this.contenteditor.content = this.form.content;
             this.initIntroEditor();
             this.initContentEditor();
@@ -325,11 +312,11 @@ export default {
       window.console.log(this.introEditor.intro)
       this.introEditor.editor = new Quill("#introEditor", {
         theme: "bubble",
-        placeholder: this.introEditor.intro,
         modules: {
           toolbar: ["bold", "italic", "underline", "strike", "link"]
-        }
+        },
       });
+      this.introEditor.editor.root.innerHTML = this.introEditor.intro
       this.introEditor.editor.on("text-change", (delta, oldDelta, source) => {
         if (source == "api") {
           console.log("An API call triggered this change.");
@@ -343,7 +330,6 @@ export default {
       window.katex = katex;
       this.contenteditor.editor = new Quill("#editor", {
         theme: "snow",
-        placeholder: this.contenteditor.content,
         modules: {
           formula: true,
           imageResize: {},
@@ -378,6 +364,7 @@ export default {
           }
         }
       });
+      this.contenteditor.editor.root.innerHTML = this.contenteditor.content
       this.contenteditor.editor.on("text-change", (delta, oldDelta, source) => {
         if (source == "api") {
           console.log("An API call triggered this change.");
