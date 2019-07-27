@@ -12,11 +12,6 @@ export default new Router({
       component: index
     },
     {
-      path: '/test',
-      name: 'test',
-      component: () => import('../components/myEditor')
-    },
-    {
       path: '/test1',
       name: 'test1',
       component: () => import('../components/entryExhibition')
@@ -39,7 +34,7 @@ export default new Router({
     { // 词条编辑
       path: '/entryedit',
       name: 'entryEdit',
-      component: () => import('../views/entry/entryEdit')
+      component: () => import('../views/entry/myEditor')
     },
     {
       path: '/usercenter',

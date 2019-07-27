@@ -125,7 +125,6 @@ export default {
           if (res.data.data) {
             this.$store.commit("status", res.data.data.status);
             this.$store.commit("name", res.data.data.name);
-            window.console.log(this.$store.state.status);
           } else {
             this.$message({
               message: res.data.msg,

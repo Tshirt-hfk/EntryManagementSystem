@@ -1,8 +1,12 @@
 package com.entry.entity.mysql;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Table(name = "task")
@@ -75,9 +79,10 @@ public class Task {
         this.assignment =assignment;
         this.originalId = assignment.getOriginalId();
         this.entryName = assignment.getEntryName();
-        this.field = assignment.getField();
+        this.imageUrl = assignment.getImageUrl();
+        this.field = assignment.getField().toJSONString();
         this.intro = assignment.getIntro();
-        this.infoBox = assignment.getInfoBox();
+        this.infoBox = assignment.getInfoBox().toJSONString();
         this.content = assignment.getContent();
         this.state = Task.DRAWED;
         this.deadline = new Timestamp((new Date()).getTime()+assignment.getDeadline());
@@ -107,12 +112,12 @@ public class Task {
         this.entryName = entryName;
     }
 
-    public String getField() {
-        return field;
+    public JSONArray getField() {
+        return JSONArray.parseArray(field);
     }
 
-    public void setField(String field) {
-        this.field = field;
+    public void setField(JSONArray field) {
+        this.field = field.toJSONString();
     }
 
     public String getIntro() {
@@ -131,12 +136,12 @@ public class Task {
         this.imageUrl = imageUrl;
     }
 
-    public String getInfoBox() {
-        return infoBox;
+    public JSONArray getInfoBox() {
+        return JSONArray.parseArray(infoBox);
     }
 
-    public void setInfoBox(String infoBox) {
-        this.infoBox = infoBox;
+    public void setInfoBox(JSONArray infoBox) {
+        this.infoBox = infoBox.toJSONString();
     }
 
     public String getContent() {

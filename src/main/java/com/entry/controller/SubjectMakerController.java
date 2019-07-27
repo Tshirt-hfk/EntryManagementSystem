@@ -1,5 +1,6 @@
 package com.entry.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.entry.dto.BaseResultFactory;
 import com.entry.entity.mysql.*;
@@ -138,11 +139,10 @@ public class SubjectMakerController {
     public ResponseEntity<?> createEntry(HttpServletRequest request, @RequestBody String jsonParam){
         try{
             Integer userId = (Integer) request.getAttribute("userId");
-            HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
-            String name = (String) form.get("name");
-            List<String> fields = (ArrayList<String>) form.get("field");
-            Integer subjectId = (Integer)form.get("subjectId");
-
+            JSONObject form = JSONObject.parseObject(jsonParam);
+            String name = form.getString("name");
+            JSONArray fields = form.getJSONArray("field");
+            Integer subjectId = form.getInteger("subjectId");
             User user = userRepository.findUserById(userId);
             Subject subject = subjectRepository.findSubjectById(subjectId);
             subjectManagementServiceImpl.createAssignment(user, subject, name, fields);

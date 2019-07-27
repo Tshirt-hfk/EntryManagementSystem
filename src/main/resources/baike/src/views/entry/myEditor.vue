@@ -232,8 +232,8 @@ export default {
   name: "myEditor",
   data() {
     return {
+      taskId: this.$route.query.id,
       form: {
-        entryId: 1,
         entryName: "哈哈",
         field: [],
         imageUrl: "",
@@ -266,14 +266,14 @@ export default {
       },
       introEditor: {
         editor: null,
-        content: ""
+        intro: ""
       },
       contenteditor: {
         editor: null,
         content: ""
       },
       others: {
-        catalog:[],
+        catalog: [],
         catalogOpen: true, // 目录显示控制
         serverUrl: "http://localhost:8081/resource/image",
         dialogFormVisible: false,
@@ -288,20 +288,59 @@ export default {
     };
   },
   mounted() {
-    this.initIntroEditor();
-    this.initContentEditor();
+    this.initData();
   },
   methods: {
+    initData() {
+      this.$axios
+        .post("http://localhost:8081/api/user/getTaskContent", {
+          taskId: new Number(this.taskId)
+        })
+        .then(res => {
+          if (res.data.data) {
+            this.form = res.data.data;
+            window.console.log(this.form)
+            this.introEditor.intro = this.form.intro;
+            window.console.log(this.introEditor.intro)
+            this.contenteditor.content = this.form.content;
+            this.initIntroEditor();
+            this.initContentEditor();
+          } else {
+            this.$message({
+              message: res.data.msg,
+              type: "warning"
+            });
+          }
+        })
+        .catch(error => {
+          if (error.response) {
+            this.$message({
+              message: error.response.data.msg,
+              type: "warning"
+            });
+          }
+        });
+    },
     initIntroEditor() {
+      window.console.log(this.introEditor.intro)
       this.introEditor.editor = new Quill("#introEditor", {
         theme: "bubble",
-        placeholder: this.introEditor.content,
+        placeholder: this.introEditor.intro,
         modules: {
           toolbar: ["bold", "italic", "underline", "strike", "link"]
         }
       });
+      this.introEditor.editor.on("text-change", (delta, oldDelta, source) => {
+        if (source == "api") {
+          console.log("An API call triggered this change.");
+        } else if (source == "user") {
+          this.form.intro = this.introEditor.editor.root.innerHTML;
+          this.refreshCatalog();
+        }
+      });
     },
     initContentEditor() {
+      window.katex = katex;
       this.contenteditor.editor = new Quill("#editor", {
         theme: "snow",
         placeholder: this.contenteditor.content,
@@ -343,6 +382,7 @@ export default {
         if (source == "api") {
           console.log("An API call triggered this change.");
         } else if (source == "user") {
+          this.form.content = this.contenteditor.editor.root.innerHTML;
           this.refreshCatalog();
         }
       });
@@ -356,8 +396,31 @@ export default {
       return isLt2M;
     },
     save() {
-      // TODO 上传数据
-      //window.console.log(this.form.content);
+      this.$axios
+        .post("http://localhost:8081/api/user/saveTaskContent", {
+          taskId: new Number(this.taskId),
+          form: this.form
+        })
+        .then(res => {
+          if (res.data) {
+            this.$message({
+              message: res.data.msg
+            });
+          } else {
+            this.$message({
+              message: res.data.msg,
+              type: "warning"
+            });
+          }
+        })
+        .catch(error => {
+          if (error.response) {
+            this.$message({
+              message: error.response.data.msg,
+              type: "warning"
+            });
+          }
+        });
     },
     // 目录显示控制
     catalogHanlder() {

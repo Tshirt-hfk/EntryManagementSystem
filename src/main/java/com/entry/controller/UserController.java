@@ -1,5 +1,7 @@
 package com.entry.controller;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.entry.entity.mysql.*;
 import com.entry.exception.MyException;
 import com.entry.repository.mysql.*;
@@ -107,21 +109,26 @@ public class UserController {
      * @param jsonParam
      * @return
      */
-    @PostMapping("api/user/getEntryContent")
+    @PostMapping("api/user/getTaskContent")
     @CrossOrigin
-    public ResponseEntity<?> getEntryContent(HttpServletRequest request, @RequestBody String jsonParam) {
+    public ResponseEntity<?> getTaskContent(HttpServletRequest request, @RequestBody String jsonParam) {
         try{
             Integer userId = (Integer) request.getAttribute("userId");
             HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
-            Integer entryId = (Integer)form.get("entryId");
+            Integer entryId = (Integer)form.get("taskId");
             Task task = taskRepository.findTaskById(entryId);
             if(task!=null && task.getUser().getId()==userId){
                 HashMap<String,Object> result = new HashMap<>();
+                result.put("entryName",task.getEntryName());
+                result.put("imageUrl",task.getImageUrl());
+                result.put("intro",task.getIntro());
+                result.put("field",task.getField());
+                result.put("infoBox", task.getInfoBox());
                 result.put("content", task.getContent());
                 return new ResponseEntity<>(BaseResultFactory.build(result, "success"), HttpStatus.OK);
             }else
                 return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),"用户没有词条"), HttpStatus.NOT_FOUND);
-        }catch (Exception e){
+        }catch (IOException e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"我真的错了"),HttpStatus.BAD_REQUEST);
         }
     }
@@ -132,19 +139,25 @@ public class UserController {
      * @param jsonParam
      * @return
      */
-    @PostMapping("api/user/saveEntry")
+    @PostMapping("api/user/saveTaskContent")
     @CrossOrigin
-    public ResponseEntity<?> saveEntry(HttpServletRequest request, @RequestBody String jsonParam) {
+    public ResponseEntity<?> saveTaskContent(HttpServletRequest request, @RequestBody String jsonParam) {
         try{
             Integer userId = (Integer) request.getAttribute("userId");
-            HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
-            Integer entryId = (Integer) form.get("entryId");
-            String content = (String) form.get("content");
-
+            JSONObject data = JSONObject.parseObject(jsonParam);
+            Integer taskId = data.getInteger("taskId");
+            JSONObject form = data.getJSONObject("form");
+            String entryName = form.getString("entryName");
+            String imageUrl = form.getString("imageUrl");
+            JSONArray field = form.getJSONArray("field");
+            String intro = form.getString("intro");
+            JSONArray infoBox = form.getJSONArray("infoBox");
+            String content = form.getString("content");
+            JSONArray reference = form.getJSONArray("reference");
             User user = userRepository.findUserById(userId);
-            Task task = taskRepository.findTaskById(entryId);
+            Task task = taskRepository.findTaskById(taskId);
             Subject subject = task.getSubject();
-            subjectManagementServiceImpl.saveTask(user, subject, task, content);
+            subjectManagementServiceImpl.saveTask(user, subject, task, entryName, imageUrl, field, intro, infoBox, content, reference);
             return new ResponseEntity<>(BaseResultFactory.build("编辑成功"), HttpStatus.OK);
         }catch (MyException me){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),me.getMessage()),HttpStatus.BAD_REQUEST);

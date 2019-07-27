@@ -1,5 +1,6 @@
 package com.entry.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.entry.dto.BaseResultFactory;
 import com.entry.entity.mysql.*;
 import com.entry.exception.MyException;
@@ -32,11 +33,10 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
     TaskRepository taskRepository;
 
     @Override
-    public void createAssignment(User user, Subject subject, String Entryname, List<String> fieldList) throws MyException {
+    public void createAssignment(User user, Subject subject, String EntryName, JSONArray field) throws MyException {
         // TODO 判断该词条是否以及在数据库中
         this.testIdentity(user,subject,GroupMember.SUBJECTMAKER);
-        String fieldStr = fieldList.stream().collect(Collectors.joining(","));
-        Assignment assignment = new Assignment(Entryname,fieldStr,subject);
+        Assignment assignment = new Assignment(EntryName,field,subject);
         assignmentRepository.save(assignment);
     }
     @Override
@@ -68,11 +68,16 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
         taskRepository.save(task);
     }
     @Override
-    public void saveTask(User user, Subject subject, Task task, String content) throws MyException {
+    public void saveTask(User user, Subject subject, Task task, String entryName, String imageUrl, JSONArray field, String intro, JSONArray infoBox, String content, JSONArray reference) throws MyException {
         this.testIdentity(user, subject, GroupMember.ORDINRYUSER);
         if(task == null || task.getUser().getId() != user.getId())
             throw new MyException("用户未拥有该专题词条修改权");
         task.setSaveTime(new Date().getTime());
+        task.setEntryName(entryName);
+        task.setImageUrl(imageUrl);
+        task.setField(field);
+        task.setIntro(intro);
+        task.setInfoBox(infoBox);
         task.setContent(content);
         taskRepository.save(task);
     }

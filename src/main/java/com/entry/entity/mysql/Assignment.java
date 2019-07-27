@@ -1,5 +1,7 @@
 package com.entry.entity.mysql;
 
+import com.alibaba.fastjson.JSONArray;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
@@ -59,13 +61,13 @@ public class Assignment {
 
     }
 
-    public Assignment(String entryName, String field, Subject subject) {
+    public Assignment(String entryName, JSONArray field, Subject subject) {
         this.originalId = -1;
         this.entryName = entryName;
-        this.field = field;
+        this.field = field.toJSONString();
         this.intro = "";
         this.imageUrl = "";
-        this.infoBox = "";
+        this.infoBox = (new JSONArray()).toJSONString();
         this.content = "";
         this.state = 1;
         this.subject = subject;
@@ -107,12 +109,12 @@ public class Assignment {
         this.entryName = entryName;
     }
 
-    public String getField() {
-        return field;
+    public JSONArray getField() {
+        return JSONArray.parseArray(field);
     }
 
-    public void setField(String field) {
-        this.field = field;
+    public void setField(JSONArray field) {
+        this.field = field.toJSONString();
     }
 
     public String getIntro() {
@@ -131,12 +133,12 @@ public class Assignment {
         this.imageUrl = imageUrl;
     }
 
-    public String getInfoBox() {
-        return infoBox;
+    public JSONArray getInfoBox() {
+        return JSONArray.parseArray(infoBox);
     }
 
-    public void setInfoBox(String infoBox) {
-        this.infoBox = infoBox;
+    public void setInfoBox(JSONArray infoBox) {
+        this.infoBox = infoBox.toJSONString();
     }
 
     public String getContent() {
