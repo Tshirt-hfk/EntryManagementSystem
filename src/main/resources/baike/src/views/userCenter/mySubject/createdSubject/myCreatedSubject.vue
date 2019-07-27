@@ -74,7 +74,7 @@ export default {
       defaultCard: false,
       options: [],
       loading: false,
-      value: []
+      value: [],
     };
   },
   mounted() {
@@ -119,6 +119,7 @@ export default {
     },
     remoteMethod(query) {
       this.loading = true;
+      this.value = query;
       this.$axios
         .post("http://localhost:8081/api/user/searchSubject", {
           keyword: query

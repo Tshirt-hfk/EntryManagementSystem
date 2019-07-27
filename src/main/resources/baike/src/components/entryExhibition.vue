@@ -93,13 +93,17 @@
 				<div class="preview-picture">
 					<img style="margin: 0 auto" :src="form.imageUrl">
 				</div>
+				<!-- 上下位关系-->
+				<div class="preview-relation">
+					<el-table :data="tableData" style="width: 30%;margin-top: 50px;">
+						<el-table-column prop="name" label="词条名" width="120px"></el-table-column>
+						<el-table-column prop="relation" label="关系" width="120px"> </el-table-column>
+					</el-table>
+				</div>
 				<div class="preview-side-catalog" style="visibility: hidden;bottom: 10px;" id="sideRoller">
 					<div class="preview-side-bar">
 						<i class="el-icon-help circle-start"></i>
 						<i class="el-icon-help circle-end"></i>
-					</div>
-					<div class="preview-side-relation">
-						
 					</div>
 					<div class="preview-side-roller">
 						<div class="inner-container">
@@ -155,6 +159,8 @@ export default {
 			sideIndex: 1,
 			columns: 4,
 			entryId: 1,
+			tableData: [
+			],
 			form: {
 				entryName: '方磊',
 				field: '动物',
@@ -690,6 +696,11 @@ dl,dd,ol,h1,h2,p{
 }
 .preview-side-up:hover{
 	background:rgba(82, 163, 245,0.1)
+}
+.preview-relation{
+	height: 300px;
+	width: 270px;
+	border: solid 1px #e3e3e6;
 }
 </style>
 

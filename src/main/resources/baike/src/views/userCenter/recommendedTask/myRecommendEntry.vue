@@ -66,6 +66,7 @@ export default {
     remoteMethod(query){
         if(query !== ''){
         this.loading = true;
+        this.value = query;
         this.$axios
             .post("http://localhost:8081/api/user/searchEntry", {keyword:query})
             .then(res => {
