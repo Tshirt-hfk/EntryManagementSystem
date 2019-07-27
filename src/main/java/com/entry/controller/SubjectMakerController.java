@@ -13,6 +13,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.concurrent.FailureCallback;
+import org.springframework.util.concurrent.SuccessCallback;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -98,32 +100,46 @@ public class SubjectMakerController {
             User user = userRepository.findUserById(userId);
             // 创建专题组
             System.out.println(jsonParam);
-            HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
-            String imageUrl=(String)form.getOrDefault("imageUrl","");
-            String name=(String)form.get("name");
-            List<String> fields = (ArrayList<String>) form.get("field");
-            String fieldStr = fields.stream().collect(Collectors.joining(","));
-            Boolean isPublic=(Boolean)form.get("isPublic");
-            String introduction=(String)form.get("introduction");
-            String goal=(String)form.get("goal");
-            Long deadLine= (Long)form.getOrDefault("deadline", (new Date()).getTime()+3600*1000*24*30);
-            Subject subject = new Subject(imageUrl,name,user.getName(),introduction,goal,fieldStr,new Timestamp(deadLine),isPublic);
+            JSONObject form = JSONObject.parseObject(jsonParam);
+            String imageUrl = form.getString("imageUrl");
+            String name = form.getString("name");
+            JSONArray field = form.getJSONArray("field");
+            Boolean isPublic = form.getBoolean("isPublic");
+            String introduction = form.getString("introduction");
+            String goal = form.getString("goal");
+            Long deadLine = form.getLong("deadline");
+            JSONArray documents = form.getJSONArray("documents");
+            Subject subject = new Subject(imageUrl,name,user.getName(),introduction,goal,field,new Timestamp(deadLine),isPublic);
             // 将创建人加入专题组中
             GroupMember groupMember = new GroupMember(new GroupMemberPK(subject,user),2);
             subjectRepository.save(subject);
             groupMemberRepository.save(groupMember);
             //初始化 专题的所有任务
-//            String content = HttpRequestUtil.get("http://localhost:5003/keywords_extraction");
-//            JSONObject data = JSONObject.parseObject(content);
-//            List<JSONObject> nodes = JSONObject.parseArray(data.getJSONArray("nodes").toJSONString(), JSONObject.class);
-//            for(JSONObject node : nodes){
-//                String entryName = node.getString("name");
-//                System.out.println(entryName);
-//                Assignment assignment = new Assignment(entryName,"","",Assignment.UNPUBLISHED,subject);
-//                assignmentRepository.save(assignment);
-//            }
+//            String url = "";
+//            JSONObject jsonObject = new JSONObject();
+//            jsonObject.put("topic_name",name);
+//            jsonObject.put("need_domain", field);
+//            jsonObject.put("description", introduction);
+//            jsonObject.put("documents",documents);
+//            jsonObject.put("need_domain",0);
+//            String msg = HttpRequestUtil.postHttpJsonDataAsyn(url,jsonObject,(ResponseEntity<JSONObject> result) -> {
+//                    System.out.println("("+result.getStatusCode()+ ":"+result.getStatusCode().getReasonPhrase()+ "):"+result.getBody());
+//                }, (Throwable ex) -> {
+//                    System.out.println(ex);
+//                });
+//            String msg = HttpRequestUtil.postHttpJsonDataAsyn(url,jsonObject,new SuccessCallback<ResponseEntity<JSONObject>>() {
+//                @Override
+//                public void onSuccess(ResponseEntity<JSONObject> result) {
+//                    System.out.println("("+result.getStatusCode()+ ":"+result.getStatusCode().getReasonPhrase()+ "):"+result.getBody());
+//                }
+//            }, new FailureCallback() {
+//                @Override
+//                public void onFailure(Throwable ex) {
+//                    System.out.println(ex);
+//                }
+//            });
             return new ResponseEntity<>(BaseResultFactory.build("创建成功"), HttpStatus.OK);
-        }catch (IOException e){
+        }catch (Exception e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
         }
     }
@@ -166,13 +182,13 @@ public class SubjectMakerController {
             Integer subjectId = (Integer)form.get("subjectId");
             Integer type = (Integer)form.get("type");
 
-            HashMap<String,Object> result1;
+            JSONObject result1;
             List<Object> list = new ArrayList<>();
             if(type>=Assignment.DRAWED){
                 List<Task> tasks = taskRepository.findAllBySubject_IdAndState(subjectId,type);
                 for(Task task : tasks) {
                     User user = task.getUser();
-                    result1 = new HashMap<>();
+                    result1 = new JSONObject();
                     result1.put("id", task.getId());
                     result1.put("assignmentId", task.getAssignment().getId());
                     result1.put("name", task.getEntryName());
@@ -184,7 +200,7 @@ public class SubjectMakerController {
             }else{
                 List<Assignment> assignments = assignmentRepository.findAllBySubject_IdAndState(subjectId,type);
                 for(Assignment assignment : assignments){
-                    result1=new HashMap<>();
+                    result1 = new JSONObject();
                     result1.put("id",assignment.getId());
                     result1.put("name",assignment.getEntryName());
                     result1.put("field",assignment.getField());

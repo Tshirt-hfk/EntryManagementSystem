@@ -1,5 +1,6 @@
 package com.entry.util;
 
+import com.alibaba.fastjson.JSONObject;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -8,6 +9,12 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.concurrent.FailureCallback;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.util.concurrent.SuccessCallback;
+import org.springframework.web.client.AsyncRestTemplate;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -99,5 +106,22 @@ public class HttpRequestUtil {
             }
         }
         return result;
+    }
+
+    /**
+     * 发送异步post , 非阻塞, 发送完无需等待结果返回
+     * @param URL
+     * @param jsonObject
+     * @param successCallback
+     * @param failureCallback
+     * @return
+     * @throws IOException
+     */
+    public static String postHttpJsonDataAsyn(String URL, JSONObject jsonObject, SuccessCallback<ResponseEntity<JSONObject>> successCallback, FailureCallback failureCallback) throws IOException {
+
+        AsyncRestTemplate client = new AsyncRestTemplate();
+        ListenableFuture<ResponseEntity<JSONObject>> listenableFuture = client.postForEntity(URL, new HttpEntity<Object>(jsonObject), JSONObject.class);
+        listenableFuture.addCallback(successCallback,failureCallback);
+        return "finish postHttpJsonDataAsyn post";
     }
 }

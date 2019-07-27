@@ -65,7 +65,7 @@
           <h5>目录</h5>
         </div>
         <div class="catalog-holder">
-          <template v-for="(item,index) in form.catalog">
+          <template v-for="(item,index) in others.catalog">
             <div :key="index+3000">
               <template v-if="item.type==1">
                 <h2>
@@ -108,7 +108,7 @@
                 <h2>属性</h2>
               </div>
               <div>
-                <template v-for="(item,index) in form.infobox">
+                <template v-for="(item,index) in form.infoBox">
                   <div :key="index" class="basic-info-property-item" v-if="item.type==1">
                     <el-form-item :label="item.key" label-width="75px" style="width:350px">
                       <el-input
@@ -116,7 +116,7 @@
                         size="mini"
                         maxlength="20"
                         show-word-limit
-                        v-model="form.infobox[index].value"
+                        v-model="item.value"
                       ></el-input>
                     </el-form-item>
                   </div>
@@ -127,7 +127,7 @@
                         type="text"
                         size="mini"
                         maxlength="5"
-                        v-model="form.infobox[index].key"
+                        v-model="item.key"
                       ></el-input>
                     </el-form-item>
                     <el-form-item style="width:275px;float:left;margin-left:10px">
@@ -136,7 +136,7 @@
                         size="mini"
                         maxlength="20"
                         show-word-limit
-                        v-model="form.infobox[index].value"
+                        v-model="item.value"
                       ></el-input>
                     </el-form-item>
                     <div class="clear"></div>
@@ -145,7 +145,7 @@
                 <div class="basic-info-property-item">
                   <a
                     style="margin-left:230px;cursor:pointer;color: #3b7cff;"
-                    @click="form.infobox.push({key:'',value:'',type:2})"
+                    @click="form.infoBox.push({key:'',value:'',type:2})"
                   >
                     <i class="el-icon-edit"></i> 添加自定义项
                   </a>
@@ -290,29 +290,9 @@ export default {
         imageUrl: "",
         intro: "",
         infoBox: [
-          {
-            key: "test1",
-            value: "test1",
-            type: 1
-          },
-          {
-            key: "test2",
-            value: "test2",
-            type: 2
-          }
         ],
         content: "",
         reference: [
-          {
-            title: "标题一",
-            author: "作者一",
-            url: "http://localhost:8080/#/test"
-          },
-          {
-            title: "标题二",
-            author: "作者二",
-            url: "http://localhost:8080/#/test"
-          }
         ]
       },
       introEditor: {
@@ -349,10 +329,17 @@ export default {
         })
         .then(res => {
           if (res.data.data) {
-            this.form = res.data.data;
-            window.console.log(this.form)
+            this.form.entryName = res.data.data.entryName;
+            this.form.imageUrl = res.data.data.imageUrl;
+            this.form.intro = res.data.data.intro;
+            for(var field of res.data.data.field){
+              this.form.field.push(field)
+            }
+            for(var info of res.data.data.infoBox){
+              this.form.infoBox.push(info)
+            }
+            this.form.content = res.data.data.content;
             this.introEditor.intro = this.form.intro;
-            window.console.log(this.introEditor.intro)
             this.contenteditor.content = this.form.content;
             this.initIntroEditor();
             this.initContentEditor();
@@ -373,20 +360,18 @@ export default {
         });
     },
     initIntroEditor() {
-      window.console.log(this.introEditor.intro)
       this.introEditor.editor = new Quill("#introEditor", {
         theme: "bubble",
-        placeholder: this.introEditor.intro,
         modules: {
           toolbar: ["bold", "italic", "underline", "strike", "link"]
-        }
+        },
       });
+      this.introEditor.editor.root.innerHTML = this.introEditor.intro
       this.introEditor.editor.on("text-change", (delta, oldDelta, source) => {
         if (source == "api") {
           console.log("An API call triggered this change.");
         } else if (source == "user") {
           this.form.intro = this.introEditor.editor.root.innerHTML;
-          this.refreshCatalog();
         }
       });
     },
@@ -394,14 +379,13 @@ export default {
       window.katex = katex;
       this.contenteditor.editor = new Quill("#editor", {
         theme: "snow",
-        placeholder: this.contenteditor.content,
         modules: {
           formula: true,
           imageResize: {},
           toolbar: {
             container: "#toolbar",
             handlers: {
-              link: function(value) {
+              link: (value) => {
                 if (value) {
                   var href = prompt("请输入链接：");
                   this.contenteditor.editor.format("link", href);
@@ -409,7 +393,7 @@ export default {
                   this.contenteditor.editor.format("link", false);
                 }
               },
-              image: function(value) {
+              image: (value) => {
                 if (value) {
                   // 触发input框选择图片文件
                   document.querySelector("#inserted-image input").click();
@@ -417,7 +401,7 @@ export default {
                   this.contenteditor.editor.format("image", false);
                 }
               },
-              formula: function(value) {
+              formula: (value) => {
                 if (value) {
                   var href = prompt("请输入公式：");
                   this.contenteditor.editor.format("formula", href);
@@ -429,6 +413,7 @@ export default {
           }
         }
       });
+      this.contenteditor.editor.root.innerHTML = this.contenteditor.content
       this.contenteditor.editor.on("text-change", (delta, oldDelta, source) => {
         if (source == "api") {
           console.log("An API call triggered this change.");
@@ -487,24 +472,20 @@ export default {
     },
     // 更新目录
     refreshCatalog() {
-      var leaf = this.contenteditor.editor.getLine(0)[0];
-      this.others.catalog.splice(0, this.others.catalog.length);
+      var nodes = this.contenteditor.editor.root.childNodes
+      this.others.catalog.splice(0, this.others.catalog.length); 
       var i = 1;
-      while (leaf != null) {
-        var dom = leaf.domNode;
-        leaf = leaf.next;
+      for(var node of nodes) {
         var type;
-        if (dom.tagName == "H1") {
+        if (node.tagName == "H1") {
           type = 1;
-        } else if (dom.tagName == "H2") {
+        } else if (node.tagName == "H2") {
           type = 2;
-        } else if (leaf == null) {
-          break;
         } else {
           continue;
         }
-        dom.id = "t" + i;
-        var title = dom.textContent;
+        node.id = "t" + i;
+        var title = node.textContent;
         this.others.catalog.push({
           title: title,
           url: "#t" + i,

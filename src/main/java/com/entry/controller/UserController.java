@@ -114,8 +114,8 @@ public class UserController {
     public ResponseEntity<?> getTaskContent(HttpServletRequest request, @RequestBody String jsonParam) {
         try{
             Integer userId = (Integer) request.getAttribute("userId");
-            HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
-            Integer entryId = (Integer)form.get("taskId");
+            JSONObject form = JSONObject.parseObject(jsonParam);
+            Integer entryId = form.getInteger("taskId");
             Task task = taskRepository.findTaskById(entryId);
             if(task!=null && task.getUser().getId()==userId){
                 HashMap<String,Object> result = new HashMap<>();
@@ -128,7 +128,7 @@ public class UserController {
                 return new ResponseEntity<>(BaseResultFactory.build(result, "success"), HttpStatus.OK);
             }else
                 return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),"用户没有词条"), HttpStatus.NOT_FOUND);
-        }catch (IOException e){
+        }catch (Exception e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"我真的错了"),HttpStatus.BAD_REQUEST);
         }
     }
@@ -424,14 +424,14 @@ public class UserController {
     @CrossOrigin
     public ResponseEntity<?> searchSubject(HttpServletRequest request,@RequestBody String jsonParam){
         try{
-            HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
-            String subjectName = (String)form.get("keyword");
+            JSONObject form = JSONObject.parseObject(jsonParam);
+            String subjectName = form.getString("keyword");
             List<Subject> subjects = subjectRepository.findSubjectByKey(subjectName);
             List<Object> tmps = new ArrayList<>();
-            HashMap<String,Object> tmp = null;
+            JSONObject tmp = null;
             if(subjects.size() != 0){
                 for(Subject subject: subjects){
-                    tmp = new HashMap<>();
+                    tmp = new JSONObject();
                     tmp.put("id", subject.getId());
                     tmp.put("name", subject.getName());
                     tmp.put("field", subject.getField());
@@ -445,7 +445,7 @@ public class UserController {
             }else{
                 return new ResponseEntity<>(BaseResultFactory.build("无结果"), HttpStatus.OK);
             }
-        }catch (IOException e){
+        }catch (Exception e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
         }
     }
@@ -460,16 +460,16 @@ public class UserController {
     @CrossOrigin
     public ResponseEntity<?> searchEntry(HttpServletRequest request,@RequestBody String jsonParam){
         try{
-            HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
+            JSONObject form = JSONObject.parseObject(jsonParam);
             String entryName = (String)form.get("keyword");
             List<Assignment> assignments = assignmentRepository.findAssignmentByKey(entryName);
-            List<Object> tmps = new ArrayList<>();
-            HashMap<String,Object> tmp = null;
+            JSONArray tmps = new JSONArray();
+           JSONObject tmp = null;
             String reason = null;
             String reasonResult [] = null;
             if(assignments.size() != 0){
                 for(Assignment assignment: assignments){
-                    tmp = new HashMap<>();
+                    tmp = new JSONObject();
                     tmp.put("id", assignment.getId());
                     tmp.put("name", assignment.getEntryName());
                     tmp.put("field", assignment.getField());
@@ -483,13 +483,13 @@ public class UserController {
                     }
                     tmps.add(tmp);
                 }
-                HashMap<String,Object> result = new HashMap<>();
+                JSONObject result = new JSONObject();
                 result.put("assignments", tmps);
                 return new ResponseEntity<>(BaseResultFactory.build(result,"success"), HttpStatus.OK);
             }else{
                 return new ResponseEntity<>(BaseResultFactory.build("无结果"), HttpStatus.OK);
             }
-        }catch (IOException e){
+        }catch (Exception e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
         }
     }
