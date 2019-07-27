@@ -95,20 +95,18 @@
 				</div>
 				<!-- 上下位关系-->
 				<div class="preview-relation">
-					<el-card>
-					<el-table :data="tableData" style="width: 100%">
-						<el-table-column label="词条名" width="120px">
-							<template slot-scope="scope">
-								<span style="margin-left: 10px">{{ scope.row.name}}</span>
-							</template>
-						</el-table-column>
-						<el-table-column label="关系" width="120px">
-							<template slot-scope="scope">
-								<span style="margin-left: 10px">{{ scope.row.relation}}</span>
-							</template>
-						</el-table-column>
-					</el-table>
-					</el-card>
+					<div class="relation-title">
+						<h3 style="margin-left: 50px">词条名</h3>
+						<h3 style="margin-left: 80px">关系</h3>
+					</div>
+					<ul>
+						<li v-for="item in tableData" :key="item.name">
+							<div>
+								<h4 style="margin-left: 60px">{{item.name}}</h4>
+								<h4 style="margin-left: 88px">{{item.relation}}</h4>
+							</div>
+						</li>
+					</ul>
 				</div>
 				<div class="preview-side-catalog" style="visibility: hidden;bottom: 10px;" id="sideRoller">
 					<div class="preview-side-bar">
@@ -169,10 +167,18 @@ export default {
 			sideIndex: 1,
 			columns: 4,
 			entryId: 1,
-			tableData: [{
-				name: '1',
-				relation: '2'
-			}],
+			tableData: [
+				{
+				name: '哈哈',
+				relation: '上位词'
+				},{
+				name: '嘻嘻',
+				relation: '下位词'
+				},{
+				name: '呵呵',
+				relation: '同位词'
+				}
+			],
 			form: {
 				entryName: '方磊',
 				field: '动物',
@@ -265,7 +271,7 @@ export default {
 @import "quill/dist/quill.snow.css";
 @import "katex/dist/katex.min.css";
 
-dl,dd,ol,h1,h2,p{
+dl,dd,ol,ul,h1,h2,h3,h4,p{
 	margin:0;   
 	padding:0; 
 }
@@ -710,9 +716,35 @@ dl,dd,ol,h1,h2,p{
 	background:rgba(82, 163, 245,0.1)
 }
 .preview-relation{
+	position: relative;
 	height: 300px;
 	width: 270px;
 	border: solid 1px #e3e3e6;
+}
+.relation-title{
+  height: 40px;
+  border-bottom: 2px dashed #e3e3e6;
+  text-align: center
+}
+.relation-title h3{
+	height: 38px;
+    line-height: 38px;
+    font-size: 18px;
+	float: left;
+	margin-top: 2px;
+}
+.preview-relation li{
+    height: 38px;
+    border-bottom: 1px solid #e9e7e6;
+    list-style: none;
+}
+.preview-relation h4{
+	height: 38px;
+    line-height: 38px;
+    font-size: 16px;
+	font-weight: 400;
+	float: left;
+	margin-top: 2px;
 }
 </style>
 
