@@ -108,7 +108,7 @@
                 <h2>属性</h2>
               </div>
               <div>
-                <template v-for="(item,index) in form.infobox">
+                <template v-for="(item,index) in form.infoBox">
                   <div :key="index" class="basic-info-property-item" v-if="item.type==1">
                     <el-form-item :label="item.key" label-width="75px" style="width:350px">
                       <el-input
@@ -116,7 +116,7 @@
                         size="mini"
                         maxlength="20"
                         show-word-limit
-                        v-model="form.infobox[index].value"
+                        v-model="item.value"
                       ></el-input>
                     </el-form-item>
                   </div>
@@ -127,7 +127,7 @@
                         type="text"
                         size="mini"
                         maxlength="5"
-                        v-model="form.infobox[index].key"
+                        v-model="item.key"
                       ></el-input>
                     </el-form-item>
                     <el-form-item style="width:275px;float:left;margin-left:10px">
@@ -136,7 +136,7 @@
                         size="mini"
                         maxlength="20"
                         show-word-limit
-                        v-model="form.infobox[index].value"
+                        v-model="item.value"
                       ></el-input>
                     </el-form-item>
                     <div class="clear"></div>
@@ -145,7 +145,7 @@
                 <div class="basic-info-property-item">
                   <a
                     style="margin-left:230px;cursor:pointer;color: #3b7cff;"
-                    @click="form.infobox.push({key:'',value:'',type:2})"
+                    @click="form.infoBox.push({key:'',value:'',type:2})"
                   >
                     <i class="el-icon-edit"></i> 添加自定义项
                   </a>
