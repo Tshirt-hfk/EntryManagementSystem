@@ -14,12 +14,12 @@ import java.util.List;
 
 public interface SubjectManagementService {
 
-    public void createAssignment(User user, Subject subject, String EntryName, JSONArray field) throws MyException;
-    public void publishAssignment(User user, Subject subject, String reason, Integer deadline, List<Integer> entryIds) throws MyException;
-    public void drawAssignment(User user, Subject subject, Assignment assignment) throws MyException;
-    public void saveTask(User user, Subject subject, Task task, String entryName, String imageUrl, JSONArray field, String intro, JSONArray infoBox, String content, JSONArray reference) throws MyException;
-    public void submitTask(User user, Subject subject, Task task, String content, String reason) throws MyException;
-    public void auditTask(User user, Subject subject, Task task, Boolean pass, String reason) throws MyException;
+    public void createAssignment(Integer userId, Integer subjectId, String EntryName, JSONArray field) throws MyException;
+    public void publishAssignment(Integer userId, Integer subjectId, String reason, Integer deadline, List<Integer> entryIds) throws MyException;
+    public void drawAssignment(Integer userId, Integer assignmentId) throws MyException;
+    public void saveTask(Integer userId, Integer taskId, String entryName, String imageUrl, JSONArray field, String intro, JSONArray infoBox, String content, JSONArray reference) throws MyException;
+    public void submitTask(Integer userId, Integer taskId, String reason) throws MyException;
+    public void auditTask(Integer userId, Integer taskId, Boolean pass, String reason) throws MyException;
 
 }
 

@@ -154,10 +154,8 @@ public class UserController {
             JSONArray infoBox = form.getJSONArray("infoBox");
             String content = form.getString("content");
             JSONArray reference = form.getJSONArray("reference");
-            User user = userRepository.findUserById(userId);
             Task task = taskRepository.findTaskById(taskId);
-            Subject subject = task.getSubject();
-            subjectManagementServiceImpl.saveTask(user, subject, task, entryName, imageUrl, field, intro, infoBox, content, reference);
+            subjectManagementServiceImpl.saveTask(userId, taskId, entryName, imageUrl, field, intro, infoBox, content, reference);
             return new ResponseEntity<>(BaseResultFactory.build("编辑成功"), HttpStatus.OK);
         }catch (MyException me){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),me.getMessage()),HttpStatus.BAD_REQUEST);
@@ -176,12 +174,14 @@ public class UserController {
     @CrossOrigin
     public ResponseEntity<?> admitEntry(HttpServletRequest request, @RequestBody String jsonParam) {
         try{
-            HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
-            List<Integer> entryIds = (List<Integer>) form.get("entryIds");
-            String reason = (String) form.get("reason");
-            for (Integer id : entryIds){
-                Task task = taskRepository.findTaskById(id);
-                subjectManagementServiceImpl.submitTask(task.getUser(), task.getSubject(), task, task.getContent(), reason);
+            Integer userId = (Integer)request.getAttribute("userId");
+            JSONObject form = JSONObject.parseObject(jsonParam);
+            JSONArray entryIds = form.getJSONArray("entryIds");
+            String reason = form.getString("reason");
+            int len = entryIds.size();
+            for (int i=0;i<len;i++){
+                Integer taskId = entryIds.getInteger(i);
+                subjectManagementServiceImpl.submitTask(userId, taskId, reason);
             }
             return new ResponseEntity<>(BaseResultFactory.build("提交成功"), HttpStatus.OK);
         }catch (MyException me){
@@ -307,7 +307,7 @@ public class UserController {
                 return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(), "未加入该专题"), HttpStatus.NOT_FOUND);
             }
             Integer type = (Integer)form.get("type");
-            List<Task> tasks = taskRepository.findAllBySubject_IdAndUser_IdAAndState(subjectId,userId,type);
+            List<Task> tasks = taskRepository.findAllBySubject_IdAndUser_IdAndState(subjectId,userId,type);
             HashMap<String,Object> result1;
             List<Object> list = new ArrayList<>();
             for(Task task : tasks){
@@ -338,11 +338,7 @@ public class UserController {
             Integer userId = (Integer)request.getAttribute("userId");
             HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
             Integer assignmentId = (Integer)form.get("assignmentId");
-
-            User user = userRepository.findUserById(userId);
-            Assignment assignment = assignmentRepository.findAssignmentById(assignmentId);
-            Subject subject = assignment.getSubject();
-            subjectManagementServiceImpl.drawAssignment(user, subject, assignment);
+            subjectManagementServiceImpl.drawAssignment(userId, assignmentId);
             return new ResponseEntity<>(BaseResultFactory.build("领取成功"), HttpStatus.OK);
         }catch (MyException me){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),me.getMessage()),HttpStatus.BAD_REQUEST);
@@ -506,14 +502,13 @@ public class UserController {
     @PostMapping("/api/user/getRecommendSubject")
     @CrossOrigin
     public ResponseEntity<?> getRecommendSubject(HttpServletRequest request,@RequestBody String jsonParam){
-        try{
             Integer userId = (Integer) request.getAttribute("userId");
             List<Subject> subjects = subjectRepository.findSubjectByRand(8);
-            List<Object> tmps = new ArrayList<>();
-            HashMap<String,Object> tmp = null;
+            JSONArray tmps = new JSONArray();
+            JSONObject tmp = null;
             if(subjects.size() != 0){
                 for(Subject subject: subjects){
-                    tmp = new HashMap<>();
+                    tmp = new JSONObject();
                     tmp.put("id", subject.getId());
                     tmp.put("name", subject.getName());
                     tmp.put("field", subject.getField());
@@ -522,15 +517,13 @@ public class UserController {
                     tmp.put("imgUrl", subject.getImageUrl());
                     tmps.add(tmp);
                 }
-                HashMap<String,Object> result = new HashMap<>();
+                JSONObject result = new JSONObject();
                 result.put("subjects", tmps);
                 return new ResponseEntity<>(BaseResultFactory.build(result,"success"), HttpStatus.OK);
             }else{
                 return new ResponseEntity<>(BaseResultFactory.build("无结果"), HttpStatus.OK);
             }
-        }catch (Exception e){
-            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
-        }
+
     }
 
     /**
