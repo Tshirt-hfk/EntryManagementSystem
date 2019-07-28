@@ -11,7 +11,7 @@
             @click="catalogHanlder"
           >目录</button>
           <button class="custom-buttom" style="width:45px" @click="save">保存</button>
-          <button class="custom-buttom" style="width:45px">预览</button>
+          <button class="custom-buttom" style="width:45px" @click="drawerFlag = true">预览</button>
         </span>
         <span class="ql-formats">
           <button class="ql-clean"></button>
@@ -243,12 +243,14 @@
         <el-button type="primary" @click="handleReference">确 定</el-button>
       </div>
     </el-dialog>
+    <entryReview :tableData="tableData" :form="form" :drawerFlag="drawerFlag" v-on:handleClose="handleClose"></entryReview>
   </div>
 </template>
 
 <script>
 
 import mySearch from "../../components/mySearch"
+import entryReview from "../../components/entryReview"
 
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
@@ -262,10 +264,12 @@ window.Quill.register("modules/imageResize", ImageResize);
 export default {
   name: "myEditor",
   components:{
-    mySearch
+    mySearch,
+    entryReview
   },
   data() {
     return {
+      drawerFlag: false,
       options: [],
       loading: false,
       value: [],
@@ -590,6 +594,13 @@ export default {
     toDeleteRelation(index){
       this.tableData.splice(index, 1);
       window.console.log("nmh")
+    },
+    handleClose(done) {
+      this.$confirm('关闭预览?')
+        .then(_ => {
+          this.drawerFlag = false;
+        })
+        .catch(_ => {});
     }
   }
 };

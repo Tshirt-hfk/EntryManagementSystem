@@ -50,7 +50,7 @@
             <el-input type="textarea" v-model="reason" maxlength="30" show-word-limit></el-input>
             <div style="margin: 10px 0;"></div>
             <el-alert title="请在提交前确认" type="warning"
-            description="不要乱搞"
+            description="提交后无法更改"
             show-icon>  </el-alert>
           </span>
           <span slot="footer" class="dialog-footer">

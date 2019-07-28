@@ -1,292 +1,208 @@
 <template>
-<div class="preview-layout">
-	<div class="preview-searchbar">
-        <div class="preview-logo-headl">
-            <a title="首页" href="/">
-            <img src="https://wx3.sinaimg.cn/mw690/ad5be381gy1g51mw04nn2j206t01mgli.jpg">
-            </a>
+  <el-dialog title="词条预览" :visible.sync="drawerFlag" :before-close="handleClose"
+    style="font-family: normal;" width="1210px" center>
+    <el-card class="preview-intro">
+      <div class="preview-main-wrap">
+        <div class="clearfloat"></div>
+        <div class="preview-entryName">
+          <h1>{{form.entryName}}</h1>
+          <h2 v-for="item in form.field" :key="item">({{item}})</h2>
         </div>
-        <div class="preview-search">
-            <mySearch style="width: 440px;"></mySearch>
-            <el-button type="primary" @click="search" style="margin-left: 10px">搜索词条</el-button>
+        <div class="preview-entryintro" v-html="form.intro"></div>
+        <div class="preview-entry-attribute">
+          <div class="preview-basicinfo-title">
+            <h2 class="preview-basicinfo-h2">基本信息</h2>
+          </div>
+          <dl class="preview-attribute-left">
+            <div v-for="(prop, index) in form.infoBox" :key="index">
+              <div v-if="index % 2 == 0">
+                <dt>{{prop.key}}</dt>
+                <span style="float:left;line-height: 24px;margin-right: 5px;">:</span>
+                <dd>{{prop.value}}</dd>
+              </div>
+            </div>
+          </dl>
+          <dl class="preview-attribute-right">
+            <div v-for="(prop, index) in form.infoBox" :key="index">
+              <div v-if="index % 2 !== 0">
+                <dt>{{prop.key}}</dt>
+                <span style="float:left;line-height: 24px;margin-right: 5px;">:</span>
+                <dd>{{prop.value}}</dd>
+              </div>
+            </div>
+          </dl>
         </div>
-		
-    </div>
-	<div class="preview-main">
-		<div class="preview-divideline">
-			<span class="preview-tit" style="font-size: 25px;">词条内容</span>
-		</div>
-		<el-card class="preview-intro">
-			<div class="preview-main-wrap">
-				<div class="preview-tool-bar">
-					<div class="tool-bar-collect">
-						<i class="el-icon-star-off"></i>
-						<span>收藏</span>
-					</div>
-					<div class="tool-bar-line"> </div>
-					<div class="tool-bar-like">
-						<i class="el-icon-thumb"></i>
-						<span>{{likeNum}}</span>
-					</div>
-				</div>
-				<div class="clearfloat"></div>
-				<div class="preview-entryName">
-					<h1>{{form.entryName}}</h1>
-					<h2 v-for="item in form.field" :key="item">({{item}})</h2>
-					<el-button style="margin-left: 10px;" size="mini" @click="toEntryEdit">编辑</el-button>
-				</div>
-				<div class="preview-entryintro"  v-html="form.intro">
-				</div>
-				<div class="preview-entry-attribute">
-					<div class="preview-basicinfo-title">
-						<h2 class="preview-basicinfo-h2">基本信息</h2>
-					</div>
-					<dl class="preview-attribute-left">
-						<div v-for="(prop, index) in form.infoBox" :key="index">
-							<div v-if="index % 2 == 0">
-							<dt>{{prop.key}}</dt>
-							<span style="float:left;line-height: 24px;margin-right: 5px;">:</span>
-							<dd>{{prop.value}}</dd>
-							</div>
-						</div>
-					</dl>
-					<dl class="preview-attribute-right">
-						<div v-for="(prop, index) in form.infoBox" :key="index">
-							<div v-if="index % 2 !== 0">
-							<dt>{{prop.key}}</dt>
-							<span style="float:left;line-height: 24px;margin-right: 5px;">:</span>
-							<dd>{{prop.value}}</dd>
-							</div>
-						</div>
-					</dl>
-				</div>
-				<div class="preview-catalog">
-					<div class="preview-catalog-title">
-						<h2 class="preview-title-h2">目录</h2>
-					</div>
-					<div class="preview-cataloglist">
-						<ol v-for="n in columns" :key="n">
-							<li style="line-height: 28px" v-for="(cata, index) in catalog.slice((n-1)*12)" :key="index">
-								<div v-if="index < 12">
-								<template v-if="cata.type == 1">
-									<span class="catalog-index1">{{indexNum++}}</span>
-									<span class="catalog-text1">
-										<a :href="cata.url">{{cata.title}}</a>
-									</span>
-								</template>
-								<template v-else>
-									<span class="catalog-index2">▪</span>
-									<span class="catalog-text2">
-										<a :href="cata.url">{{cata.title}}</a>
-									</span>
-								</template>
-								</div>
-							</li>
-						</ol>
-					</div>
-				</div>
-				<div class="preview-content" id="mainContent">
-					<div ref="editor" v-html="form.content" class="ql-editor ql-snow"></div>
-				</div>
-			</div>
-			<div class="preview-side-wrap">
-				<div class="preview-picture">
-					<img style="margin: 0 auto" :src="form.imageUrl">
-				</div>
-				<!-- 上下位关系-->
-				<div class="preview-relation">
-					<div class="relation-title">
-						<h3 style="margin-left: 50px">词条名</h3>
-						<h3 style="margin-left: 80px">关系</h3>
-					</div>
-					<ul>
-						<li v-for="item in tableData" :key="item.name">
-							<div>
-								<h4 style="margin-left: 60px">{{item.name}}</h4>
-								<h4 style="margin-left: 88px">{{item.relation}}</h4>
-							</div>
-						</li>
-					</ul>
-				</div>
-				<div class="preview-side-catalog" style="visibility: hidden;bottom: 10px;" id="sideRoller">
-					<div class="preview-side-bar">
-						<i class="el-icon-help circle-start"></i>
-						<i class="el-icon-help circle-end"></i>
-					</div>
-					<div class="preview-side-roller">
-						<div class="inner-container">
-						<ol class="preview-side-catalist">
-							<li style="line-height: 28px" v-for="(cata, index) in form.catalog" :key="index">
-								<template v-if="cata.type == 1">
-									<a class="side-cata-pointer"></a>
-									<span class="catalog-index1">{{sideIndex++}}</span>
-									<span class="catalog-text1">
-										<a :href="cata.url">{{cata.title}}</a>
-									</span>
-								</template>
-								<template v-else>
-									<span class="catalog-index2">▪</span>
-									<span class="catalog-text2">
-										<a :href="cata.url">{{cata.title}}</a>
-									</span>
-								</template>
-							</li>
-						</ol>
-						</div>
-					</div>
-					<div class="preview-side-button">
-						<div class="preview-side-up" @click="toPageTop">UP</div>
-					</div>
-				</div>
-			</div>
-		</el-card>
-    </div>
-</div>
+        <div class="preview-catalog">
+          <div class="preview-catalog-title">
+            <h2 class="preview-title-h2">目录</h2>
+          </div>
+          <div class="preview-cataloglist">
+            <ol v-for="n in columns" :key="n">
+              <li
+                style="line-height: 28px"
+                v-for="(cata, index) in catalog.slice((n-1)*12)"
+                :key="index"
+              >
+                <div v-if="index < 12">
+                  <template v-if="cata.type == 1">
+                    <span class="catalog-index1">{{indexIncrease(drawerFlag)}}</span>
+                    <span class="catalog-text1">
+                      <a :href="cata.url">{{cata.title}}</a>
+                    </span>
+                  </template>
+                  <template v-else>
+                    <span class="catalog-index2">▪</span>
+                    <span class="catalog-text2">
+                      <a :href="cata.url">{{cata.title}}</a>
+                    </span>
+                  </template>
+                </div>
+              </li>
+            </ol>
+          </div>
+        </div>
+        <div class="preview-content" id="mainContent">
+          <div ref="previewEntry" v-html="form.content" class="ql-editor ql-snow"></div>
+        </div>
+      </div>
+      <div class="preview-side-wrap">
+        <div class="preview-picture">
+          <img style="margin: 0 auto" :src="form.imageUrl" />
+        </div>
+        <!-- 上下位关系-->
+        <div class="preview-relation">
+          <div class="relation-title">
+            <h3 style="margin-left: 50px">词条名</h3>
+            <h3 style="margin-left: 80px">关系</h3>
+          </div>
+          <ul>
+            <li v-for="item in tableData" :key="item.name">
+              <div>
+                <h4 style="margin-left: 60px">{{item.name}}</h4>
+                <h4 style="margin-left: 88px">{{item.relation}}</h4>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="preview-side-catalog" style="visibility: hidden;bottom: 10px;" id="sideRoller">
+          <div class="preview-side-bar">
+            <i class="el-icon-help circle-start"></i>
+            <i class="el-icon-help circle-end"></i>
+          </div>
+          <div class="preview-side-roller">
+            <div class="inner-container">
+              <ol class="preview-side-catalist">
+                <li style="line-height: 28px" v-for="(cata, index) in form.catalog" :key="index">
+                  <template v-if="cata.type == 1">
+                    <a class="side-cata-pointer"></a>
+                    <span class="catalog-index1">{{sideIndexIncrease(drawerFlag)}}</span>
+                    <span class="catalog-text1">
+                      <a :href="cata.url">{{cata.title}}</a>
+                    </span>
+                  </template>
+                  <template v-else>
+                    <span class="catalog-index2">▪</span>
+                    <span class="catalog-text2">
+                      <a :href="cata.url">{{cata.title}}</a>
+                    </span>
+                  </template>
+                </li>
+              </ol>
+            </div>
+          </div>
+          <div class="preview-side-button">
+            <div class="preview-side-up" @click="toPageTop">UP</div>
+          </div>
+        </div>
+      </div>
+    </el-card>
+  </el-dialog>
 </template>
 
 <script>
-
-import mySearch from "../../components/mySearch";
+let indexNum = 1;
+let sideIndex = 1;
 
 export default {
-	name:"entryPreview",
-	components:{
-		mySearch,
-	},
-	computed:{
-		// columns:function(){		
-			
-		// }
-	},
-	data(){
-		return {
-			name:this.$route.query.name,
-			value:"",
-			likeNum: '0',
-			indexNum: 1,
-			sideIndex: 1,
-			columns: 4,
-			entryId: 1,
-			tableData: [
-				{
-				name: '哈哈',
-				relation: '上位词'
-				},{
-				name: '嘻嘻',
-				relation: '下位词'
-				},{
-				name: '呵呵',
-				relation: '同位词'
-				}
-			],
-			form: {
-				entryName: '',
-				field: '',
-				imageUrl: "",
-				intro: "",
-				filed: "",
-				infoBox: [
-				],
-				content: '',
-				eference: []
-			},
-			catalog: [
-					{
-						title: '历史沿革',
-						url: '#t1',
-						type: 1
-					},{
-						title: '行政区划',
-						url: '#t2',
-						type: 1
-					},{
-						title: '地理环境',
-						url: '#t1',
-						type: 1
-					},{
-						title: '位置境遇',
-						url: '#t1',
-						type: 2
-					}
-				],
-		}
-	},
-	mounted(){
-		this.init()
-		window.addEventListener('scroll', this.handleScroll)
-	},
-	methods:{
-		init(){
-			this.$axios.get(
-                "http://192.168.1.121:9000/fetchPageByName",{params:{
-					name:this.name
-				}}
-            ).then(res => {
-                if(res.data){
-					window.console.log(res.data.entryName)
-					this.form.entryName = res.data.entryName
-					this.form.intro = res.data.intro
-					for(var info of res.data.infoBox){
-						this.form.infoBox.push(info)
-					}
-					this.form.content = res.data.content
-					window.console.log(this.form)
-					this.refreshCatalog();
-				}
-            }).catch(error => {
-                if(error.response){
-                    this.$message({
-                        message:error.response.data.msg,
-                        type:"warning"
-                    });
-                }
-			});	
-		},
-
-		toEntryEdit(){
-
-		},
-		search() {
-        //TODO
-		},
-		toPageTop(){
-			header.scrollIntoView();
-		},
-		handleScroll(){
-			var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
-			var offsetTop = document.querySelector('#mainContent').offsetTop
-			if (scrollTop > offsetTop) {
-				var fbox = document.getElementById("sideRoller");
-				fbox.style.visibility = "visible";
-			}else{
-				var fbox = document.getElementById("sideRoller");
-				fbox.style.visibility = "hidden";
-			}
-		},
-		refreshCatalog() {
-			var nodes = this.$refs.editor.childNodes;
-			this.catalog.splice(0, this.catalog.length);
-			var i = 1;
-			for (var node of nodes) {
-				var type;
-				if (node.tagName == "H1") {
-					type = 1;
-				} else if (node.tagName == "H2") {
-					type = 2;
-				} else {
-					continue;
-				}
-				node.id = "t" + i;
-				var title = node.textContent;
-				this.catalog.push({
-					title: title,
-					url: "#t" + i,
-					type: type
-				});
-				i = i + 1;
-			}
-		}
-	}
+    name: 'entryReview',
+    props:['form', 'drawerFlag','tableData'],
+    watch :{
+      drawerFlag:{
+        handler(n, o){
+          indexNum = 1;
+          sideIndex = 1;
+          this.visible = n;
+        }
+      },
+    },
+    data(){
+        return{
+            visible: false,
+            sideIndex: 1,
+            columns: 4,
+            entryId: 1,
+            catalog: [],
+        }
+    },
+    mounted(){
+      this.init();
+      window.addEventListener('scroll', this.handleScroll)
+    },
+    methods:{
+        toPageTop(){
+          header.scrollIntoView();
+        },
+        handleScroll(){
+          var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+          var offsetTop = document.querySelector('#mainContent').offsetTop
+          if (scrollTop > offsetTop) {
+            var fbox = document.getElementById("sideRoller");
+            fbox.style.visibility = "visible";
+          }else{
+            var fbox = document.getElementById("sideRoller");
+            fbox.style.visibility = "hidden";
+          }
+        },
+        refreshCatalog() {
+          var nodes = this.$refs.previewEntry.childNodes;
+          this.catalog.splice(0, this.catalog.length);
+          var i = 1;
+          for (var node of nodes) {
+            var type;
+            if (node.tagName == "H1") {
+              window.console.log("哈哈")
+              type = 1;
+            } else if (node.tagName == "H2") {
+              window.console.log("xoxi")
+              type = 2;
+            } else {
+              window.console.log("zhale")
+              continue;
+            }
+            node.id = "t" + i;
+            var title = node.textContent;
+            this.catalog.push({
+              title: title,
+              url: "#t" + i,
+              type: type
+            });
+            i = i + 1;
+          }
+        },
+        indexIncrease(increase){
+          if(increase){
+            return indexNum++;
+          }
+        },
+        sideIndexIncrease(increase){
+          if(increase){
+            return sideIndex++;
+          }
+        },
+        handleClose(done) {
+          this.$emit('handleClose', done);
+        }
+    }
 }
 </script>
 
@@ -344,33 +260,6 @@ dl,dd,ol,ul,h1,h2,h3,h4,p{
     text-indent: 2em;
     line-height: 24px;
     zoom: 1;
-}
-.preview-layout {
-  width: 100%;
-  margin: 0 auto;
-  position: relative;
-}
-.preview-searchbar{
-  width: 808px;
-  height: 105px;
-  margin: 0 auto;
-  position: relative;
-  font-family: arial;
-}
-.preview-logo-headl{
-  padding: 25px 0 35px;
-  float: left;
-  line-height: 1;
-}
-.preview-search{
-  float: left;
-  padding: 37px 0;
-}
-.preview-main{
-  width: 1170px;
-  margin: 0 auto;
-  min-height: 700px;
-  margin-top: 10px;
 }
 .preview-intro{
 	margin-top: 45px;
@@ -437,7 +326,7 @@ dl,dd,ol,ul,h1,h2,h3,h4,p{
     vertical-align: sub;
 }
 .preview-entryName h2{
-	margin-right: 5px;
+	  margin-right: 5px;
     display: inline;
     font-weight: 400;
     font-size: 20px;
@@ -454,8 +343,8 @@ dl,dd,ol,ul,h1,h2,h3,h4,p{
     line-height: 24px;
 }
 .preview-picture{
-	width: 268px;
-	height: 245px;
+	  width: 268px;
+    height: 245px;
     border: solid 1px #DDD;
     margin-bottom: 20px;
     box-shadow: 1px 1px 1px #ccc;
@@ -502,7 +391,7 @@ dl,dd,ol,ul,h1,h2,h3,h4,p{
 }
 .preview-attribute-left{
 	width: 395px;
-    float: left;
+  float: left;
 }
 .preview-attribute-right{
 	width: 395px;
@@ -516,9 +405,8 @@ dl,dd,ol,ul,h1,h2,h3,h4,p{
 	line-height: 26px;
     padding: 0;
     margin: 0;
-	margin: 0 5px 0 12px;
+    margin: 0 5px 0 12px;
     float: left;
-	text-align: center;
 	white-space: nowrap;
 	overflow: hidden; 
 	text-overflow: ellipsis;
@@ -774,5 +662,3 @@ dl,dd,ol,ul,h1,h2,h3,h4,p{
 	margin-top: 2px;
 }
 </style>
-
-
