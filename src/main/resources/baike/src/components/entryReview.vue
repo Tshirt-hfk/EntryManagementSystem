@@ -1,7 +1,7 @@
 <template>
-  <el-dialog title="词条预览" :visible.sync="drawerFlag" :before-close="handleClose"
+  <el-dialog id="preDialog" title="词条预览" :visible.sync="drawerFlag" :before-close="handleClose"
     style="font-family: normal;" width="1210px" center>
-    <el-card class="preview-intro">
+    <el-card class="preview-intro" id="preContent">
       <div class="preview-main-wrap">
         <div class="clearfloat"></div>
         <div class="preview-entryName">
@@ -84,7 +84,7 @@
             </li>
           </ul>
         </div>
-        <div class="preview-side-catalog" style="visibility: hidden;bottom: 10px;" id="sideRoller">
+        <div class="preview-side-catalog" style="visibility: hidden;bottom: 10px;z-index: 9999;" id="sideRoller">
           <div class="preview-side-bar">
             <i class="el-icon-help circle-start"></i>
             <i class="el-icon-help circle-end"></i>
@@ -145,16 +145,15 @@ export default {
         }
     },
     mounted(){
-      this.init();
-      window.addEventListener('scroll', this.handleScroll)
+      document.getElementById("preDialog").addEventListener('scroll', this.handleScroll)
     },
     methods:{
         toPageTop(){
-          header.scrollIntoView();
+          preContent.scrollIntoView();
         },
         handleScroll(){
-          var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
-          var offsetTop = document.querySelector('#mainContent').offsetTop
+          var scrollTop = document.getElementById("preDialog").scrollTop;
+          var offsetTop = document.querySelector('#mainContent').offsetTop + 150;
           if (scrollTop > offsetTop) {
             var fbox = document.getElementById("sideRoller");
             fbox.style.visibility = "visible";
