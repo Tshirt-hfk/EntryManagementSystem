@@ -180,14 +180,14 @@ export default {
 				}
 			],
 			form: {
-				entryName: '方磊',
-				field: '动物',
-				imageUrl: "https://gss3.bdstatic.com/-Po3dSag_xI4khGkpoWK1HF6hhy/baike/w%3D268%3Bg%3D0/sign=6841e3a2464a20a4311e3bc1a869ff1f/71cf3bc79f3df8dcfa573421c411728b47102813.jpg",
-				intro: "黑龙江省，简称“黑”，中华人民共和国省级行政区，省会哈尔滨。位于中国东北地区北部，界于北纬43°26′—53°33′，东经121°11′—135°05′之间，北、东部与俄罗斯相望，西部与内蒙古相邻，南部与吉林接壤，是中国最北端以及陆地最东端的省级行政区。总面积47.3万平方千米。",
+				entryName: '',
+				field: '',
+				imageUrl: "",
+				intro: "",
 				filed: "",
 				infoBox: [
 				],
-				content: '<h1 id="t1">方磊</h1><h2 id="t2">色情</h2><p>黑龙江省是中国位置最北、最东，纬度最高，经度最东的省份，西起121°11′E，东至135°05′E，南起43°26′N，北至53°33′N，东西跨14个经度，南北跨10个纬度，2个热量带；东西跨14个经度，3个湿润区。面积47.3万平方千米（含加格达奇区和松岭区）。北部和东部与俄罗斯相邻，边境线长3045千米，是亚洲与太平洋地区陆路通往俄罗斯远东和欧洲大陆的重要通道，西部与南部分别与内蒙古和吉林省相邻，东部近日本海。</p>',
+				content: '',
 				reference: []
 			},
 			catalog: [
@@ -223,15 +223,16 @@ export default {
 				}}
             ).then(res => {
                 if(res.data){
-					window.console.log("test")
-					this.value = res.data.page_content
+					window.console.log(res.data.entryName)
+					this.form.entryName = res.data.entryName
+					this.form.intro = res.data.intro
+					for(var info of res.data.infoBox){
+						this.form.infoBox.push(info)
+					}
+					this.form.content = res.data.content
+					window.console.log(this.form)
 					this.refreshCatalog();
-                } else {
-                this.$message({
-                    message:res.data.msg,
-                    type:"warning"
-                });
-                }
+				}
             }).catch(error => {
                 if(error.response){
                     this.$message({
