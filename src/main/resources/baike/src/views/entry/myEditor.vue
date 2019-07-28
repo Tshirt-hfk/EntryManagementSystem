@@ -446,6 +446,7 @@ export default {
             this.$message({
               message: res.data.msg
             });
+            this.$router.push("/usercenter/myentry");
           } else {
             this.$message({
               message: res.data.msg,

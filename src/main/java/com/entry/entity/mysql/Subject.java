@@ -33,6 +33,9 @@ public class Subject {
     @Column(nullable = false, columnDefinition = "INT default 0")
     private Integer totalCount;
 
+    @Column(nullable = false, columnDefinition = "INT default 1")
+    private Integer drawedTaskCountLimit;  // 领取任务的数量限制
+
     @Column(columnDefinition = "text")
     private String introduction;
 
@@ -72,6 +75,7 @@ public class Subject {
         this.isPublic = isPublic;
         this.currentCount = 0;
         this.totalCount = 0;
+        this.drawedTaskCountLimit = 1;
     }
 
     public void setId(Integer id) {
@@ -116,6 +120,14 @@ public class Subject {
 
     public void setTotalCount(Integer totalCount) {
         this.totalCount = totalCount;
+    }
+
+    public Integer getDrawedTaskCountLimit() {
+        return drawedTaskCountLimit;
+    }
+
+    public void setDrawedTaskCountLimit(Integer drawedTaskCountLimit) {
+        this.drawedTaskCountLimit = drawedTaskCountLimit;
     }
 
     public String getIntroduction() {

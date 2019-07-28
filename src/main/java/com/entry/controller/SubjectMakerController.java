@@ -180,9 +180,7 @@ public class SubjectMakerController {
             String name = form.getString("name");
             JSONArray fields = form.getJSONArray("field");
             Integer subjectId = form.getInteger("subjectId");
-            User user = userRepository.findUserById(userId);
-            Subject subject = subjectRepository.findSubjectById(subjectId);
-            subjectManagementServiceImpl.createAssignment(user, subject, name, fields);
+            subjectManagementServiceImpl.createAssignment(userId, subjectId, name, fields);
             return new ResponseEntity<>(BaseResultFactory.build("创建成功"), HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
@@ -251,10 +249,7 @@ public class SubjectMakerController {
             Integer subjectId = (Integer) form.get("subjectId");
             String reason = (String) form.get("reason");
             Integer time = (Integer) form.getOrDefault("dealine", 10*24*3600*1000);
-
-            Subject subject = subjectRepository.findSubjectById(subjectId);
-            User user = userRepository.findUserById(userId);
-            subjectManagementServiceImpl.publishAssignment(user, subject, reason, time, entryIds);
+            subjectManagementServiceImpl.publishAssignment(userId, subjectId, reason, time, entryIds);
             return new ResponseEntity<>(BaseResultFactory.build("发布成功"), HttpStatus.OK);
         }catch (MyException me){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),me.getMessage()),HttpStatus.BAD_REQUEST);
@@ -276,9 +271,7 @@ public class SubjectMakerController {
             Integer taskId = (Integer)form.get("taskId");
             String reason = (String) form.get("reason");
             Task task = taskRepository.findTaskById(taskId);
-            User user = userRepository.findUserById(userId);
-            Subject subject = task.getSubject();
-            subjectManagementServiceImpl.auditTask(user, subject, task, pass, reason);
+            subjectManagementServiceImpl.auditTask(userId, taskId, pass, reason);
             if(pass){
                 return new ResponseEntity<>(BaseResultFactory.build("审核通过"), HttpStatus.OK);
             }else{

@@ -17,7 +17,7 @@ public interface TaskRepository extends JpaRepository<Task, Integer> {
 
 
     @Query(value = "select * from task where subject_id = ?1 and user_id = ?2 and state = ?3", nativeQuery = true)
-    List<Task> findAllBySubject_IdAndUser_IdAAndState(Integer subjectId, Integer userId, Integer state);
+    List<Task> findAllBySubject_IdAndUser_IdAndState(Integer subjectId, Integer userId, Integer state);
 
     @Query(value = "select * from task where subject_id =?1 and state = ?2",nativeQuery = true)
     List<Task> findAllBySubject_IdAndState(Integer subjectId, Integer state);

@@ -16,6 +16,7 @@ public class Task {
     public final static Integer TOAUDITED = 4;  // 待审核
     public final static Integer PASS = 5;       // 审核通过
     public final static Integer UNPASS = 6;     // 审核未通过
+    public final static Integer OUTOFDATE = 7;   // 过期
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
