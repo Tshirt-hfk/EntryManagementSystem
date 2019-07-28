@@ -32,8 +32,8 @@
 				<div class="clearfloat"></div>
 				<div class="preview-entryName">
 					<h1>{{form.entryName}}</h1>
-					<h2>({{form.field}})</h2>
-					<el-button size="mini" @click="toEntryEdit">编辑</el-button>
+					<h2 v-for="item in form.field" :key="item">({{item}})</h2>
+					<el-button style="margin-left: 10px;" size="mini" @click="toEntryEdit">编辑</el-button>
 				</div>
 				<div class="preview-entryintro"  v-html="form.intro">
 				</div>
@@ -44,18 +44,18 @@
 					<dl class="preview-attribute-left">
 						<div v-for="(prop, index) in form.infoBox" :key="index">
 							<div v-if="index % 2 == 0">
-							<dt>{{prop[0]}}</dt>
-							<span style="float:left">:</span>
-							<dd>{{prop[1]}}</dd>
+							<dt>{{prop.key}}</dt>
+							<span style="float:left;line-height: 24px;margin-right: 5px;">:</span>
+							<dd>{{prop.value}}</dd>
 							</div>
 						</div>
 					</dl>
 					<dl class="preview-attribute-right">
-						<div v-for="(prop, index) in form.properties" :key="index">
+						<div v-for="(prop, index) in form.infoBox" :key="index">
 							<div v-if="index % 2 !== 0">
-							<dt>{{prop[0]}}</dt>
-							<span style="float:left">:</span>
-							<dd>{{prop[1]}}</dd>
+							<dt>{{prop.key}}</dt>
+							<span style="float:left;line-height: 24px;margin-right: 5px;">:</span>
+							<dd>{{prop.value}}</dd>
 							</div>
 						</div>
 					</dl>
@@ -184,10 +184,10 @@ export default {
 				field: '动物',
 				imageUrl: "https://gss3.bdstatic.com/-Po3dSag_xI4khGkpoWK1HF6hhy/baike/w%3D268%3Bg%3D0/sign=6841e3a2464a20a4311e3bc1a869ff1f/71cf3bc79f3df8dcfa573421c411728b47102813.jpg",
 				intro: "黑龙江省，简称“黑”，中华人民共和国省级行政区，省会哈尔滨。位于中国东北地区北部，界于北纬43°26′—53°33′，东经121°11′—135°05′之间，北、东部与俄罗斯相望，西部与内蒙古相邻，南部与吉林接壤，是中国最北端以及陆地最东端的省级行政区。总面积47.3万平方千米。",
-				filed: "",
+				field: ["动物","怪物","奇行种"],
 				infoBox: [
 				],
-				content: '<h1 id="t1">方磊</h1><h2 id="t2">色情</h2><p>黑龙江省是中国位置最北、最东，纬度最高，经度最东的省份，西起121°11′E，东至135°05′E，南起43°26′N，北至53°33′N，东西跨14个经度，南北跨10个纬度，2个热量带；东西跨14个经度，3个湿润区。面积47.3万平方千米（含加格达奇区和松岭区）。北部和东部与俄罗斯相邻，边境线长3045千米，是亚洲与太平洋地区陆路通往俄罗斯远东和欧洲大陆的重要通道，西部与南部分别与内蒙古和吉林省相邻，东部近日本海。</p>',
+				content: '<h1 id="t1">方磊</h1><h2 id="t2">罗曼史</h2><p>黑龙江省是中国位置最北、最东，纬度最高，经度最东的省份，西起121°11′E，东至135°05′E，南起43°26′N，北至53°33′N，东西跨14个经度，南北跨10个纬度，2个热量带；东西跨14个经度，3个湿润区。面积47.3万平方千米（含加格达奇区和松岭区）。北部和东部与俄罗斯相邻，边境线长3045千米，是亚洲与太平洋地区陆路通往俄罗斯远东和欧洲大陆的重要通道，西部与南部分别与内蒙古和吉林省相邻，东部近日本海。</p>',
 				reference: []
 			},
 			catalog: [
@@ -310,7 +310,7 @@ dl,dd,ol,ul,h1,h2,h3,h4,p{
   padding-bottom: 8px;
   font-family: Arial;
   color: #000;
-  margin: 0 0 3px 0;
+  margin: 30px 0 15px 0;
   clear: both;
 }
 .preview-content>>> h1::before{
@@ -330,6 +330,7 @@ dl,dd,ol,ul,h1,h2,h3,h4,p{
   font-weight: 400;
   margin: 0;
   margin-top: 20px;
+  margin-bottom: 12px;
   color: #333;
 }
 .preview-content>>> p{
@@ -338,7 +339,7 @@ dl,dd,ol,ul,h1,h2,h3,h4,p{
     word-wrap: break-word;
     color: #333;
 	margin: 0;
-	margin-top: 15px;
+	margin-bottom: 15px;
     text-indent: 2em;
     line-height: 24px;
     zoom: 1;
@@ -427,7 +428,7 @@ dl,dd,ol,ul,h1,h2,h3,h4,p{
     width: 700px;
 }
 .preview-entryName h1{
-	margin: 0 10px 0 0;
+	margin: 0 5px 0 0;
     display: inline;
     font-size: 34px;
     line-height: 1.15;
@@ -435,7 +436,7 @@ dl,dd,ol,ul,h1,h2,h3,h4,p{
     vertical-align: sub;
 }
 .preview-entryName h2{
-	margin: 0 50px 0 0;
+	margin-right: 5px;
     display: inline;
     font-weight: 400;
     font-size: 20px;
@@ -443,7 +444,7 @@ dl,dd,ol,ul,h1,h2,h3,h4,p{
 }
 .preview-entryintro{
 	clear: both;
-    font-size: 14px;
+    font-size: 15px;
     word-wrap: break-word;
     color: #333;
 	margin-top: 20px;
@@ -453,6 +454,7 @@ dl,dd,ol,ul,h1,h2,h3,h4,p{
 }
 .preview-picture{
 	width: 268px;
+	height: 245px;
     border: solid 1px #DDD;
     margin-bottom: 20px;
     box-shadow: 1px 1px 1px #ccc;
@@ -508,12 +510,12 @@ dl,dd,ol,ul,h1,h2,h3,h4,p{
 .preview-entry-attribute dt{
 	display: block;
 	width: 90px;
-    margin: 0 5px 0 12px;
     font-weight: 700;
-    color: #1296db;
+    color: #999;
 	line-height: 26px;
     padding: 0;
     margin: 0;
+	margin: 0 5px 0 12px;
     float: left;
 	text-align: center;
 	white-space: nowrap;
@@ -522,19 +524,18 @@ dl,dd,ol,ul,h1,h2,h3,h4,p{
 }
 .preview-entry-attribute dd{
 	color: #333;
-    width: 285px;
+    width: 275px;
     float: left;
     position: relative;
     word-break: break-all;
 	line-height: 26px;
     display: block;
-	margin-left: 10px;
 	white-space: nowrap;
 	overflow: hidden; 
 	text-overflow: ellipsis;
 }
 .preview-catalog{
-	margin-bottom: 35px;
+	margin-bottom: 15px;
 	float:left;
     border-bottom: 1px solid #ddd;
     background: #fbfbfb;
@@ -632,7 +633,7 @@ dl,dd,ol,ul,h1,h2,h3,h4,p{
     font-size: 14px;
     line-height: 25px;
     word-wrap: break-word;
-	height: 2000px;
+	min-height: 1000px;
 }
 .preview-side-catalog{
 	width: 270px;
