@@ -69,12 +69,12 @@
             <div :key="index+3000">
               <template v-if="item.type==1">
                 <h2>
-                  <a class="catalog-title" :href="item.url">{{item.title}}</a>
+                  <a class="catalog-title" :href="'#t'+item.index">{{item.title}}</a>
                 </h2>
               </template>
               <template v-else-if="item.type==2">
                 <h3>
-                  <a class="catalog-title" :href="item.url">{{item.title}}</a>
+                  <a class="catalog-title" :href="'#t'+item.index">{{item.title}}</a>
                 </h3>
               </template>
             </div>
@@ -479,24 +479,29 @@ export default {
     refreshCatalog() {
       var nodes = this.contenteditor.editor.root.childNodes
       this.others.catalog.splice(0, this.others.catalog.length); 
-      var i = 1;
-      for(var node of nodes) {
+      var i1 = 0;
+      var i2 = 0;
+      for (var node of nodes) {
         var type;
         if (node.tagName == "H1") {
           type = 1;
+          i1 = i1 + 1;
+          i2 = 0;
         } else if (node.tagName == "H2") {
           type = 2;
+          i2 = i2 + 1;
         } else {
           continue;
         }
-        node.id = "t" + i;
+        var index = i1.toString();
+        if (i2 != 0) index = index + "." + i2.toString();
+        node.id = "t" + index;
         var title = node.textContent;
         this.others.catalog.push({
           title: title,
-          url: "#t" + i,
+          index: index,
           type: type
         });
-        i = i + 1;
       }
     },
     uploadSuccess(res, file) {
