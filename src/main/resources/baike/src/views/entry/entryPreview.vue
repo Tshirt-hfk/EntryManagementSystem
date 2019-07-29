@@ -88,7 +88,7 @@
             </div>
           </div>
           <div class="preview-content" id="mainContent">
-            <div ref="editor" v-html="form.content" class="ql-editor ql-snow"></div>
+            <div ref="editor" class="ql-editor ql-snow"></div>
           </div>
         </div>
         <div class="preview-side-wrap">
@@ -164,7 +164,7 @@ export default {
   },
   data() {
     return {
-      name: this.$route.query.name,
+      name: this.$route.params.name,
       likeNum: "0",
       columns: 4,
       entryId: 1,
@@ -189,8 +189,7 @@ export default {
         intro: "",
         filed: "",
         infoBox: [],
-        content:
-          "<h1>标题1</h1><h2>标题1.1</h2><p>正文</p><h1>标题2</h1><h1>标题3</h1>",
+        content: "",
         reference: []
       },
       catalog: []
@@ -198,7 +197,6 @@ export default {
   },
   mounted() {
     this.init();
-    this.refreshCatalog();
     window.addEventListener("scroll", this.handleScroll);
   },
   methods: {
@@ -217,6 +215,7 @@ export default {
               this.form.infoBox.push(info);
             }
             this.form.content = res.data.content;
+            this.initContent();
             this.refreshCatalog();
           }
         })
@@ -228,6 +227,9 @@ export default {
             });
           }
         });
+    },
+    initContent() {
+      this.$refs.editor.innerHTML = this.form.content
     },
     toEntryEdit() {},
     search() {
@@ -253,32 +255,32 @@ export default {
     refreshCatalog() {
       var nodes = this.$refs.editor.childNodes;
       this.catalog.splice(0, this.catalog.length);
-	  var i1 = 0;
-	  var i2 = 0;
+      var i1 = 0;
+      var i2 = 0;
+      window.console.log(nodes)
       for (var node of nodes) {
         var type;
+        window.console.log(node.tagName)
         if (node.tagName == "H1") {
-		  type = 1;
-		  i1 = i1+1;
-		  i2 = 0;
+          type = 1;
+          i1 = i1 + 1;
+          i2 = 0;
         } else if (node.tagName == "H2") {
-		  type = 2;
-		  i2 = i2+1;
+          type = 2;
+          i2 = i2 + 1;
         } else {
           continue;
-		}
-		var index = i1.toString();
-		if(i2!=0)
-			index = index + "." + i2.toString();
+        }
+        var index = i1.toString();
+        if (i2 != 0) index = index + "." + i2.toString();
         node.id = "t" + index;
         var title = node.textContent;
         this.catalog.push({
           title: title,
-		  index: index,
-		  type: type
+          index: index,
+          type: type
         });
       }
-      window.console.log(this.catalog);
     }
   }
 };

@@ -5,6 +5,7 @@ import index from '../views/index'
 Vue.use(Router)
 
 export default new Router({
+  mode: 'history',
   routes: [
     {
       path: '/',
@@ -22,7 +23,7 @@ export default new Router({
       component: () => import('../views/register')
     },
     { // 词条展示
-      path: '/entry',
+      path: '/wiki/entry/:name',
       name: 'entryPreview',
       component: () => import('../views/entry/entryPreview')
     },
