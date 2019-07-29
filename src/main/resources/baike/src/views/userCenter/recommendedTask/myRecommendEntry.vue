@@ -8,7 +8,8 @@
         :key="entry.id" :body-style="{ padding: '0px' }">
             <div class="rec-entry-header">
                 <div class="rec-entry-title">{{entry.name}}</div>
-                <div style="display: inline;float: right;margin-top: 5px">({{entry.field}})</div> 
+                <div v-for="item in entry.field" :key="item" style="float: right;margin-top: 5px;margin-left: 5px">
+                  ({{item}})</div> 
             </div>
             <div class="rec-entry-body">
                 <p>{{entry.reason1}}</p>
@@ -123,6 +124,7 @@ export default {
    display: inline;
    font-size:20px;
    color:#52a3f5;
+   padding-left: 40px;
 }
 .rec-entry-body{
     height: 47px;

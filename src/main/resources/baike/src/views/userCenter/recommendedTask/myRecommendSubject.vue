@@ -21,7 +21,7 @@
             <div class="subject-bottom">
               <div v-if="subject.deadTime !== '0'" >
                 <i class="el-icon-time" style="color: #707070; font-size:14px"></i>
-                <span style="font-size:14px; margin-right:5px; color: #707070;">剩余时间{{subject.deadline | getDay}}天</span>
+                <span style="font-size:14px; margin-right:5px; color: #707070;">剩余时间{{subject.deadTime | getDay}}天</span>
                 <i class="el-icon-coin" style="color: #707070; font-size:14px;margin-left: 5px"></i>
                 <span style="font-size:14px; color: #707070;">{{subject.memberCount}}人参加</span>
               </div>

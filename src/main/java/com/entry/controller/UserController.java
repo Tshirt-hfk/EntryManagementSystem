@@ -508,12 +508,15 @@ public class UserController {
             JSONObject tmp = null;
             if(subjects.size() != 0){
                 for(Subject subject: subjects){
+                    List<GroupMember> groupMembers = groupMemberRepository.findAllBySubject_IdAndIdentity(subject.getId(), GroupMember.ORDINRYUSER);
                     tmp = new JSONObject();
                     tmp.put("id", subject.getId());
                     tmp.put("name", subject.getName());
                     tmp.put("field", subject.getField());
+                    tmp.put("intro", subject.getIntroduction());
                     tmp.put("deadTime", subject.getDeadline());
                     tmp.put("total_count", subject.getTotalCount());
+                    tmp.put("memberCount", groupMembers.size());
                     tmp.put("imgUrl", subject.getImageUrl());
                     tmps.add(tmp);
                 }

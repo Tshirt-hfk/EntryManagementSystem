@@ -103,7 +103,8 @@
                             <img style="width: 133px;height: 100px" :src="item.src">
                             <div class="subject-ctn">
                                 <p>{{item.intro}}</p>
-                                <a>{{item.field}}</a>
+                                <a style="margin-left: 5px" v-for="fieldItem in item.field" 
+                                :key="fieldItem">{{fieldItem}}</a>
                             </div>
                         </div>
                     </div>
@@ -182,9 +183,25 @@ export default {
         }
     },
     mounted(){
-        
+        this.init();
     },
     methods:{
+        init(){
+            this.$axios
+            .post("/api/user/getRecommendSubject",{})
+            .then(res => {
+                if (res.data.data)
+                this.recommendSubject = res.data.data.subjects;
+            })
+            .catch(error => {
+                if (error.response) {
+                // this.$message({
+                //     message: error.response.data.msg,
+                //     type: "warning"
+                // });
+                }
+            });
+        },
         search() {
             //TODO
             const { href } = this.$router.resolve({
@@ -217,15 +234,15 @@ export default {
             this.loading = true;
             this.value = query;
             this.$axios
-                .post("/api/user/searchSubject", {
-                keyword: query
+                .post("/api/user/searchEntry", {
+                    keyword: query
                 })
                 .then(res => {
-                if (res.data.data) {
-                    this.options = res.data.data.subjects;
-                } else {
-                }
-                this.loading = false;
+                    if (res.data.data) {
+                        this.options = res.data.data.assignments;
+                    } else {
+                    }
+                    this.loading = false;
                 })
                 .catch(error => {});
         }
