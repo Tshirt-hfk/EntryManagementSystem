@@ -340,7 +340,7 @@ p {
   word-wrap: break-word;
   color: #333;
   margin: 0;
-  margin-bottom: 15px;
+  margin-bottom: 5px;
   text-indent: 2em;
   line-height: 24px;
   zoom: 1;
