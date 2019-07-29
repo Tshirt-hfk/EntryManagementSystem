@@ -10,15 +10,6 @@
       </a>
     </div>
     <div v-else>
-      <div class="mycreatesub-searchbar">
-        <mySearch
-          style="float:right"
-          v-on:remoteMethod="remoteMethod"
-          :options="options"
-          :value="value"
-          :loading="loading"
-        ></mySearch>
-      </div>
       <template v-if="state==1">
         <template v-for="subject in subjects">
           <el-card class="box-card" :key="subject.id" :body-style="{ padding: '0px' }">
@@ -143,10 +134,6 @@ export default {
 .content {
   margin-left: 30px;
   width: 1200px;
-}
-.mycreatesub-searchbar {
-  width: 1060px;
-  height: 60px;
 }
 .nothing-a {
   background: #f0f0f0;
