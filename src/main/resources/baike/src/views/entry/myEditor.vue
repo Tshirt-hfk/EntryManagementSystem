@@ -785,7 +785,7 @@ export default {
   margin-bottom: 5px;
   text-indent: 2em;
   word-wrap: break-word;
-  line-height: 24px;
+  line-height: 18px;
 }
 .ql-snow .ql-editor h1 {
   font-size: 16px;

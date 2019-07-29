@@ -7,13 +7,13 @@
         </a>
       </div>
       <div class="index-search">
-        <mySearch
-          style="width: 440px;"
-          v-on:remoteMethod="remoteMethod"
-          :options="options"
-          :value="value"
-          :loading="loading"
-        ></mySearch>
+        <el-autocomplete
+          v-model="value"
+          style="width: 440px"
+          :fetch-suggestions="querySearch"
+          placeholder="请输入词条名称"
+          :trigger-on-focus="false"
+        ></el-autocomplete>
         <el-button type="primary" @click="search" style="margin-left: 10px">搜索词条</el-button>
       </div>
     </div>
@@ -135,20 +135,18 @@
 </template>
 
 <script>
-import mySearch from "../components/mySearch";
+import myEntrySearch from "../components/myEntrySearch";
 import classificationEntry from "./classificationEntry";
 
 export default {
   name: "index",
   components: {
-    mySearch,
+    myEntrySearch,
     classificationEntry
   },
   data() {
     return {
-      options: [],
-      loading: false,
-      value: [],
+      value: "",
       field: "人物",
       //数据都要从数据库取
       homePageEntry: [
@@ -218,17 +216,14 @@ export default {
   mounted() {},
   methods: {
     search() {
-      //TODO
-      const { href } = this.$router.resolve({
+      var { href } = this.$router.resolve({
         name: "entryPreview",
         params: {
           name: this.value
         }
       });
       window.open(href, "_blank");
-      this.options = [];
-      this.loading = false;
-      this.value = [];
+      this.value = "";
     },
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
@@ -239,21 +234,8 @@ export default {
     toEntryExhibition(name) {},
     toEntryCreate() {},
     toRecommendEntry() {},
-    remoteMethod(query) {
-      this.loading = true;
-      this.value = query;
-      this.$axios
-        .post("/api/user/searchSubject", {
-          keyword: query
-        })
-        .then(res => {
-          if (res.data.data) {
-            this.options = res.data.data.subjects;
-          } else {
-          }
-          this.loading = false;
-        })
-        .catch(error => {});
+    querySearch(query, cb) {
+
     }
   }
 };

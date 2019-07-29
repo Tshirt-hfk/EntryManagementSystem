@@ -7,7 +7,13 @@
         </a>
       </div>
       <div class="preview-search">
-        <mySearch style="width: 440px;"></mySearch>
+        <el-autocomplete
+          v-model="value"
+          style="width: 440px"
+          :fetch-suggestions="querySearch"
+          placeholder="请输入词条名称"
+          :trigger-on-focus="false"
+        ></el-autocomplete>
         <el-button type="primary" @click="search" style="margin-left: 10px">搜索词条</el-button>
       </div>
     </div>
@@ -151,13 +157,9 @@
 </template>
 
 <script>
-import mySearch from "../../components/mySearch";
 
 export default {
   name: "entryPreview",
-  components: {
-    mySearch
-  },
   computed: {
     // columns:function(){
     // }
@@ -165,23 +167,11 @@ export default {
   data() {
     return {
       name: this.$route.params.name,
+      value: "",
       likeNum: "0",
       columns: 4,
-      entryId: 1,
-      tableData: [
-        {
-          name: "哈哈",
-          relation: "上位词"
-        },
-        {
-          name: "嘻嘻",
-          relation: "下位词"
-        },
-        {
-          name: "呵呵",
-          relation: "同位词"
-        }
-      ],
+      entryId: null,
+      tableData: [],
       form: {
         entryName: "",
         field: "",
@@ -229,11 +219,16 @@ export default {
         });
     },
     initContent() {
-      this.$refs.editor.innerHTML = this.form.content
+      this.$refs.editor.innerHTML = this.form.content;
     },
     toEntryEdit() {},
     search() {
-      //TODO
+      this.$router.push({
+        name: "entryPreview",
+        params: {
+          name: this.value
+        }
+      });
     },
     toPageTop() {
       header.scrollIntoView();
@@ -257,10 +252,8 @@ export default {
       this.catalog.splice(0, this.catalog.length);
       var i1 = 0;
       var i2 = 0;
-      window.console.log(nodes)
       for (var node of nodes) {
         var type;
-        window.console.log(node.tagName)
         if (node.tagName == "H1") {
           type = 1;
           i1 = i1 + 1;
@@ -281,6 +274,9 @@ export default {
           type: type
         });
       }
+    },
+    querySearch(query, cb) {
+
     }
   }
 };
