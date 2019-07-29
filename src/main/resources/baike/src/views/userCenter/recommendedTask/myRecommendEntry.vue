@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <div class="myrecentry-searchbar">
-        <mySearch style="float:right" v-on:remoteMethod="remoteMethod" :options="options" :value="value" :loading="loading"></mySearch>
+      <el-input style="width: 300px; float: right;" v-model="searchValue" placeholder="请输入关键词"></el-input>
     </div>
     <template v-for="entry in entrys">
         <a class="box-card" @click="see(entry.id)" :title="entry.name"
@@ -22,20 +22,24 @@
 
 <script>
 
-import mySearch from "../../../components/mySearch"
-
 export default {
   name: "myRecommendEntry",
-  components: {
-    mySearch,
+  watch:{
+    searchValue:{
+      handler(n, o){
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => {
+          this.remoteMethod(n);
+        }, 300);
+      }
+    }
   },
   data() {
     return {
-      entrys: [],
-      options: [],
-      loading: false,
-      value: [],
       status : this.$store.state.status,
+      searchValue: '',
+      allentrys: [],
+      entrys: [],
       deadTime: '0',
       finishedSubject: '0',
     };
@@ -49,8 +53,10 @@ export default {
         this.$axios
         .post("/api/user/getRecommendEntry",{})
         .then(res => {
-            if (res.data.data)
-              this.entrys = res.data.data.assignments
+            if (res.data.data){
+              this.entrys = res.data.data.assignments;
+              this.allentrys = res.data.data.assignments;
+            }
         })
         .catch(error => {
             if (error.response) {
@@ -65,25 +71,19 @@ export default {
       this.$router.push({ path: "/entryedit", query: { id: id } });
     },
     remoteMethod(query){
-        if(query !== ''){
-        this.loading = true;
-        this.value = query;
+      if(query !== ''){
         this.$axios
             .post("/api/user/searchEntry", {keyword:query})
             .then(res => {
-                if(res.data.data){
-                    this.entrys = res.data.data.assignments;
-                    this.options = res.data.data.assignments;
-                }
-                this.loading = false;
+              if(res.data.data)
+                this.entrys = res.data.data.assignments;
+              else
+                this.entrys = this.allentrys.slice(0, 0);
             })
             .catch(error => {
-                      
             });
-      }else{
-        this.options = [];
-        this.init();
-      }
+      }else
+        this.entrys = this.allentrys
     }
   }
 };

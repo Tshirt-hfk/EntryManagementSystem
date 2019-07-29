@@ -8,7 +8,7 @@
           :label="item.name" :value="item.name">
           </el-option>  
         </el-select> -->
-        <mySearch style="float:right" v-on:remoteMethod="remoteMethod" :options="options" :value="value" :loading="loading"></mySearch>
+        <el-input style="width: 300px; float: right;" v-model="searchValue" placeholder="请输入关键词"></el-input>
       </div>
     <template v-for="subject in subjects">
         <el-card class="box-card" :key="subject.id" :body-style="{ padding: '0px' }">
@@ -38,13 +38,8 @@
 
 <script>
 
-import mySearch from "../../../components/mySearch"
-
 export default {
   name: "myRecommendSubject",
-  components: {
-    mySearch,
-  },
   filters: {
     getDay: function (end_time) {
       var day = Math.ceil((end_time - new Date().getTime())/86400000)
@@ -53,12 +48,22 @@ export default {
       return day
     }
   },
+  watch:{
+    searchValue:{
+      handler(n, o){
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => {
+          this.remoteMethod(n);
+        }, 300);
+      }
+    }
+  },
   data() {
     return {
+      allsubjects: [],
       subjects: [],
-      options: [],
-      loading: false,
-      value: [],
+      searchValue: '',
+      timeout: null,
       status : this.$store.state.status,
     };
   },
@@ -71,8 +76,10 @@ export default {
         this.$axios
         .post("/api/user/getRecommendSubject",{})
         .then(res => {
-            if (res.data.data)
+            if (res.data.data){
               this.subjects = res.data.data.subjects;
+              this.allsubjects = res.data.data.subjects;
+            }
         })
         .catch(error => {
             if (error.response) {
@@ -86,25 +93,20 @@ export default {
     see(id) {
       this.$router.push({ path: "/subject", query: { id: id } });
     },
-    remoteMethod(query){
+    remoteMethod(query){  
       if(query !== ''){
-        this.loading = true;
-        this.value = query;
         this.$axios
             .post("/api/user/searchSubject", {keyword:query})
             .then(res => {
-                if(res.data.data){
-                    this.subjects = res.data.data.subjects;
-                    this.options = res.data.data.subjects;
-                }
-                this.loading = false;
+              if(res.data.data)
+                this.subjects = res.data.data.subjects;
+              else
+                this.subjects = this.allsubjects.slice(0, 0);
             })
             .catch(error => {
-                      
             });
       }else{
-        this.options = [];
-        this.init();
+        this.subjects = this.allsubjects;
       }
     }
   }
@@ -118,7 +120,7 @@ export default {
   max-height: 1210px;
 }
 .myrecsub-searchbar{
-  width: 1050px;
+  width: 1100px;
   height: 50px;
 }
 .box-card {
