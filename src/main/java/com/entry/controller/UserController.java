@@ -463,7 +463,7 @@ public class UserController {
             String entryName = (String)form.get("keyword");
             List<Assignment> assignments = assignmentRepository.findAssignmentByKey(entryName);
             JSONArray tmps = new JSONArray();
-           JSONObject tmp = null;
+            JSONObject tmp = null;
             String reason = null;
             String reasonResult [] = null;
             if(assignments.size() != 0){

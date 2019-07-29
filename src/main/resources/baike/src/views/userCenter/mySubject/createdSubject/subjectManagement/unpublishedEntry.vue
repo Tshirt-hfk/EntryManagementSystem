@@ -1,8 +1,9 @@
 <template>
   <div>
+    <el-input style="width: 300px; float: right;" v-model="searchValue" placeholder="请输入关键词"></el-input>
     <el-table
       ref="multipleTable"
-      :data="tableData"
+      :data="displayData"
       tooltip-effect="dark"
       style="width: 100%"
       @selection-change="handleSelectionChange"
@@ -18,10 +19,16 @@
       </el-table-column>
     </el-table>
     <div class="unpub-page">
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-        :current-page="currentPage" :page-sizes="[10, 20, 50]" :page-size="pagesize"
-        layout="total, sizes, prev, pager, next, jumper" :total="tableData.length" 
-        style="width: 540px;margin: 0 auto"> </el-pagination>
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[10, 20, 50]"
+        :page-size="pagesize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="tableData.length"
+        style="width: 540px;margin: 0 auto"
+      ></el-pagination>
     </div>
     <div style="margin-top: 20px">
       <el-button @click="dialogFormVisible = true">新建词条</el-button>
@@ -63,12 +70,22 @@
         <el-button size="mini" @click="inputValue='参考资料缺失';handleInputConfirm()" plain>参考资料缺失</el-button>
         <el-button size="mini" @click="inputValue='基本信息栏缺失';handleInputConfirm()" plain>基本信息栏缺失</el-button>
         <el-button size="mini" @click="inputValue='概述图不清晰';handleInputConfirm()" plain>概述图不清晰</el-button>
-        <el-button style="margin-left: -1px" size="mini"
-          @click="inputValue='概述缺失或过短';handleInputConfirm()" plain>概述缺失或过短</el-button>
+        <el-button
+          style="margin-left: -1px"
+          size="mini"
+          @click="inputValue='概述缺失或过短';handleInputConfirm()"
+          plain
+        >概述缺失或过短</el-button>
         <div style="margin: 15px 0;"></div>
         <div class="publish-tag">
-          <el-tag style="font-size: 15px" :key="tag" v-for="tag in dynamicTags"
-            closable :disable-transitions="false" @close="handleClose(tag)">{{tag}}</el-tag>
+          <el-tag
+            style="font-size: 15px"
+            :key="tag"
+            v-for="tag in dynamicTags"
+            closable
+            :disable-transitions="false"
+            @close="handleClose(tag)"
+          >{{tag}}</el-tag>
         </div>
         <div style="margin: 10px 0;"></div>
       </span>
@@ -84,13 +101,21 @@
 <script>
 import subjectIndexVue from "../../../../subject/subjectIndex.vue";
 import { log } from "util";
+
 export default {
   name: "unpublishedEntry",
   props: ["subjectId"],
+  watch:{
+    searchValue:function(n, o){
+        this.remoteMethod(n);
+    }
+  },
   data() {
     return {
+      searchValue: '',
       currentPage: 1,
       pagesize: 10,
+      entries: [],
       tableData: [],
       displayData: [],
       multipleSelection: [],
@@ -506,7 +531,7 @@ export default {
             }
           ]
         }
-      ]
+      ],
     };
   },
   mounted() {
@@ -521,7 +546,9 @@ export default {
         })
         .then(res => {
           if (res.data.data) {
+            this.entries = res.data.data.assignments;
             this.tableData = res.data.data.assignments;
+            this.displayData = res.data.data.assignments.slice(0, 10);
           } else {
             //this.$message({
             //message: res.data.msg
@@ -579,9 +606,9 @@ export default {
       for (var i = 0; i < this.multipleSelection.length; i++) {
         array.push(this.multipleSelection[i].id);
       }
-      var reason = '';
-      for(var i = 0; i < this.dynamicTags.length; i++){
-        reason += this.dynamicTags[i] + ';';
+      var reason = "";
+      for (var i = 0; i < this.dynamicTags.length; i++) {
+        reason += this.dynamicTags[i] + ";";
       }
       this.$axios
         .post("/api/subjectMaker/publishAssignment", {
@@ -625,9 +652,25 @@ export default {
     },
     handleSizeChange(val) {
       this.pagesize = val;
+      let index = this.currentPage - 1;
+      this.displayData = this.tableData.slice(index * val, (index + 1) * val);
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      this.currentPage = val;
+      let indexleft = val - 1;
+      let size = this.pagesize;
+      this.displayData = this.tableData.slice(indexleft * size, val * size);
+    },
+    remoteMethod(query) {
+      if (query !== "") {
+        this.tableData = this.entries.filter(entry => {
+          return entry.name.toLowerCase().indexOf(query.toLowerCase()) > -1;
+        });
+        this.displayData = this.tableData.slice(0, this.pagesize);
+      } else {
+        this.tableData = this.entries;
+        this.displayData = this.tableData.slice(0, this.pagesize);
+      }
     }
   }
 };
@@ -643,7 +686,7 @@ export default {
   height: 80px;
   border: solid 1px #cdcdcd;
 }
-.unpub-page{
+.unpub-page {
   width: 100%;
   margin-top: 25px;
 }

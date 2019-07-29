@@ -31,15 +31,11 @@
       }
     },
     watch :{
-      loading:{
-        handler(n, o){
-          this.loadingSearch = n;
-        }
+      loading: function(n, o){
+        this.loadingSearch = n;
       },
-      value:{
-        handler(n, o){
-          this.searchValue = n;
-        }
+      value: function(n, o){
+        this.searchValue = n;
       }
     },
     data() {

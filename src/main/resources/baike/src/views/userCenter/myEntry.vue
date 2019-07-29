@@ -8,7 +8,7 @@
           <el-radio-button label="3">已通过词条</el-radio-button>
           <el-radio-button label="4">未通过词条</el-radio-button>
         </el-radio-group>
-        <el-card style="width: 992px; min-height: 600px">  <!--高度后期需要自适应 -->
+        <el-card style="width: 992px;">  <!--高度后期需要自适应 -->
           <div v-if="tabSelection == '1'">
             <toBeAdmittedEntry  ref="myBeAdmittedEntry"></toBeAdmittedEntry>
           </div>

@@ -203,7 +203,7 @@ public class SubjectMakerController {
 
             JSONObject result1;
             List<Object> list = new ArrayList<>();
-            if(type>=Assignment.DRAWED){
+            if(type >= Assignment.DRAWED){
                 List<Task> tasks = taskRepository.findAllBySubject_IdAndState(subjectId,type);
                 for(Task task : tasks) {
                     User user = task.getUser();

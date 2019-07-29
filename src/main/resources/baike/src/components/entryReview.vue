@@ -140,12 +140,10 @@ export default {
   name: "entryReview",
   props: ["form", "drawerFlag", "tableData"],
   watch: {
-    drawerFlag: {
-      handler(n, o) {
-        indexNum = 1;
-        sideIndex = 1;
-        this.visible = n;
-      }
+    drawerFlag: function(n, o) {
+      indexNum = 1;
+      sideIndex = 1;
+      this.visible = n;
     }
   },
   data() {
