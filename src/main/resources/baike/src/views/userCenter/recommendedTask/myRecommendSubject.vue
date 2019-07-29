@@ -69,7 +69,7 @@ export default {
     init(){
     // 初始化数据
         this.$axios
-        .post("/user/getRecommendSubject",{})
+        .post("/api/user/getRecommendSubject",{})
         .then(res => {
             if (res.data.data)
               this.subjects = res.data.data.subjects;
