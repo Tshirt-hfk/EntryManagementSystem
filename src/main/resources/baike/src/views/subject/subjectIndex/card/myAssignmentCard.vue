@@ -23,7 +23,7 @@ export default {
         confirmButtonText: "确定",
         callback: action => {
           this.$axios
-            .post("http://localhost:8081/api/user/drawAssignment", {
+            .post("/api/user/drawAssignment", {
               assignmentId: this.assignment.id
             })
             .then(res => {

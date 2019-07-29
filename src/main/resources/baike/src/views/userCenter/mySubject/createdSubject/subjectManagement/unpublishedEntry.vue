@@ -504,7 +504,7 @@ export default {
   methods: {
     init() {
       this.$axios
-        .post("http://localhost:8081/api/subjectMaker/getAssignment", {
+        .post("/api/subjectMaker/getAssignment", {
           subjectId: new Number(this.subjectId),
           type: 1
         })
@@ -541,7 +541,7 @@ export default {
     },
     createEntry() {
       this.$axios
-        .post("http://localhost:8081/api/subjectMaker/createEntry", {
+        .post("/api/subjectMaker/createEntry", {
           subjectId: new Number(this.subjectId),
           name: this.form.name,
           field: this.form.field
@@ -574,7 +574,7 @@ export default {
         reason += this.dynamicTags[i] + ';';
       }
       this.$axios
-        .post("http://localhost:8081/api/subjectMaker/publishAssignment", {
+        .post("/api/subjectMaker/publishAssignment", {
           entryIds: array,
           subjectId: new Number(this.subjectId),
           reason: reason

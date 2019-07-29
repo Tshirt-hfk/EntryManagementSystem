@@ -46,7 +46,7 @@ export default {
     init(){
     // 初始化数据
         this.$axios
-        .post("http://localhost:8081/api/user/getRecommendEntry",{})
+        .post("/api/user/getRecommendEntry",{})
         .then(res => {
             if (res.data.data)
               this.entrys = res.data.data.assignments
@@ -68,7 +68,7 @@ export default {
         this.loading = true;
         this.value = query;
         this.$axios
-            .post("http://localhost:8081/api/user/searchEntry", {keyword:query})
+            .post("/api/user/searchEntry", {keyword:query})
             .then(res => {
                 if(res.data.data){
                     this.entrys = res.data.data.assignments;

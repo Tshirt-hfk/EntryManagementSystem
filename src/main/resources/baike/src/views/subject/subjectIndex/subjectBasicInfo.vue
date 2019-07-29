@@ -121,7 +121,7 @@ export default {
     },
     init() {
       this.$axios
-        .post("http://localhost:8081/api/user/getSubjectBasicInfo", {
+        .post("/api/user/getSubjectBasicInfo", {
           subjectId: new Number(this.subjectId)
         })
         .then(res => {

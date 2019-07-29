@@ -72,7 +72,7 @@ export default {
     init() {
       // 初始化数据
       this.$axios
-        .post("http://localhost:8081/api/user/getSubject")
+        .post("/api/user/getSubject")
         .then(res => {
           if (res.data.data) 
             this.subjects = res.data.data.subjects;
@@ -92,7 +92,7 @@ export default {
     remoteMethod(query) {
       this.loading = true;
       this.$axios
-        .post("http://localhost:8081/api/user/searchSubject", {
+        .post("/api/user/searchSubject", {
           keyword: query
         })
         .then(res => {

@@ -54,7 +54,7 @@ export default {
     },
     giveup() {
       this.$axios
-        .post("http://localhost:8081/api/user/giveUpAssignment", {
+        .post("/api/user/giveUpAssignment", {
           assignmentId: this.taskId
         })
         .then(res => {

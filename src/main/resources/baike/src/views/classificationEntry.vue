@@ -52,7 +52,7 @@ export default {
     init() {
       // 初始化数据
       this.$axios
-        .post("http://localhost:8081/api/user/getClassificationEntry",{
+        .post("/user/getClassificationEntry",{
             field: this.fieldName
         })
         .then(res => {
