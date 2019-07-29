@@ -23,12 +23,12 @@ module.exports = {
           '^/resource':'/resource'
         }
       },
-      // '/data':{
-      //   target:"",
-      //   pathRewrite:{
-      //     '':''
-      //   }
-      // }
+      '/data':{
+        target:"http://192.168.1.121:9000",
+        pathRewrite:{
+          '^/data':''
+        }
+      }
     },
 
     // Various Dev Server settings

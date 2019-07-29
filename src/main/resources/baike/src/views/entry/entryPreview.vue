@@ -192,7 +192,7 @@ export default {
   methods: {
     init() {
       this.$axios
-        .get("http://192.168.1.121:9000/fetchPageByName", {
+        .get("/data/fetchPageByName", {
           params: {
             name: this.name
           }
