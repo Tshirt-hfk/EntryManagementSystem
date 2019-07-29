@@ -11,10 +11,18 @@
       <el-table-column label="名称" width="120">
         <template slot-scope="scope">{{ scope.row.name }}</template>
       </el-table-column>
-      <el-table-column label="分类" width="240">
-        <template slot-scope="scope">{{ scope.row.field }}</template>
+      <el-table-column label="领域" width="250">
+        <template slot-scope="scope">
+          <span v-for="item in scope.row.field" :key="item">{{item}},</span>
+        </template>
       </el-table-column>
     </el-table>
+    <div class="unpub-page">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+        :current-page="currentPage" :page-sizes="[10, 20, 50]" :page-size="pagesize"
+        layout="total, sizes, prev, pager, next, jumper" :total="tableData.length" 
+        style="width: 540px;margin: 0 auto"> </el-pagination>
+    </div>
     <div style="margin-top: 20px">
       <el-button @click="dialogFormVisible = true">新建词条</el-button>
       <el-button @click="publishFlag = true">发布词条</el-button>
@@ -81,7 +89,10 @@ export default {
   props: ["subjectId"],
   data() {
     return {
+      currentPage: 1,
+      pagesize: 10,
       tableData: [],
+      displayData: [],
       multipleSelection: [],
       form: {
         name: "",
@@ -510,7 +521,6 @@ export default {
         })
         .then(res => {
           if (res.data.data) {
-            window.console.log(res.data.data);
             this.tableData = res.data.data.assignments;
           } else {
             //this.$message({
@@ -612,6 +622,12 @@ export default {
     },
     handleClose(tag) {
       this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
+    },
+    handleSizeChange(val) {
+      this.pagesize = val;
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
     }
   }
 };
@@ -626,5 +642,9 @@ export default {
   width: 610px;
   height: 80px;
   border: solid 1px #cdcdcd;
+}
+.unpub-page{
+  width: 100%;
+  margin-top: 25px;
 }
 </style>

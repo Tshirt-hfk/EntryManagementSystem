@@ -4,8 +4,10 @@
       <el-table-column label="名称" width="180">
         <template slot-scope="scope">{{ scope.row.name }}</template>
       </el-table-column>
-      <el-table-column label="分类" width="180">
-        <template slot-scope="scope">{{ scope.row.field }}</template>
+      <el-table-column label="领域" width="250">
+        <template slot-scope="scope">
+          <span v-for="item in scope.row.field" :key="item">{{item}},</span>
+        </template>
       </el-table-column>
       <el-table-column label="领取人" width="180">
         <template slot-scope="scope">{{ scope.row.username }}</template>
