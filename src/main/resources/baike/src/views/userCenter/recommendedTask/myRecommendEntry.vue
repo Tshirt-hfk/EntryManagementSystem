@@ -53,10 +53,10 @@ export default {
         })
         .catch(error => {
             if (error.response) {
-            this.$message({
-                message: error.response.data.msg,
-                type: "warning"
-            });
+            // this.$message({
+            //     message: error.response.data.msg,
+            //     type: "warning"
+            // });
             }
         });
     },

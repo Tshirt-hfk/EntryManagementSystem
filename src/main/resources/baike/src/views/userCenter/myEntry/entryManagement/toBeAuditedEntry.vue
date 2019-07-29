@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-input style="width: 300px; float: right;margin-bottom: 10px;" v-model="searchValue" placeholder="请输入关键词"></el-input>
-    <el-table :data="displayData" style="width: 100%" max-height="500">
+    <el-table :data="displayData" style="width: 100%">
       <el-table-column prop="name" label="词条名称" width="150"> </el-table-column>
       <el-table-column prop="field" label="领域" width="250"> </el-table-column>
       <el-table-column prop="reason" label="修改原因" width="180"> </el-table-column>
