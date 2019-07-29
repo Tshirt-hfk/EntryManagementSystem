@@ -33,7 +33,7 @@ export default {
   methods: {
     init() {
       this.$axios
-        .post("http://localhost:8081/api/user/getEntry", {
+        .post("/api/user/getEntry", {
           type: 6
         })
         .then(res => {

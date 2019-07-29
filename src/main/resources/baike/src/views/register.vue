@@ -97,7 +97,7 @@ export default {
       register(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            this.$axios.post("http://localhost:8081/api/tourist/register", {
+            this.$axios.post("/api/tourist/register", {
               username: this.user_data.username,
               password: this.user_data.pass,
               email: this.user_data.email

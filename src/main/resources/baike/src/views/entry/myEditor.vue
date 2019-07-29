@@ -310,7 +310,7 @@ export default {
       others: {
         catalog: [],
         catalogOpen: true, // 目录显示控制
-        serverUrl: "http://localhost:8081/resource/image",
+        serverUrl: "/resource/image",
         dialogFormVisible: false,
         referenceForm: {
           title: "",
@@ -328,7 +328,7 @@ export default {
   methods: {
     initData() {
       this.$axios
-        .post("http://localhost:8081/api/user/getTaskContent", {
+        .post("/api/user/getTaskContent", {
           taskId: new Number(this.taskId)
         })
         .then(res => {
@@ -437,7 +437,7 @@ export default {
     },
     save() {             // 未完成， 需要把关系写入数据库
       this.$axios
-        .post("http://localhost:8081/api/user/saveTaskContent", {
+        .post("/api/user/saveTaskContent", {
           taskId: new Number(this.taskId),
           form: this.form
         })

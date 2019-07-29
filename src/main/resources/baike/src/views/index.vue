@@ -217,7 +217,7 @@ export default {
             this.loading = true;
             this.value = query;
             this.$axios
-                .post("http://localhost:8081/api/user/searchSubject", {
+                .post("/api/user/searchSubject", {
                 keyword: query
                 })
                 .then(res => {

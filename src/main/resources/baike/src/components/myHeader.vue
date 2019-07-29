@@ -120,7 +120,7 @@ export default {
   methods: {
     identifyAuth: function() {
       this.$axios
-        .get("http://localhost:8081/api/user/islogin")
+        .get("/api/user/islogin")
         .then(res => {
           if (res.data.data) {
             this.$store.commit("status", res.data.data.status);

@@ -35,7 +35,7 @@ export default {
   methods: {
     init() {
       this.$axios
-        .post("http://localhost:8081/api/subjectMaker/getAssignment", {
+        .post("/api/subjectMaker/getAssignment", {
           subjectId: new Number(this.subjectId),
           type: 5
         })

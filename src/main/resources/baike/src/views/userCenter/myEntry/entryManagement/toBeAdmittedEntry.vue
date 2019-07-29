@@ -96,7 +96,7 @@ export default {
   methods: {
     init() {
       this.$axios
-        .post("http://localhost:8081/api/user/getEntry", {
+        .post("/api/user/getEntry", {
           type: 3
         })
         .then(res => {
@@ -137,7 +137,7 @@ export default {
         array.push(this.multipleSelection[i].id)
       }
       this.$axios
-        .post("http://localhost:8081/api/user/admitEntry", {
+        .post("/api/user/admitEntry", {
           entryIds: array,
           reason: this.reason
         })
@@ -166,7 +166,7 @@ export default {
         array.push(this.multipleSelection[i].id)
       }
       this.$axios
-        .post("http://localhost:8081/api/user/giveUpTask", {
+        .post("/api/user/giveUpTask", {
           entryIds: array
         })
         .then(res => {

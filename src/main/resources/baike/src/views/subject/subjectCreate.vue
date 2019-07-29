@@ -528,7 +528,7 @@ export default {
     submit() {
       window.console.log(this.form);
       this.$axios
-        .post("http://localhost:8081/api/subjectMaker/createSubject", this.form)
+        .post("/api/subjectMaker/createSubject", this.form)
         .then(res => {
           if (res.data) {
             this.$message({

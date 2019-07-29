@@ -68,7 +68,7 @@ export default {
           type: "warning"
         });
       return this.$axios
-        .post("http://localhost:8081/api/tourist/login", this.user_data)
+        .post("/api/tourist/login", this.user_data)
         .then(res => {
           if (res.data.data) {
             // 将Token存储到localStorage

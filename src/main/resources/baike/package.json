@@ -20,6 +20,7 @@
     "katex": "^0.10.2",
     "mavon-editor": "^2.7.5",
     "moment": "^2.24.0",
+    "proxytable": "^1.0.1",
     "quill": "^1.3.6",
     "quill-image-drop-module": "^1.0.3",
     "quill-image-resize-module": "^3.0.0",

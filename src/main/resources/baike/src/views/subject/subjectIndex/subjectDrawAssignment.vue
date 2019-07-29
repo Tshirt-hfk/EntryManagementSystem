@@ -78,7 +78,7 @@ export default {
   methods: {
     getTasks() {
       this.$axios
-        .post("http://localhost:8081/api/user/getTask", {
+        .post("/api/user/getTask", {
           subjectId: new Number(this.subjectId),
           type: 3
         })
@@ -101,7 +101,7 @@ export default {
     },
     getAssginments() {
       this.$axios
-        .post("http://localhost:8081/api/user/getAssignment", {
+        .post("/api/user/getAssignment", {
           subjectId: new Number(this.subjectId)
         })
         .then(res => {
@@ -130,7 +130,7 @@ export default {
     },
     join() {
       this.$axios
-        .post("http://localhost:8081/api/user/joinSubject", {
+        .post("/api/user/joinSubject", {
           subjectId: new Number(this.subjectId)
         })
         .then(res => {

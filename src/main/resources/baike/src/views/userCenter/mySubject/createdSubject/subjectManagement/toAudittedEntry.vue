@@ -52,7 +52,7 @@ export default {
   methods: {
     init() {
       this.$axios
-        .post("http://localhost:8081/api/subjectMaker/getAssignment", {
+        .post("/api/subjectMaker/getAssignment", {
           subjectId: new Number(this.subjectId),
           type: 4
         })
@@ -91,7 +91,7 @@ export default {
     },
     audit(row, pass) {
       this.$axios
-        .post("http://localhost:8081/api/subjectMaker/auditTask", {
+        .post("/api/subjectMaker/auditTask", {
           taskId: row.id,
           assignmentId: row.assignmentId,
           userId: row.userId,
