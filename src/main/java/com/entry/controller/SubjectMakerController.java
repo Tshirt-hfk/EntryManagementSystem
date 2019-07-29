@@ -11,6 +11,7 @@ import com.entry.service.impl.SubjectManagementServiceImpl;
 import com.entry.util.HttpRequestUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.concurrent.FailureCallback;
@@ -28,6 +29,9 @@ import java.util.stream.Collectors;
 
 @RestController
 public class SubjectMakerController {
+
+    @Value("${algorithm.server.keywords_extraction}")
+    private String keywords_extraction_url;
 
     @Autowired
     UserRepository userRepository;

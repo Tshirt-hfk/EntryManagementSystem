@@ -780,6 +780,7 @@ export default {
   background: #fff;
   color: #000;
   padding: 0px;
+  font-size: 15px;
 }
 .ql-snow .ql-editor p {
   margin-bottom: 5px;
@@ -788,7 +789,7 @@ export default {
   line-height: 24px;
 }
 .ql-snow .ql-editor h1 {
-  font-size: 16px;
+  font-size: 20px;
   font-weight: bold;
   line-height: 24px;
   border-bottom: 1px solid #dedfe1;
@@ -797,7 +798,7 @@ export default {
   clear: both;
 }
 .ql-snow .ql-editor h2 {
-  font-size: 15px;
+  font-size: 18px;
   font-family: Arial;
   line-height: 22px;
   margin: 22px 0 12px;

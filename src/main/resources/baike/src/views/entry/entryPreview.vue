@@ -7,7 +7,13 @@
         </a>
       </div>
       <div class="preview-search">
-        <mySearch style="width: 440px;"></mySearch>
+        <el-autocomplete
+          v-model="value"
+          style="width: 440px"
+          :fetch-suggestions="querySearch"
+          placeholder="请输入词条名称"
+          :trigger-on-focus="false"
+        ></el-autocomplete>
         <el-button type="primary" @click="search" style="margin-left: 10px">搜索词条</el-button>
       </div>
     </div>
@@ -88,7 +94,7 @@
             </div>
           </div>
           <div class="preview-content" id="mainContent">
-            <div ref="editor" v-html="form.content" class="ql-editor ql-snow"></div>
+            <div ref="editor" class="ql-editor ql-snow"></div>
           </div>
         </div>
         <div class="preview-side-wrap">
@@ -151,37 +157,21 @@
 </template>
 
 <script>
-import mySearch from "../../components/mySearch";
 
 export default {
   name: "entryPreview",
-  components: {
-    mySearch
-  },
   computed: {
     // columns:function(){
     // }
   },
   data() {
     return {
-      name: this.$route.query.name,
+      name: this.$route.params.name,
+      value: "",
       likeNum: "0",
       columns: 4,
-      entryId: 1,
-      tableData: [
-        {
-          name: "哈哈",
-          relation: "上位词"
-        },
-        {
-          name: "嘻嘻",
-          relation: "下位词"
-        },
-        {
-          name: "呵呵",
-          relation: "同位词"
-        }
-      ],
+      entryId: null,
+      tableData: [],
       form: {
         entryName: "",
         field: "",
@@ -189,8 +179,7 @@ export default {
         intro: "",
         filed: "",
         infoBox: [],
-        content:
-          "<h1>标题1</h1><h2>标题1.1</h2><p>正文</p><h1>标题2</h1><h1>标题3</h1>",
+        content: "",
         reference: []
       },
       catalog: []
@@ -198,13 +187,12 @@ export default {
   },
   mounted() {
     this.init();
-    this.refreshCatalog();
     window.addEventListener("scroll", this.handleScroll);
   },
   methods: {
     init() {
       this.$axios
-        .get("http://192.168.1.121:9000/fetchPageByName", {
+        .get("/data/fetchPageByName", {
           params: {
             name: this.name
           }
@@ -217,6 +205,7 @@ export default {
               this.form.infoBox.push(info);
             }
             this.form.content = res.data.content;
+            this.initContent();
             this.refreshCatalog();
           }
         })
@@ -229,9 +218,17 @@ export default {
           }
         });
     },
+    initContent() {
+      this.$refs.editor.innerHTML = this.form.content;
+    },
     toEntryEdit() {},
     search() {
-      //TODO
+      this.$router.push({
+        name: "entryPreview",
+        params: {
+          name: this.value
+        }
+      });
     },
     toPageTop() {
       header.scrollIntoView();
@@ -253,32 +250,33 @@ export default {
     refreshCatalog() {
       var nodes = this.$refs.editor.childNodes;
       this.catalog.splice(0, this.catalog.length);
-	  var i1 = 0;
-	  var i2 = 0;
+      var i1 = 0;
+      var i2 = 0;
       for (var node of nodes) {
         var type;
         if (node.tagName == "H1") {
-		  type = 1;
-		  i1 = i1+1;
-		  i2 = 0;
+          type = 1;
+          i1 = i1 + 1;
+          i2 = 0;
         } else if (node.tagName == "H2") {
-		  type = 2;
-		  i2 = i2+1;
+          type = 2;
+          i2 = i2 + 1;
         } else {
           continue;
-		}
-		var index = i1.toString();
-		if(i2!=0)
-			index = index + "." + i2.toString();
+        }
+        var index = i1.toString();
+        if (i2 != 0) index = index + "." + i2.toString();
         node.id = "t" + index;
         var title = node.textContent;
         this.catalog.push({
           title: title,
-		  index: index,
-		  type: type
+          index: index,
+          type: type
         });
       }
-      window.console.log(this.catalog);
+    },
+    querySearch(query, cb) {
+
     }
   }
 };
@@ -342,7 +340,7 @@ p {
   word-wrap: break-word;
   color: #333;
   margin: 0;
-  margin-bottom: 15px;
+  margin-bottom: 5px;
   text-indent: 2em;
   line-height: 24px;
   zoom: 1;
