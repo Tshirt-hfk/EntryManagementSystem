@@ -214,7 +214,7 @@
           <el-button class="relation-button-add" type="primary" @click="toAddRelation">添加</el-button>
         </div>
         <div class="relation-table">
-          <el-table :data="tableData" style="width: 100%">
+          <el-table :data="relationData" style="width: 100%">
             <el-table-column prop="name" label="词条名" width="150px"></el-table-column>
             <el-table-column prop="relation" label="关系" width="150px"></el-table-column>
             <el-table-column label="操作">
@@ -254,7 +254,7 @@
       </div>
     </el-dialog>
     <entryReview
-      :tableData="tableData"
+      :relationData="relationData"
       :form="form"
       :drawerFlag="drawerFlag"
       v-on:handleClose="handleClose"
@@ -289,7 +289,7 @@ export default {
       value: [],
       relation: "",
       optionInRelation: ["上位词", "下位词", "同位词"],
-      tableData: [
+      relationData: [
         {
           name: "哈哈",
           relation: "上位词"
@@ -614,11 +614,7 @@ export default {
       window.console.log("nmh");
     },
     handleClose(done) {
-      this.$confirm("关闭预览?")
-        .then(_ => {
-          this.drawerFlag = false;
-        })
-        .catch(_ => {});
+      this.drawerFlag = false;
     }
   }
 };

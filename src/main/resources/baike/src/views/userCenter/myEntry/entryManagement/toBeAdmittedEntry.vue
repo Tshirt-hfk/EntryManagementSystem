@@ -6,14 +6,14 @@
             @cell-mouse-enter="getId">
             <el-table-column type="selection" width="55"> </el-table-column>
             <el-table-column prop="name" label="词条名称" width="100"> </el-table-column>
-            <el-table-column prop="field" label="领域" width="250"> </el-table-column>
+            <el-table-column prop="field" label="领域" width="200"> </el-table-column>
             <el-table-column label="保存时间" width="180">
               <template slot-scope="scope">{{ scope.row.saveTime | formatDate}}</template>
             </el-table-column>
             <el-table-column label="结束时间" width="180">
               <template slot-scope="scope">{{ scope.row.endTime | formatDate}}</template>
             </el-table-column>
-            <el-table-column label="版本" show-overflow-tooltip>
+            <el-table-column label="版本" show-overflow-tooltip width="50">
               <template>
                 <span class="admitentry-version">
                   <a @click="toEntryExhibition">版本</a>
@@ -21,8 +21,9 @@
               </template>
             </el-table-column>
             <el-table-column align="right">
-              <template>
+              <template slot-scope="scope">
                 <el-button size="mini" type="primary" @click="jumpToEdit">编辑</el-button>
+                <el-button size="mini" type="primary" @click="getTaskContent(scope.row.id)">预览</el-button>
               </template>
             </el-table-column>
         </el-table>
@@ -63,15 +64,25 @@
             <el-button type="primary" @click="deleteEntry">确 定</el-button>
           </span>
         </el-dialog>
+        <entryReview
+          :relationData="relationData"
+          :form="form"
+          :drawerFlag="drawerFlag"
+          v-on:handleClose="handleClose"
+        ></entryReview>
     </div> 
 </template>
 
 <script>
 
 import moment from 'moment'
+import entryReview from "../../../../components/entryReview"
 
 export default {
   name: "toBeAdmittedEntry",
+  components:{
+    entryReview,
+  },
   watch:{
     searchValue:function(n, o){
         this.remoteMethod(n);
@@ -79,6 +90,17 @@ export default {
   },
   data() {
     return {
+      drawerFlag: false,
+      relationData: [],
+      form: {
+        entryName: "",
+        field: [],
+        imageUrl: "",
+        intro: "",
+        infoBox: [],
+        content: "",
+        reference: []
+      },
       searchValue: '',
       currentPage: 1,
       pagesize: 10,
@@ -198,7 +220,7 @@ export default {
         });
     },
     toEntryExhibition(){
-      //待添加
+      //TODO
     },
     stateChange(state){
       this.$emit('stateChange', state)
@@ -224,6 +246,46 @@ export default {
         this.tableData = this.entries;
         this.displayData = this.tableData.slice(0, this.pagesize);
       }
+    },
+    getTaskContent(id){
+      if(!this.form.entryName){
+        this.$axios
+          .post("/api/user/getTaskContent", {
+              taskId: new Number(id)
+          })
+          .then(res => {
+            if (res.data.data) {
+              this.form.entryName = res.data.data.entryName;
+              this.form.imageUrl = res.data.data.imageUrl;
+              this.form.intro = res.data.data.intro;
+              for (var field of res.data.data.field) {
+                this.form.field.push(field);
+              }
+              for (var info of res.data.data.infoBox) {
+                this.form.infoBox.push(info);
+              }
+              this.form.content = res.data.data.content;
+              this.drawerFlag = true;
+            } else {
+              this.$message({
+                message: res.data.msg,
+                type: "warning"
+              });
+            }
+          })
+          .catch(error => {
+            if (error.response) {
+              this.$message({
+                message: error.response.data.msg,
+                type: "warning"
+              });
+            }
+          });
+      }else
+        this.drawerFlag = true;
+    },
+    handleClose(done) {
+      this.drawerFlag = false;
     }
   }
 };

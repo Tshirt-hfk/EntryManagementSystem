@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-input style="width: 300px; float: right;margin-bottom: 10px;" v-model="searchValue" placeholder="请输入关键词"></el-input>
-    <el-table :data="tableData" style="width: 100%" max-height="500">
+    <el-table :data="displayData" style="width: 100%" max-height="500">
       <el-table-column prop="name" label="词条名称" width="200"> </el-table-column>
       <el-table-column prop="reason" label="未通过原因" width="250"> </el-table-column>
       <el-table-column label="提交时间" width="180">
@@ -10,6 +10,11 @@
       <el-table-column label="未通过时间" width="180">
         <template slot-scope="scope">{{ scope.row.judgeTime | formatDate}}</template>
       </el-table-column>
+      <el-table-column align="right">
+        <template slot-scope="scope">
+          <el-button size="mini" type="primary" @click="getTaskContent(scope.row.id)">预览</el-button>
+        </template>
+      </el-table-column>
     </el-table>
     <div class="fail-page">
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
@@ -17,15 +22,25 @@
         layout="total, sizes, prev, pager, next, jumper" :total="tableData.length" 
         style="width: 540px;margin: 0 auto"> </el-pagination>
     </div>
+    <entryReview
+      :relationData="relationData"
+      :form="form"
+      :drawerFlag="drawerFlag"
+      v-on:handleClose="handleClose"
+    ></entryReview>
   </div>
 </template>
 
 <script>
 
 import moment from 'moment'
+import entryReview from "../../../../components/entryReview"
 
 export default {
   name: "failPassEntry",
+  components:{
+    entryReview,
+  },
   watch:{
     searchValue:function(n, o){
         this.remoteMethod(n);
@@ -33,6 +48,17 @@ export default {
   },
   data() {
     return {
+      drawerFlag: false,
+      relationData: [],
+      form: {
+        entryName: "",
+        field: [],
+        imageUrl: "",
+        intro: "",
+        infoBox: [],
+        content: "",
+        reference: []
+      },
       searchValue: '',
       currentPage: 1,
       pagesize: 10,
@@ -99,6 +125,46 @@ export default {
         this.tableData = this.entries;
         this.displayData = this.tableData.slice(0, this.pagesize);
       }
+    },
+    getTaskContent(id){
+      if(!this.form.entryName){
+        this.$axios
+          .post("/api/user/getTaskContent", {
+              taskId: new Number(id)
+          })
+          .then(res => {
+            if (res.data.data) {
+              this.form.entryName = res.data.data.entryName;
+              this.form.imageUrl = res.data.data.imageUrl;
+              this.form.intro = res.data.data.intro;
+              for (var field of res.data.data.field) {
+                this.form.field.push(field);
+              }
+              for (var info of res.data.data.infoBox) {
+                this.form.infoBox.push(info);
+              }
+              this.form.content = res.data.data.content;
+              this.drawerFlag = true;
+            } else {
+              this.$message({
+                message: res.data.msg,
+                type: "warning"
+              });
+            }
+          })
+          .catch(error => {
+            if (error.response) {
+              this.$message({
+                message: error.response.data.msg,
+                type: "warning"
+              });
+            }
+          });
+      }else
+        this.drawerFlag = true;
+    },
+    handleClose(done) {
+      this.drawerFlag = false;
     }
   }
 };

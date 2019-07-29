@@ -10,6 +10,11 @@
       <el-table-column label="通过时间" width="180">
         <template slot-scope="scope">{{ scope.row.judgeTime | formatDate}}</template>
       </el-table-column>
+      <el-table-column align="right">
+        <template slot-scope="scope">
+          <el-button size="mini" type="primary" @click="toEntryExhibition(scope.row.name)">查看</el-button>
+        </template>
+      </el-table-column>
     </el-table>
     <div class="passed-page">
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
@@ -102,6 +107,15 @@ export default {
         this.tableData = this.entries;
         this.displayData = this.tableData.slice(0, this.pagesize);
       }
+    },
+    toEntryExhibition(name){
+      const { href } = this.$router.resolve({
+        path: "/entry",
+          query: {
+            name: name
+          }
+        });
+      window.open(href, '_blank');
     }
   }
 };

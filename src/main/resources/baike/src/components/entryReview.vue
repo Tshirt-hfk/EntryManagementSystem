@@ -62,7 +62,7 @@
                   <template v-else>
                     <span class="catalog-index2">▪</span>
                     <span class="catalog-text2">
-                      <a :href="'#t'+cata.index">{{cata.title}}</a>
+                      <a :href="'#t'+cata.index" style="color: #555;">{{cata.title}}</a>
                     </span>
                   </template>
                 </div>
@@ -85,7 +85,7 @@
             <h3 style="margin-left: 80px">关系</h3>
           </div>
           <ul>
-            <li v-for="item in tableData" :key="item.name">
+            <li v-for="item in relationData" :key="item.name">
               <div>
                 <h4 style="margin-left: 60px">{{item.name}}</h4>
                 <h4 style="margin-left: 88px">{{item.relation}}</h4>
@@ -108,15 +108,15 @@
                 <li style="line-height: 28px" v-for="(cata, index) in catalog" :key="index">
                   <template v-if="cata.type == 1">
                     <a class="side-cata-pointer"></a>
-                    <span class="catalog-index1">{{cata.index}}</span>
-                    <span class="catalog-text1">
-                      <a :href="'#t'+cata.index">{{cata.title}}</a>
+                    <span class="side-index1">{{cata.index}}</span>
+                    <span class="side-text1">
+                      <a :href="'#t'+cata.index" style="color: #555;font-weight: 600;">{{cata.title}}</a>
                     </span>
                   </template>
                   <template v-else>
-                    <span class="catalog-index2">▪</span>
-                    <span class="catalog-text2">
-                      <a :href="'#t'+cata.index">{{cata.title}}</a>
+                    <span class="side-index2">{{cata.index}}</span>
+                    <span class="side-text2">
+                      <a :href="'#t'+cata.index" style="color: #666;">{{cata.title}}</a>
                     </span>
                   </template>
                 </li>
@@ -138,7 +138,7 @@ let sideIndex = 1;
 
 export default {
   name: "entryReview",
-  props: ["form", "drawerFlag", "tableData"],
+  props: ["form", "drawerFlag", "relationData"],
   watch: {
     drawerFlag: function(n, o) {
       indexNum = 1;
@@ -201,7 +201,6 @@ export default {
           index: index,
           type: type
         });
-        window.console.log(this.catalog);
       }
     },
     handleClose(done) {
@@ -505,18 +504,20 @@ p {
   display: inline-block;
   padding-left: 41px;
   padding-right: 5px;
+  padding-top: 7px;
   width: 5px;
   line-height: 14px;
-  font-size: 12px;
+  font-size: 14px;
   vertical-align: top;
   color: #ccc;
 }
 .catalog-text2 {
   display: inline-block;
   line-height: 14px;
-  font-size: 12px;
+  font-size: 14px;
   width: 115px;
   vertical-align: top;
+  padding-top: 7px;
 }
 .preview-cataloglist a {
   color: #136ec2;
@@ -593,6 +594,43 @@ p {
   width: 210px;
   height: 330px;
   overflow: hidden;
+}
+.side-index1 {
+  display: inline-block;
+  width: 18px;
+  font-size: 16px;
+  padding-left: 20px;
+  padding-right: 8px;
+  vertical-align: top;
+  text-align: right;
+  color: #63a0df;
+}
+.side-text1 {
+  display: inline-block;
+  font-size: 16px;
+  font-weight: 500;
+  background-color: #fff;
+  color: #555;
+  vertical-align: top;
+  width: 120px;
+}
+.side-index2 {
+  display: inline-block;
+  padding-left: 41px;
+  padding-top: 7px;
+  width: 25px;
+  line-height: 14px;
+  font-size: 14px;
+  vertical-align: top;
+  color: #63a0df;
+}
+.side-text2 {
+  display: inline-block;
+  line-height: 14px;
+  font-size: 14px;
+  width: 115px;
+  vertical-align: top;
+  padding-top: 7px;
 }
 .inner-container {
   position: absolute;

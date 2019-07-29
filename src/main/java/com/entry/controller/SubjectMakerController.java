@@ -235,6 +235,70 @@ public class SubjectMakerController {
     }
 
     /**
+     * 获取词条assignment内容
+     * @param request
+     * @param jsonParam
+     * @return
+     */
+    @PostMapping("api/subjectMaker/getAssignmentContent")
+    @CrossOrigin
+    public ResponseEntity<?> getAssignmentContent(HttpServletRequest request, @RequestBody String jsonParam) {
+        try{
+            Integer userId = (Integer) request.getAttribute("userId");
+            JSONObject form = JSONObject.parseObject(jsonParam);
+            Integer assignmentId = form.getInteger("assignmentId");
+            Assignment assignment = assignmentRepository.findAssignmentById(assignmentId);
+            Integer subjectId = assignment.getSubject().getId();
+            Integer auth = groupMemberRepository.findByUser_IdAndSubject_Id(userId, subjectId).getIdentity();
+            if(assignment != null && auth == GroupMember.SUBJECTMAKER){
+                HashMap<String,Object> result = new HashMap<>();
+                result.put("entryName",assignment.getEntryName());
+                result.put("imageUrl",assignment.getImageUrl());
+                result.put("intro",assignment.getIntro());
+                result.put("field",assignment.getField());
+                result.put("infoBox", assignment.getInfoBox());
+                result.put("content", assignment.getContent());
+                return new ResponseEntity<>(BaseResultFactory.build(result, "success"), HttpStatus.OK);
+            }else
+                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),"用户没有词条"), HttpStatus.NOT_FOUND);
+        }catch (Exception e){
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"我真的错了"),HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    /**
+     * 专题制作人获取词条task内容
+     * @param request
+     * @param jsonParam
+     * @return
+     */
+    @PostMapping("api/subjectMaker/getTaskContent")
+    @CrossOrigin
+    public ResponseEntity<?> getTaskContent(HttpServletRequest request, @RequestBody String jsonParam) {
+        try{
+            Integer userId = (Integer) request.getAttribute("userId");
+            JSONObject form = JSONObject.parseObject(jsonParam);
+            Integer entryId = form.getInteger("taskId");
+            Task task = taskRepository.findTaskById(entryId);
+            Integer subjectId = task.getSubject().getId();
+            Integer auth = groupMemberRepository.findByUser_IdAndSubject_Id(userId, subjectId).getIdentity();
+            if(task != null && auth == GroupMember.SUBJECTMAKER){
+                HashMap<String,Object> result = new HashMap<>();
+                result.put("entryName",task.getEntryName());
+                result.put("imageUrl",task.getImageUrl());
+                result.put("intro",task.getIntro());
+                result.put("field",task.getField());
+                result.put("infoBox", task.getInfoBox());
+                result.put("content", task.getContent());
+                return new ResponseEntity<>(BaseResultFactory.build(result, "success"), HttpStatus.OK);
+            }else
+                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),"用户没有词条"), HttpStatus.NOT_FOUND);
+        }catch (Exception e){
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"我真的错了"),HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    /**
      * 发布任务
      * @param jsonParam
      * @return

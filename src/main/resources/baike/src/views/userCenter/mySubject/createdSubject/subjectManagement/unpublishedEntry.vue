@@ -17,6 +17,11 @@
           <span v-for="item in scope.row.field" :key="item">{{item}},</span>
         </template>
       </el-table-column>
+      <el-table-column align="right">
+        <template slot-scope="scope">
+          <el-button size="mini" type="primary" @click="getAssignmentContent(scope.row.id)">查看</el-button>
+        </template>
+      </el-table-column>
     </el-table>
     <div class="unpub-page">
       <el-pagination
@@ -94,17 +99,28 @@
         <el-button type="primary" @click="publishEntry">提 交</el-button>
       </span>
     </el-dialog>
+    <entryReview
+      :relationData="relationData"
+      :form="form"
+      :drawerFlag="drawerFlag"
+      v-on:handleClose="handleClose"
+    ></entryReview>
   </div>
 </template>
 
 
 <script>
+
 import subjectIndexVue from "../../../../subject/subjectIndex.vue";
 import { log } from "util";
+import entryReview from "../../../../../components/entryReview"
 
 export default {
   name: "unpublishedEntry",
   props: ["subjectId"],
+  components:{
+    entryReview,
+  },
   watch:{
     searchValue:function(n, o){
         this.remoteMethod(n);
@@ -112,6 +128,8 @@ export default {
   },
   data() {
     return {
+      drawerFlag: false,
+      relationData: [],
       searchValue: '',
       currentPage: 1,
       pagesize: 10,
@@ -120,8 +138,13 @@ export default {
       displayData: [],
       multipleSelection: [],
       form: {
-        name: "",
-        field: ""
+        entryName: "",
+        field: [],
+        imageUrl: "",
+        intro: "",
+        infoBox: [],
+        content: "",
+        reference: []
       },
       dialogFormVisible: false,
       publishFlag: false,
@@ -671,6 +694,46 @@ export default {
         this.tableData = this.entries;
         this.displayData = this.tableData.slice(0, this.pagesize);
       }
+    },
+    getAssignmentContent(id){
+      if(!this.form.entryName){
+        this.$axios
+          .post("/api/subjectMaker/getAssignmentContent", {
+              assignmentId: new Number(id)
+          })
+          .then(res => {
+            if (res.data.data) {
+              this.form.entryName = res.data.data.entryName;
+              this.form.imageUrl = res.data.data.imageUrl;
+              this.form.intro = res.data.data.intro;
+              for (var field of res.data.data.field) {
+                this.form.field.push(field);
+              }
+              for (var info of res.data.data.infoBox) {
+                this.form.infoBox.push(info);
+              }
+              this.form.content = res.data.data.content;
+              this.drawerFlag = true;
+            } else {
+              this.$message({
+                message: res.data.msg,
+                type: "warning"
+              });
+            }
+          })
+          .catch(error => {
+            if (error.response) {
+              this.$message({
+                message: error.response.data.msg,
+                type: "warning"
+              });
+            }
+          });
+      }else
+        this.drawerFlag = true;
+    },
+    handleClose(done) {
+      this.drawerFlag = false;
     }
   }
 };
