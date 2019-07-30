@@ -6,6 +6,7 @@ import com.entry.entity.mysql.*;
 import com.entry.exception.MyException;
 import com.entry.repository.mysql.*;
 import com.entry.dto.BaseResultFactory;
+import com.entry.service.SubjectManagementService;
 import com.entry.service.impl.SubjectManagementServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.ObjectUtils;
@@ -43,7 +44,7 @@ public class UserController {
     GroupMemberRepository groupMemberRepository;
 
     @Autowired
-    SubjectManagementServiceImpl subjectManagementServiceImpl;
+    SubjectManagementService subjectManagementService;
     /**
      * 用户登陆状态
      * @param request
@@ -112,23 +113,15 @@ public class UserController {
     @PostMapping("api/user/getTaskContent")
     @CrossOrigin
     public ResponseEntity<?> getTaskContent(HttpServletRequest request, @RequestBody String jsonParam) {
-        try{
+        try {
             Integer userId = (Integer) request.getAttribute("userId");
             JSONObject form = JSONObject.parseObject(jsonParam);
-            Integer entryId = form.getInteger("taskId");
-            Task task = taskRepository.findTaskById(entryId);
-            if(task!=null && task.getUser().getId()==userId){
-                HashMap<String,Object> result = new HashMap<>();
-                result.put("entryName",task.getEntryName());
-                result.put("imageUrl",task.getImageUrl());
-                result.put("intro",task.getIntro());
-                result.put("field",task.getField());
-                result.put("infoBox", task.getInfoBox());
-                result.put("content", task.getContent());
-                return new ResponseEntity<>(BaseResultFactory.build(result, "success"), HttpStatus.OK);
-            }else
-                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),"用户没有词条"), HttpStatus.NOT_FOUND);
-        }catch (Exception e){
+            Integer taskId = form.getInteger("taskId");
+            JSONObject task = this.subjectManagementService.getTask(userId,taskId);
+            return new ResponseEntity<>(BaseResultFactory.build(task, "success"), HttpStatus.OK);
+        } catch (MyException me) {
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),me.getMessage()), HttpStatus.NOT_FOUND);
+        } catch (Exception e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"我真的错了"),HttpStatus.BAD_REQUEST);
         }
     }
@@ -155,7 +148,7 @@ public class UserController {
             String content = form.getString("content");
             JSONArray reference = form.getJSONArray("reference");
             Task task = taskRepository.findTaskById(taskId);
-            subjectManagementServiceImpl.saveTask(userId, taskId, entryName, imageUrl, field, intro, infoBox, content, reference);
+            subjectManagementService.saveTask(userId, taskId, entryName, imageUrl, field, intro, infoBox, content, reference);
             return new ResponseEntity<>(BaseResultFactory.build("编辑成功"), HttpStatus.OK);
         }catch (MyException me){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),me.getMessage()),HttpStatus.BAD_REQUEST);
@@ -181,7 +174,7 @@ public class UserController {
             int len = entryIds.size();
             for (int i=0;i<len;i++){
                 Integer taskId = entryIds.getInteger(i);
-                subjectManagementServiceImpl.submitTask(userId, taskId, reason);
+                subjectManagementService.submitTask(userId, taskId, reason);
             }
             return new ResponseEntity<>(BaseResultFactory.build("提交成功"), HttpStatus.OK);
         }catch (MyException me){
@@ -338,7 +331,7 @@ public class UserController {
             Integer userId = (Integer)request.getAttribute("userId");
             HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
             Integer assignmentId = (Integer)form.get("assignmentId");
-            subjectManagementServiceImpl.drawAssignment(userId, assignmentId);
+            subjectManagementService.drawAssignment(userId, assignmentId);
             return new ResponseEntity<>(BaseResultFactory.build("领取成功"), HttpStatus.OK);
         }catch (MyException me){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),me.getMessage()),HttpStatus.BAD_REQUEST);
@@ -360,24 +353,20 @@ public class UserController {
         try{
             Integer userId = (Integer)request.getAttribute("userId");
             List<GroupMember> groupMembers = groupMemberRepository.findAllByUser_IdAndIdentity(userId,GroupMember.ORDINRYUSER);
-            if(groupMembers == null){
-                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),""),HttpStatus.BAD_REQUEST);
-            }
             List<Object> tmps = new ArrayList<>();
-            HashMap<String,Object> tmp = null;
+            JSONObject tmp = null;
             for(GroupMember groupMember : groupMembers){
                 Subject subject = groupMember.getSubject();
-                List<Task> tasks = taskRepository.findAllByUser_IdAndState(userId, Task.PASS);
-                tmp = new HashMap<>();
+                tmp = new JSONObject();
                 tmp.put("id", subject.getId());
                 tmp.put("name", subject.getName());
                 tmp.put("imgUrl", subject.getImageUrl());
                 tmp.put("deadline", subject.getDeadline());
-                tmp.put("finishNum", tasks.size());
+                tmp.put("finishNum", subject.getCurrentCount());
                 tmp.put("introduction", subject.getIntroduction());
                 tmps.add(tmp);
             }
-            HashMap<String,Object> result = new HashMap<>();
+            JSONObject result = new JSONObject();
             result.put("subjects",tmps);
             return new ResponseEntity<>(BaseResultFactory.build(result,"success"), HttpStatus.OK);
         }catch (Exception e){

@@ -1,6 +1,7 @@
 package com.entry.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.entry.dto.BaseResultFactory;
 import com.entry.entity.mysql.*;
 import com.entry.entity.mysql.pk.GroupMemberPK;
@@ -8,16 +9,14 @@ import com.entry.exception.MyException;
 import com.entry.repository.mysql.*;
 import com.entry.service.SubjectManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
-@Service("subjectManagementServiceImpl")
+
+@Service("subjectManagementService")
 public class SubjectManagementServiceImpl implements SubjectManagementService {
     @Autowired
     UserRepository userRepository;
@@ -47,7 +46,7 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
      * @throws MyException
      */
     @Override
-    public void createSubject(Integer userId, String subjectName, String imageUrl, JSONArray field, Boolean isPublic, String intro, String goal, Long deadline) throws MyException {
+    public Subject createSubject(Integer userId, String subjectName, String imageUrl, JSONArray field, Boolean isPublic, String intro, String goal, Long deadline) throws MyException {
         User user = this.testUser(userId);
         if(user.getAuthorith()!=User.SUBJECTMAKER)
             throw new MyException("用户不具有创建专题的权限！");
@@ -55,6 +54,7 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
         GroupMember groupMember = new GroupMember(new GroupMemberPK(subject,user), GroupMember.SUBJECTMAKER);
         subjectRepository.save(subject);
         groupMemberRepository.save(groupMember);
+        return subject;
     }
 
     /**
@@ -68,8 +68,9 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
     public void initSubjectAssignment(Integer subjectId, JSONArray entries, JSONArray relations) throws MyException {
         Subject subject = this.testSubject(subjectId);
 
-
     }
+
+
 
     /**
      * 创建词条任务
@@ -80,13 +81,14 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
      * @throws MyException
      */
     @Override
-    public void createAssignment(Integer userId, Integer subjectId, String EntryName, JSONArray field) throws MyException {
+    public Assignment createAssignment(Integer userId, Integer subjectId, String EntryName, JSONArray field) throws MyException {
         // TODO 判断该词条是否以及在数据库中
         User user = this.testUser(userId);
         Subject subject = this.testSubject(subjectId);
         this.testSubjectMaker(user,subject);
         Assignment assignment = new Assignment(EntryName,field,subject);
         assignmentRepository.save(assignment);
+        return assignment;
     }
 
     /**
@@ -244,6 +246,40 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
         }
     }
 
+
+    @Override
+    public JSONObject getAssignment(Integer userId, Integer assignmentId) throws  MyException {
+        User user = this.testUser(userId);
+        Assignment assignment = this.testAssignment(assignmentId);
+        this.testOrdinaryUser(user,assignment.getSubject());
+        JSONObject result = new JSONObject();
+        result.put("entryName",assignment.getEntryName());
+        result.put("imageUrl",assignment.getImageUrl());
+        result.put("intro",assignment.getIntro());
+        result.put("field",assignment.getField());
+        result.put("infoBox", assignment.getInfoBox());
+        result.put("content", assignment.getContent());
+        return result;
+    }
+
+    @Override
+    public JSONObject getTask(Integer userId, Integer taskId) throws  MyException {
+        User user = this.testUser(userId);
+        Task task = this.testTask(taskId);
+        if(userId!=task.getUser().getId())
+            this.testSubjectMaker(user,task.getSubject());
+        this.testTaskOutOfDate(task);
+        JSONObject result = new JSONObject();
+        result.put("entryName",task.getEntryName());
+        result.put("imageUrl",task.getImageUrl());
+        result.put("intro",task.getIntro());
+        result.put("field",task.getField());
+        result.put("infoBox", task.getInfoBox());
+        result.put("content", task.getContent());
+        return result;
+    }
+
+
     private void testTaskOutOfDate(Task task) throws MyException {
         if(task.getState()==Task.OUTOFDATE){
             throw new MyException("任务已过期!");
@@ -296,7 +332,7 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
     private GroupMember testSubjectMaker(User user, Subject subject) throws MyException {
         GroupMember groupMember = groupMemberRepository.findByUser_IdAndSubject_Id(user.getId(),subject.getId());
         if(groupMember == null || groupMember.getIdentity() != GroupMember.SUBJECTMAKER)
-            throw new MyException("用户不是该专题的管理人！");
+            throw new MyException("用户不是该专题的管理者！");
         return  groupMember;
     }
 

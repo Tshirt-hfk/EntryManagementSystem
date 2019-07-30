@@ -7,12 +7,14 @@ import com.entry.entity.mysql.*;
 import com.entry.exception.MyException;
 import com.entry.entity.mysql.pk.GroupMemberPK;
 import com.entry.repository.mysql.*;
+import com.entry.service.HttpRequestService;
 import com.entry.service.SubjectManagementService;
 import com.entry.service.impl.SubjectManagementServiceImpl;
 import com.entry.util.HttpRequestUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.concurrent.FailureCallback;
@@ -48,6 +50,9 @@ public class SubjectMakerController {
 
     @Autowired
     SubjectManagementService subjectManagementService;
+
+    @Autowired
+    HttpRequestService httpRequestService;
 
     /**
      * 获取创建的所有的专题的信息列表
@@ -86,7 +91,6 @@ public class SubjectMakerController {
     }
 
 
-
     /**
      * 创建专题
      * @param request
@@ -107,9 +111,8 @@ public class SubjectMakerController {
             String goal = form.getString("goal");
             Long deadline = form.getLong("deadline");
             JSONArray documents = form.getJSONArray("documents");
-            this.subjectManagementService.createSubject(userId,subjectName,imageUrl,field,isPublic,introduction,goal,deadline);
-            //初始化 专题的所有任务
-
+            Subject subject =  this.subjectManagementService.createSubject(userId,subjectName,imageUrl,field,isPublic,introduction,goal,deadline);
+            this.httpRequestService.requestInitSubject(subject.getId(),subjectName,field,documents,introduction,goal);
             return new ResponseEntity<>(BaseResultFactory.build("创建成功"), HttpStatus.OK);
         }catch (MyException me) {
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(), me.getMessage()), HttpStatus.OK);
@@ -154,7 +157,6 @@ public class SubjectMakerController {
             HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
             Integer subjectId = (Integer)form.get("subjectId");
             Integer type = (Integer)form.get("type");
-
             JSONObject result1;
             List<Object> list = new ArrayList<>();
             if(type >= Assignment.DRAWED){
@@ -197,25 +199,15 @@ public class SubjectMakerController {
     @PostMapping("api/subjectMaker/getAssignmentContent")
     @CrossOrigin
     public ResponseEntity<?> getAssignmentContent(HttpServletRequest request, @RequestBody String jsonParam) {
-        try{
+        try {
             Integer userId = (Integer) request.getAttribute("userId");
             JSONObject form = JSONObject.parseObject(jsonParam);
             Integer assignmentId = form.getInteger("assignmentId");
-            Assignment assignment = assignmentRepository.findAssignmentById(assignmentId);
-            Integer subjectId = assignment.getSubject().getId();
-            Integer auth = groupMemberRepository.findByUser_IdAndSubject_Id(userId, subjectId).getIdentity();
-            if(assignment != null && auth == GroupMember.SUBJECTMAKER){
-                HashMap<String,Object> result = new HashMap<>();
-                result.put("entryName",assignment.getEntryName());
-                result.put("imageUrl",assignment.getImageUrl());
-                result.put("intro",assignment.getIntro());
-                result.put("field",assignment.getField());
-                result.put("infoBox", assignment.getInfoBox());
-                result.put("content", assignment.getContent());
-                return new ResponseEntity<>(BaseResultFactory.build(result, "success"), HttpStatus.OK);
-            }else
-                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),"用户没有词条"), HttpStatus.OK);
-        }catch (Exception e){
+            JSONObject assignment = subjectManagementService.getAssignment(userId,assignmentId);
+            return new ResponseEntity<>(BaseResultFactory.build(assignment, "success"), HttpStatus.OK);
+        } catch (MyException me) {
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),me.getMessage()), HttpStatus.OK);
+        } catch (Exception e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"我真的错了"),HttpStatus.BAD_REQUEST);
         }
     }
@@ -229,25 +221,15 @@ public class SubjectMakerController {
     @PostMapping("api/subjectMaker/getTaskContent")
     @CrossOrigin
     public ResponseEntity<?> getTaskContent(HttpServletRequest request, @RequestBody String jsonParam) {
-        try{
+        try {
             Integer userId = (Integer) request.getAttribute("userId");
             JSONObject form = JSONObject.parseObject(jsonParam);
-            Integer entryId = form.getInteger("taskId");
-            Task task = taskRepository.findTaskById(entryId);
-            Integer subjectId = task.getSubject().getId();
-            Integer auth = groupMemberRepository.findByUser_IdAndSubject_Id(userId, subjectId).getIdentity();
-            if(task != null && auth == GroupMember.SUBJECTMAKER){
-                HashMap<String,Object> result = new HashMap<>();
-                result.put("entryName",task.getEntryName());
-                result.put("imageUrl",task.getImageUrl());
-                result.put("intro",task.getIntro());
-                result.put("field",task.getField());
-                result.put("infoBox", task.getInfoBox());
-                result.put("content", task.getContent());
-                return new ResponseEntity<>(BaseResultFactory.build(result, "success"), HttpStatus.OK);
-            }else
-                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),"用户没有词条"), HttpStatus.OK);
-        }catch (Exception e){
+            Integer taskId = form.getInteger("taskId");
+            JSONObject task = this.subjectManagementService.getTask(userId,taskId);
+            return new ResponseEntity<>(BaseResultFactory.build(task, "success"), HttpStatus.OK);
+        } catch (MyException me) {
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),me.getMessage()), HttpStatus.OK);
+        } catch (Exception e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"我真的错了"),HttpStatus.BAD_REQUEST);
         }
     }
@@ -259,14 +241,14 @@ public class SubjectMakerController {
      */
     @PostMapping("/api/subjectMaker/publishAssignment")
     @CrossOrigin
-    public ResponseEntity<?> publishAssignment(HttpServletRequest request, @RequestBody String jsonParam){
+    public ResponseEntity<?> publishAssignment(HttpServletRequest request, @RequestBody String jsonParam) {
         try{
             Integer userId = (Integer) request.getAttribute("userId");
             HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
             List<Integer> entryIds = (List<Integer>) form.get("entryIds");
             Integer subjectId = (Integer) form.get("subjectId");
             String reason = (String) form.get("reason");
-            Integer time = (Integer) form.getOrDefault("dealine", 10*24*3600*1000);
+            Integer time = (Integer) form.getOrDefault("deadline", 24*3600*1000);
             subjectManagementService.publishAssignment(userId, subjectId, reason, time, entryIds);
             return new ResponseEntity<>(BaseResultFactory.build("发布成功"), HttpStatus.OK);
         }catch (MyException me){
@@ -278,6 +260,9 @@ public class SubjectMakerController {
 
     /**
      * 审核
+     * @param request
+     * @param jsonParam
+     * @return
      */
     @PostMapping("/api/subjectMaker/auditTask")
     @CrossOrigin

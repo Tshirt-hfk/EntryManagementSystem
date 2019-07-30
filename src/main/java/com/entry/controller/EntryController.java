@@ -11,6 +11,9 @@ import com.entry.dto.BaseResultFactory;
 import com.entry.repository.mysql.SubjectRepository;
 import com.entry.repository.neo4j.CategoryRepository;
 import com.entry.repository.neo4j.EntryRepository;
+import com.entry.service.HttpRequestService;
+import com.entry.service.SubjectManagementService;
+import com.entry.util.HttpRequestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,31 +35,19 @@ public class EntryController {
     @Autowired
     CategoryRepository categoryRepository;
 
-//    @PostMapping("/api/entry/setAssignments")
-//    public ResponseEntity<?> setAssignment(@RequestBody String jsonParam){
-//        try{
-//            JSONObject json = JSONObject.parseObject(jsonParam);
-//            Integer subjectId = json.getInteger("subjectId");
-//            List<JSONObject> assignmentList = JSONObject.parseArray(jsonParam.get)
-//        }catch (IOException e){
-//            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
-//        }
-//    }
+    @Autowired
+    SubjectManagementService subjectManagementService;
 
-    @PostMapping("/api/entry/createAssignment")
-    public ResponseEntity<?> setAssignment(@RequestBody String jsonParam){
+
+    @PostMapping("/api/entry/initSubjectAssignment")
+    public ResponseEntity<?> initSubjectAssignment(@RequestBody String jsonParam){
         try{
             JSONObject json = JSONObject.parseObject(jsonParam);
             Integer subjectId = json.getInteger("subjectId");
             Subject subject = subjectRepository.findSubjectById(subjectId);
             JSONArray nodes = json.getJSONArray("nodes");
             JSONArray edges = json.getJSONArray("edges");
-            for(int i=0;i<nodes.size();i++){
-                JSONObject  node = nodes.getJSONObject(i);
-                String entryName = node.getString("entryName");
-                Assignment assignment = new Assignment(entryName,subject.getField(),subject);
-
-            }
+            this.subjectManagementService.initSubjectAssignment(subjectId,nodes,edges);
             return new ResponseEntity<>(BaseResultFactory.build("success"),HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
