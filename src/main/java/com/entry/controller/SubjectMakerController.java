@@ -31,9 +31,6 @@ import java.util.stream.Collectors;
 @RestController
 public class SubjectMakerController {
 
-    @Value("${algorithm.server.keywords_extraction}")
-    private String keywords_extraction_url;
-
     @Autowired
     UserRepository userRepository;
 
@@ -112,50 +109,7 @@ public class SubjectMakerController {
             JSONArray documents = form.getJSONArray("documents");
             this.subjectManagementService.createSubject(userId,subjectName,imageUrl,field,isPublic,introduction,goal,deadline);
             //初始化 专题的所有任务
-            String url = "http://192.168.1.120:5005/keywords_extraction";
 
-//            String data = HttpRequestUtil.post(url,"");
-//            JSONObject result = JSONObject.parseObject(data);
-//            JSONArray nodes = result.getJSONArray("nodes");
-//            int len = nodes.size();
-//            for(int i=0;i<len;i++){
-//                JSONObject node = nodes.getJSONObject(i);
-//                String entryName = node.getString("name");
-//                Integer originId = node.getInteger("originId");
-//                System.out.println(entryName);
-//                Assignment assignment = new Assignment(entryName,field,subject);
-//                assignmentRepository.save(assignment);
-//            }
-
-//            JSONObject jsonObject = new JSONObject();
-//            jsonObject.put("topic_name",name);
-//            jsonObject.put("need_domain", field);
-//            jsonObject.put("description", introduction);
-//            jsonObject.put("documents",documents);
-//            jsonObject.put("need_domain",0);
-//            String msg = HttpRequestUtil.postHttpJsonDataAsyn(url,jsonObject,(ResponseEntity<JSONObject> result) -> {
-//                JSONArray nodes = result.getBody().getJSONArray("nodes");
-//                int len = nodes.size();
-//                for(int i=0;i<len;i++){
-//                    JSONObject node = nodes.getJSONObject(i);
-//                    String entryName = node.getString("name");
-//                    Integer originId = node.getInteger("originId");
-//                    System.out.println(entryName);
-//                }
-//            }, (Throwable ex) -> {
-//                System.out.println(ex);
-//            });
-//            String msg = HttpRequestUtil.postHttpJsonDataAsyn(url,jsonObject,new SuccessCallback<ResponseEntity<JSONObject>>() {
-//                @Override
-//                public void onSuccess(ResponseEntity<JSONObject> result) {
-//                    System.out.println("("+result.getStatusCode()+ ":"+result.getStatusCode().getReasonPhrase()+ "):"+result.getBody());
-//                }
-//            }, new FailureCallback() {
-//                @Override
-//                public void onFailure(Throwable ex) {
-//                    System.out.println(ex);
-//                }
-//            });
             return new ResponseEntity<>(BaseResultFactory.build("创建成功"), HttpStatus.OK);
         }catch (MyException me) {
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(), me.getMessage()), HttpStatus.OK);
