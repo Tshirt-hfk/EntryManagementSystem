@@ -276,6 +276,7 @@ export default {
 }
 .header-createsubject:hover{
   color: #fff;
+  opacity: 0.85;
 }
 </style>
 

@@ -442,6 +442,9 @@ h3 {
   background: #409eff;
   cursor: pointer;
 }
+.index-side-rightbox a:hover{
+  opacity: 0.9;
+}
 .index-side-recom {
   background-color: #fafafa;
   margin-top: 25px;
