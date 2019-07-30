@@ -3,6 +3,7 @@ package com.entry.service.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.entry.dto.BaseResultFactory;
 import com.entry.entity.mysql.*;
+import com.entry.entity.mysql.pk.GroupMemberPK;
 import com.entry.exception.MyException;
 import com.entry.repository.mysql.*;
 import com.entry.service.SubjectManagementService;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,6 +33,43 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
 
     @Autowired
     TaskRepository taskRepository;
+
+    /**
+     * 创建专题
+     * @param userId
+     * @param subjectName
+     * @param imageUrl
+     * @param field
+     * @param isPublic
+     * @param intro
+     * @param goal
+     * @param deadline
+     * @throws MyException
+     */
+    @Override
+    public void createSubject(Integer userId, String subjectName, String imageUrl, JSONArray field, Boolean isPublic, String intro, String goal, Long deadline) throws MyException {
+        User user = this.testUser(userId);
+        if(user.getAuthorith()!=User.SUBJECTMAKER)
+            throw new MyException("用户不具有创建专题的权限！");
+        Subject subject = new Subject(imageUrl,subjectName,user.getName(),intro,goal,field,new Timestamp(deadline),isPublic);
+        GroupMember groupMember = new GroupMember(new GroupMemberPK(subject,user), GroupMember.SUBJECTMAKER);
+        subjectRepository.save(subject);
+        groupMemberRepository.save(groupMember);
+    }
+
+    /**
+     * 初始化专题的任务词条
+     * @param subjectId
+     * @param entries
+     * @param relations
+     * @throws MyException
+     */
+    @Override
+    public void initSubjectAssignment(Integer subjectId, JSONArray entries, JSONArray relations) throws MyException {
+        Subject subject = this.testSubject(subjectId);
+
+
+    }
 
     /**
      * 创建词条任务

@@ -7,6 +7,7 @@ import com.entry.entity.mysql.*;
 import com.entry.exception.MyException;
 import com.entry.entity.mysql.pk.GroupMemberPK;
 import com.entry.repository.mysql.*;
+import com.entry.service.SubjectManagementService;
 import com.entry.service.impl.SubjectManagementServiceImpl;
 import com.entry.util.HttpRequestUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -49,7 +50,7 @@ public class SubjectMakerController {
     TaskRepository taskRepository;
 
     @Autowired
-    SubjectManagementServiceImpl subjectManagementServiceImpl;
+    SubjectManagementService subjectManagementService;
 
     /**
      * 获取创建的所有的专题的信息列表
@@ -99,40 +100,32 @@ public class SubjectMakerController {
     @CrossOrigin
     public ResponseEntity<?> postSubject(HttpServletRequest request, @RequestBody String jsonParam){
         try{
-            System.out.println(jsonParam);
             Integer userId = (Integer)request.getAttribute("userId");
-            User user = userRepository.findUserById(userId);
-            // 创建专题组
-            System.out.println(jsonParam);
             JSONObject form = JSONObject.parseObject(jsonParam);
             String imageUrl = form.getString("imageUrl");
-            String name = form.getString("name");
+            String subjectName = form.getString("name");
             JSONArray field = form.getJSONArray("field");
             Boolean isPublic = form.getBoolean("isPublic");
             String introduction = form.getString("introduction");
             String goal = form.getString("goal");
-            Long deadLine = form.getLong("deadline");
+            Long deadline = form.getLong("deadline");
             JSONArray documents = form.getJSONArray("documents");
-            Subject subject = new Subject(imageUrl,name,user.getName(),introduction,goal,field,new Timestamp(deadLine),isPublic);
-            // 将创建人加入专题组中
-            GroupMember groupMember = new GroupMember(new GroupMemberPK(subject,user),2);
-            subjectRepository.save(subject);
-            groupMemberRepository.save(groupMember);
+            this.subjectManagementService.createSubject(userId,subjectName,imageUrl,field,isPublic,introduction,goal,deadline);
             //初始化 专题的所有任务
             String url = "http://192.168.1.120:5005/keywords_extraction";
 
-            String data = HttpRequestUtil.post(url,"");
-            JSONObject result = JSONObject.parseObject(data);
-            JSONArray nodes = result.getJSONArray("nodes");
-            int len = nodes.size();
-            for(int i=0;i<len;i++){
-                JSONObject node = nodes.getJSONObject(i);
-                String entryName = node.getString("name");
+//            String data = HttpRequestUtil.post(url,"");
+//            JSONObject result = JSONObject.parseObject(data);
+//            JSONArray nodes = result.getJSONArray("nodes");
+//            int len = nodes.size();
+//            for(int i=0;i<len;i++){
+//                JSONObject node = nodes.getJSONObject(i);
+//                String entryName = node.getString("name");
 //                Integer originId = node.getInteger("originId");
-                System.out.println(entryName);
-                Assignment assignment = new Assignment(entryName,field,subject);
-                assignmentRepository.save(assignment);
-            }
+//                System.out.println(entryName);
+//                Assignment assignment = new Assignment(entryName,field,subject);
+//                assignmentRepository.save(assignment);
+//            }
 
 //            JSONObject jsonObject = new JSONObject();
 //            jsonObject.put("topic_name",name);
@@ -164,7 +157,10 @@ public class SubjectMakerController {
 //                }
 //            });
             return new ResponseEntity<>(BaseResultFactory.build("创建成功"), HttpStatus.OK);
-        }catch (Exception e){
+        }catch (MyException me) {
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(), me.getMessage()), HttpStatus.OK);
+        }
+        catch (Exception e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
         }
     }
@@ -184,7 +180,7 @@ public class SubjectMakerController {
             String name = form.getString("name");
             JSONArray fields = form.getJSONArray("field");
             Integer subjectId = form.getInteger("subjectId");
-            subjectManagementServiceImpl.createAssignment(userId, subjectId, name, fields);
+            subjectManagementService.createAssignment(userId, subjectId, name, fields);
             return new ResponseEntity<>(BaseResultFactory.build("创建成功"), HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
@@ -264,7 +260,7 @@ public class SubjectMakerController {
                 result.put("content", assignment.getContent());
                 return new ResponseEntity<>(BaseResultFactory.build(result, "success"), HttpStatus.OK);
             }else
-                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),"用户没有词条"), HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),"用户没有词条"), HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"我真的错了"),HttpStatus.BAD_REQUEST);
         }
@@ -296,7 +292,7 @@ public class SubjectMakerController {
                 result.put("content", task.getContent());
                 return new ResponseEntity<>(BaseResultFactory.build(result, "success"), HttpStatus.OK);
             }else
-                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),"用户没有词条"), HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),"用户没有词条"), HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"我真的错了"),HttpStatus.BAD_REQUEST);
         }
@@ -317,10 +313,10 @@ public class SubjectMakerController {
             Integer subjectId = (Integer) form.get("subjectId");
             String reason = (String) form.get("reason");
             Integer time = (Integer) form.getOrDefault("dealine", 10*24*3600*1000);
-            subjectManagementServiceImpl.publishAssignment(userId, subjectId, reason, time, entryIds);
+            subjectManagementService.publishAssignment(userId, subjectId, reason, time, entryIds);
             return new ResponseEntity<>(BaseResultFactory.build("发布成功"), HttpStatus.OK);
         }catch (MyException me){
-            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),me.getMessage()),HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),me.getMessage()),HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
         }
@@ -334,19 +330,18 @@ public class SubjectMakerController {
     public ResponseEntity<?> auditTask(HttpServletRequest request, @RequestBody String jsonParam){
         try{
             Integer userId = (Integer) request.getAttribute("userId");
-            HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
+            JSONObject form = JSONObject.parseObject(jsonParam);
             Boolean pass = (Boolean)form.get("pass");
             Integer taskId = (Integer)form.get("taskId");
             String reason = (String) form.get("reason");
-            Task task = taskRepository.findTaskById(taskId);
-            subjectManagementServiceImpl.auditTask(userId, taskId, pass, reason);
+            subjectManagementService.auditTask(userId, taskId, pass, reason);
             if(pass){
                 return new ResponseEntity<>(BaseResultFactory.build("审核通过"), HttpStatus.OK);
             }else{
                 return new ResponseEntity<>(BaseResultFactory.build("审核不通过"), HttpStatus.OK);
             }
         }catch (MyException me){
-            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),me.getMessage()),HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),me.getMessage()),HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
         }

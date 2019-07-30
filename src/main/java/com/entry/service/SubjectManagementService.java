@@ -14,6 +14,10 @@ import java.util.List;
 
 public interface SubjectManagementService {
 
+    public void createSubject(Integer uesrId, String subjectName, String imageUrl, JSONArray field, Boolean isPublic, String intro, String goal, Long deadline) throws MyException;
+    public void initSubjectAssignment(Integer subjectId, JSONArray entries, JSONArray relations) throws MyException;
+
+
     public void createAssignment(Integer userId, Integer subjectId, String EntryName, JSONArray field) throws MyException;
     public void publishAssignment(Integer userId, Integer subjectId, String reason, Integer deadline, List<Integer> entryIds) throws MyException;
     public void drawAssignment(Integer userId, Integer assignmentId) throws MyException;

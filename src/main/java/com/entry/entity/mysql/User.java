@@ -8,6 +8,10 @@ import java.util.List;
 @Table(name = "user")
 public class User {
 
+    public final static Integer ORDINRYUSER = 1;
+    public final static Integer SUBJECTMAKER = 2;
+    public final static Integer ADMINISTRATOR = 3;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) //自增主键
     private Integer id;
