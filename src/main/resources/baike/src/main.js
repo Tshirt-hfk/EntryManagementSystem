@@ -46,7 +46,7 @@ const store = new Vuex.Store({
 
 router.beforeEach((to, from, next) => {
   let token = localStorage.getItem('token')
-  if (to.path === '/' || to.path === '/entry') {
+  if (to.path === '/' || to.name === 'entryPreview') {
     return next()
   }
   if (!token && to.path !== '/login' && to.path !== '/register') {

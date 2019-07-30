@@ -3,7 +3,7 @@
     <div class="index-searchbar">
       <div class="logo-headl">
         <a title="首页" href="/">
-          <img style="width: 120px; height: 70px" src="/static/image/logo.png" />
+          <img style="width: 120px; height: 70px;" src="/static/image/logo.png" />
         </a>
       </div>
       <div class="index-search">
@@ -66,9 +66,9 @@
     </div>
     <div class="index-main">
       <div class="index-main-wrap">
-        <el-carousel height="350px" indicator-position="outside" interval="5000">
+        <el-carousel height="350px" indicator-position="outside" interval=5000>
           <el-carousel-item v-for="item in homePageEntry" :key="item.id">
-            <img style="width: 710px; height: 350px" :src="item.src" />
+            <img style="width: 710px; height: 350px;cursor:pointer" :src="item.src" @click="toEntryExhibition(item.name)"/>
             <div class="index-focus-intro">
               <div class="index-focus-summary">
                 <h2>
@@ -97,7 +97,7 @@
               </el-tab-pane>
             </el-tabs>
             <div class="classification-content">
-              <classificationEntry :field="field"></classificationEntry>
+              <classificationEntry :field="field" v-on:toEntryExhibition="toEntryExhibition"></classificationEntry>
             </div>
           </div>
         </div>
@@ -118,13 +118,14 @@
           <div class="index-side-recom-subject" v-for="item in recommendSubject" :key="item.id">
             <div class="subject-title">
               <span class="subject-identification">推荐</span>
-              <a class="title-name">{{item.name}}</a>
+              <a class="title-name" @click="toSubjectExhibition(item.id)">{{item.name}}</a>
             </div>
             <div class="subject-description">
-              <img style="width: 133px;height: 100px" :src="item.src" />
+              <img style="width: 133px;height: 100px;cursor: pointer" :src="item.src" @click="toSubjectExhibition(item.id)"/>
               <div class="subject-ctn">
                 <p>{{item.intro}}</p>
-                <a>{{item.field}}</a>
+                <a style="margin-left: 5px" v-for="fieldItem in item.field" 
+                  :key="fieldItem">{{fieldItem}}</a>
               </div>
             </div>
           </div>
@@ -146,6 +147,8 @@ export default {
   },
   data() {
     return {
+      searchResult: [],
+      timeout: null,
       value: "",
       field: "人物",
       //数据都要从数据库取
@@ -189,7 +192,7 @@ export default {
         {
           id: "1",
           name: "游戏青春",
-          field: "方磊",
+          field: ["方磊"],
           intro: "谁还没有窝在寝室打游戏的时光呢",
           src:
             "https://gss0.bdstatic.com/94o3dSag_xI4khGkpoWK1HF6hhy/baike/eWH%3D150%2C100/sign=abd9a92af936afc31c664268822cdbe8/9a504fc2d56285354d4b36cb9eef76c6a6ef63b5.jpg"
@@ -197,7 +200,7 @@ export default {
         {
           id: "2",
           name: "游戏青春",
-          field: "方磊",
+          field: ["方磊"],
           intro: "谁还没有窝在寝室打游戏的时光呢",
           src:
             "https://gss0.bdstatic.com/94o3dSag_xI4khGkpoWK1HF6hhy/baike/eWH%3D150%2C100/sign=abd9a92af936afc31c664268822cdbe8/9a504fc2d56285354d4b36cb9eef76c6a6ef63b5.jpg"
@@ -205,7 +208,7 @@ export default {
         {
           id: "3",
           name: "游戏青春",
-          field: "方磊",
+          field: ["方磊"],
           intro: "谁还没有窝在寝室打游戏的时光呢",
           src:
             "https://gss0.bdstatic.com/94o3dSag_xI4khGkpoWK1HF6hhy/baike/eWH%3D150%2C100/sign=abd9a92af936afc31c664268822cdbe8/9a504fc2d56285354d4b36cb9eef76c6a6ef63b5.jpg"
@@ -213,8 +216,23 @@ export default {
       ]
     };
   },
-  mounted() {},
+  mounted() {
+    this.init();
+  },
   methods: {
+    init(){
+      this.$axios
+        .post("/api/user/getRecommendSubject",{})
+        .then(res => {
+            if (res.data.data){
+              this.recommendSubject = res.data.data.subjects;
+            }
+        })
+        .catch(error => {
+            if (error.response) {
+            }
+        });
+    },
     search() {
       var { href } = this.$router.resolve({
         name: "entryPreview",
@@ -231,11 +249,45 @@ export default {
     toUserCenter() {
       this.$router.push("/usercenter/mysubject");
     },
-    toEntryExhibition(name) {},
+    toEntryExhibition(entryName){
+      var { href } = this.$router.resolve({
+        name: "entryPreview",
+        params: {
+          name: entryName
+        }
+      });
+      window.open(href, "_blank");
+    },
+    toSubjectExhibition(id) {
+      var { href } = this.$router.resolve({
+        path: "/subject",
+        query: {
+          id: id
+        }
+      });
+      window.open(href, "_blank");
+    },
     toEntryCreate() {},
     toRecommendEntry() {},
     querySearch(query, cb) {
+        this.$axios
+        .get("/data/fetchPageByName", {
+          params: {
+            name: query
+          }
+        })
+        .then(res => {
+          if (res.data) {
+ //             this.searchResult = ;
+          }
+        })
+        .catch(error => {
+        });
 
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => {
+          cb(this.searchResult);
+        }, 3000 * Math.random());
     }
   }
 };

@@ -1,7 +1,7 @@
 <template>
   <div class="login-content">
     <div class="top-banner">
-      <img src="https://s1.hdslb.com/bfs/static/passport/static/img/rl_top.35edfde.png">
+      <img src="/static/image/login.png">
     </div>
     <div class="login-title-line">
       <span class="tit" style="font-size: 38px;">登录</span>
@@ -113,7 +113,7 @@ export default {
 }
 .top-banner{
   background: #00a0d8;
-  height: 86px;
+  height: 90px;
   text-align: center;
   margin-bottom: 20px;
   margin-top: 5px;

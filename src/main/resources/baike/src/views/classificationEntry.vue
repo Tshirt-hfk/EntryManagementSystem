@@ -2,11 +2,11 @@
   <div class="classification-content">
     <ul>
         <li v-for="entry in entrys" :key="entry.id">
-            <a class="classification-content-img" @click="toEntryExhibition">
+            <a class="classification-content-img" @click="toEntryExhibition(entry.name)">
                 <img :src="entry.img_url">
             </a>
             <div class="classification-lemma-content">
-                <h4 @click="toEntryExhibition">{{entry.name}}</h4>
+                <h4 @click="toEntryExhibition(entry.name)">{{entry.name}}</h4>
                 <p>{{entry.intro}}</p>
             </div>
         </li>      
@@ -63,6 +63,9 @@ export default {
           if (error.response) {
           }
         });
+    },
+    toEntryExhibition(entryName){
+      this.$emit('toEntryExhibition', entryName);
     }
   }
 };
