@@ -60,7 +60,7 @@
         <el-input type="textarea" rows="4" v-model="form.goal" maxlength="100" show-word-limit></el-input>
       </el-form-item>
       <el-form-item label="相关文件">
-        <input type="file" accept="text/plain" @change="getFile" />
+        <input type="file" accept="text/plain" @change="getFile" multiple />
       </el-form-item>
       <el-form-item>
         <el-row>
@@ -517,10 +517,11 @@ export default {
     getFile: function(event) {
       // 获取input里的文件
       var files = event.target.files;
-      var reader = new FileReader();
-      for (var file in files) {
-        reader.readAsText(file, "UTF-8");
-        reader.onload = event => {
+      this.form.documents.splice(0,this.form.documents.length)
+      for (var file of files) {
+        var reader = new FileReader();
+        reader.readAsText(file, ["UTF-8","GB2312"]); 
+        reader.onloaded = event => {
           this.form.documents.push(event.target.result);
         };
       }

@@ -39,6 +39,7 @@ public class HttpRequestUtil {
     }
 
     public static String get(String url) {
+        System.out.println(url);
         CloseableHttpResponse response = null;
         BufferedReader in = null;
         String result = "";

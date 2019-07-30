@@ -28,6 +28,7 @@ public class HttpRequestServiceImpl implements HttpRequestService {
         jsonObject.put("description", intro);
         jsonObject.put("documents",documents);
         String result = HttpRequestUtil.post(this.initSubjectUrl, jsonObject.toJSONString());
+        System.out.println(result);
     }
 
 }

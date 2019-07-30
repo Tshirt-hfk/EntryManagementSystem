@@ -100,8 +100,8 @@ public class SubjectMakerController {
     @PostMapping("/api/subjectMaker/createSubject")
     @CrossOrigin
     public ResponseEntity<?> postSubject(HttpServletRequest request, @RequestBody String jsonParam){
-        try{
-            Integer userId = (Integer)request.getAttribute("userId");
+        try {
+            Integer userId = (Integer) request.getAttribute("userId");
             JSONObject form = JSONObject.parseObject(jsonParam);
             String imageUrl = form.getString("imageUrl");
             String subjectName = form.getString("name");
@@ -111,14 +111,11 @@ public class SubjectMakerController {
             String goal = form.getString("goal");
             Long deadline = form.getLong("deadline");
             JSONArray documents = form.getJSONArray("documents");
-            Subject subject =  this.subjectManagementService.createSubject(userId,subjectName,imageUrl,field,isPublic,introduction,goal,deadline);
-            this.httpRequestService.requestInitSubject(subject.getId(),subjectName,field,documents,introduction,goal);
+            Subject subject = this.subjectManagementService.createSubject(userId, subjectName, imageUrl, field, isPublic, introduction, goal, deadline);
+            this.httpRequestService.requestInitSubject(subject.getId(), subjectName, field, documents, introduction, goal);
             return new ResponseEntity<>(BaseResultFactory.build("创建成功"), HttpStatus.OK);
-        }catch (MyException me) {
-            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(), me.getMessage()), HttpStatus.OK);
-        }
-        catch (Exception e){
-            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
+        } catch (MyException me){
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST,"创建请求"), HttpStatus.OK);
         }
     }
 
