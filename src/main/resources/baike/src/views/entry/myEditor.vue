@@ -106,50 +106,45 @@
             <div class="basic-info-property">
               <div class="basic-info-property-header">
                 <h2>属性</h2>
+                <div style="float:right;margin-top:25px">
+                  <a
+                    style="margin-left:230px;cursor:pointer;color:#3b7cff;"
+                    @click="form.infoBox.push({key:'',value:''})"
+                  >
+                    <i class="el-icon-edit"></i> 添加自定义项
+                  </a>
+                </div>
               </div>
               <div>
                 <template v-for="(item,index) in form.infoBox">
-                  <div :key="index" class="basic-info-property-item" v-if="item.type==1">
-                    <el-form-item :label="item.key" label-width="75px" style="width:350px">
-                      <el-input
-                        type="text"
-                        size="mini"
-                        maxlength="20"
-                        show-word-limit
-                        v-model="item.value"
-                      ></el-input>
-                    </el-form-item>
-                  </div>
-                  <div :key="index" class="basic-info-property-item" v-else>
+                  <div :key="index" class="basic-info-property-item">
                     <el-form-item style="width:65px;float:left">
                       <el-input
                         class="basic-info-property-label"
                         type="text"
                         size="mini"
-                        maxlength="5"
+                        maxlength="10"
                         v-model="item.key"
                       ></el-input>
                     </el-form-item>
-                    <el-form-item style="width:275px;float:left;margin-left:10px">
+                    <el-form-item style="width:255px;float:left;margin-left:10px">
                       <el-input
                         type="text"
                         size="mini"
                         maxlength="20"
-                        show-word-limit
                         v-model="item.value"
                       ></el-input>
                     </el-form-item>
+                    <div style="float:left;margin-left:8px;line-height:40px;">
+                      <a
+                        style="cursor:pointer"
+                        class="el-icon-delete"
+                        @click="form.infoBox.splice(i,1)"
+                      ></a>
+                    </div>
                     <div class="clear"></div>
                   </div>
                 </template>
-                <div class="basic-info-property-item">
-                  <a
-                    style="margin-left:230px;cursor:pointer;color: #3b7cff;"
-                    @click="form.infoBox.push({key:'',value:'',type:2})"
-                  >
-                    <i class="el-icon-edit"></i> 添加自定义项
-                  </a>
-                </div>
                 <div class="clear"></div>
               </div>
             </div>
@@ -732,7 +727,6 @@ export default {
 .basic-info-property-item {
   float: left;
   margin-top: 10px;
-  margin-right: 40px;
   margin-left: 20px;
 }
 .basic-info-property-item .el-form-item {
@@ -890,7 +884,7 @@ export default {
   font-size: 18px;
   font-weight: bold;
   margin-top: 6px;
-  color: #409EFF;
+  color: #409eff;
 }
 .relationship-side-operation {
   margin-top: 15px;
