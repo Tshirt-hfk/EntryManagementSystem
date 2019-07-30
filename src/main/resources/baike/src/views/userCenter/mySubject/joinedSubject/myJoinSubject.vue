@@ -30,7 +30,7 @@
               <i class="el-icon-time" style="color: #cdcfd1; font-size:14px"></i>
               <span style="font-size:14px; margin-right:5px; color: #cdcfd1;">剩余时间{{subject.deadline | getDay}}天</span>
               <i class="el-icon-coin" style="color: #cdcfd1; font-size:14px"></i>
-              <span style="font-size:14px; color: #cdcfd1;">完成词条{{subject.finishNum}}个</span>
+              <span style="font-size:14px; color: #cdcfd1;">完成{{subject.finishNum}}个</span>
             </div>
           </div>
         </el-card>

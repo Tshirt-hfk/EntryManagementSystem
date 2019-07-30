@@ -286,4 +286,30 @@ public class SubjectMakerController {
         }
     }
 
+    /**
+     * 制作人删除任务
+     * @param request
+     * @param jsonParam
+     * @return
+     */
+    @PostMapping("api/subjectMaker/deleteAssignment")
+    @CrossOrigin
+    @Transactional
+    public ResponseEntity<?> deleteAssignment(HttpServletRequest request, @RequestBody String jsonParam) {
+        try{
+            Integer userId = (Integer) request.getAttribute("userId");
+            JSONObject form = JSONObject.parseObject(jsonParam);
+            Integer assignmentId = (Integer) form.get("assignmentId");
+            Assignment assignment = assignmentRepository.findAssignmentById(assignmentId);
+            GroupMember groupMember = groupMemberRepository.findByUser_IdAndSubject_Id(userId, assignment.getSubject().getId());
+            if(groupMember.getIdentity() == GroupMember.SUBJECTMAKER)
+                assignmentRepository.delete(assignment);
+            else
+                return new ResponseEntity<>(BaseResultFactory.build("没有权限"), HttpStatus.OK);
+            return new ResponseEntity<>(BaseResultFactory.build("删除成功"), HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"删除错误"),HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }
