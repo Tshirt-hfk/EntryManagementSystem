@@ -33,13 +33,19 @@ export default {
   name: "toSubmittedEntry",
   props: ["subjectId"],
   watch:{
-    searchValue:function(n, o){
-        this.remoteMethod(n);
+    searchValue:{
+      handler(n, o){
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => {
+          this.remoteMethod(n);
+        }, 300);
+      }
     }
   },
   data() {
     return {
       searchValue: '',
+      timeout: null,
       currentPage: 1,
       pagesize: 10,
       entries: [],

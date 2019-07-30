@@ -426,19 +426,21 @@ public class UserController {
             JSONObject form = JSONObject.parseObject(jsonParam);
             String subjectName = form.getString("keyword");
             List<Subject> subjects = subjectRepository.findSubjectByKey(subjectName);
-            List<Object> tmps = new ArrayList<>();
+            JSONArray tmps = new JSONArray();
             JSONObject tmp = null;
             if(subjects.size() != 0){
                 for(Subject subject: subjects){
+                    List<GroupMember> groupMembers = groupMemberRepository.findAllBySubject_IdAndIdentity(subject.getId(), GroupMember.ORDINRYUSER);
                     tmp = new JSONObject();
                     tmp.put("id", subject.getId());
                     tmp.put("name", subject.getName());
                     tmp.put("field", subject.getField());
                     tmp.put("deadTime", subject.getDeadline());
+                    tmp.put("memberCount", groupMembers.size());
                     tmp.put("total_count", subject.getTotalCount());
                     tmps.add(tmp);
                 }
-                HashMap<String,Object> result = new HashMap<>();
+                JSONObject result = new JSONObject();
                 result.put("subjects", tmps);
                 return new ResponseEntity<>(BaseResultFactory.build(result,"success"), HttpStatus.OK);
             }else{
@@ -508,12 +510,15 @@ public class UserController {
             JSONObject tmp = null;
             if(subjects.size() != 0){
                 for(Subject subject: subjects){
+                    List<GroupMember> groupMembers = groupMemberRepository.findAllBySubject_IdAndIdentity(subject.getId(), GroupMember.ORDINRYUSER);
                     tmp = new JSONObject();
                     tmp.put("id", subject.getId());
                     tmp.put("name", subject.getName());
                     tmp.put("field", subject.getField());
+                    tmp.put("intro", subject.getIntroduction());
                     tmp.put("deadTime", subject.getDeadline());
                     tmp.put("total_count", subject.getTotalCount());
+                    tmp.put("memberCount", groupMembers.size());
                     tmp.put("imgUrl", subject.getImageUrl());
                     tmps.add(tmp);
                 }
