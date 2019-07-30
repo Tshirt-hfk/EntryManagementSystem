@@ -1,7 +1,7 @@
 <template>
   <div class="login-content">
     <div class="top-banner">
-      <img src="/static/image/login.png">
+      <img src="/static/image/login.png" style="margin-top: 8px;">
     </div>
     <div class="login-title-line">
       <span class="tit" style="font-size: 38px;">登录</span>
@@ -113,7 +113,7 @@ export default {
 }
 .top-banner{
   background: #00a0d8;
-  height: 90px;
+  height: 110px;
   text-align: center;
   margin-bottom: 20px;
   margin-top: 5px;
