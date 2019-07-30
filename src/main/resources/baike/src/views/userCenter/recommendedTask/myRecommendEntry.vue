@@ -1,7 +1,8 @@
 <template>
   <div class="content">
     <div class="myrecentry-searchbar">
-      <el-input style="width: 300px; float: right;" v-model="searchValue" placeholder="请输入关键词"></el-input>
+      <el-input style="width: 250px; float: right; margin-right: 30px;" 
+      v-model="searchValue" placeholder="请输入关键词"></el-input>
     </div>
     <template v-for="entry in entrys">
         <a class="box-card" @click="see(entry.id)" :title="entry.name"
