@@ -66,7 +66,7 @@
     </div>
     <div class="index-main">
       <div class="index-main-wrap">
-        <el-carousel height="350px" indicator-position="outside" interval=5000>
+        <el-carousel height="350px" indicator-position="outside" :interval="rollingTime">
           <el-carousel-item v-for="item in homePageEntry" :key="item.id">
             <img style="width: 710px; height: 350px;cursor:pointer" :src="item.src" @click="toEntryExhibition(item.name)"/>
             <div class="index-focus-intro">
@@ -82,7 +82,7 @@
         <div class="index-main-classification">
           <div class="classification-title">
             <h2>分类推荐</h2>
-            <el-tabs v-model="field" @tab-click="handleClick">
+            <el-tabs v-model="field">
               <el-tab-pane name="人物">
                 <span slot="label">人物</span>
               </el-tab-pane>
@@ -147,6 +147,7 @@ export default {
   },
   data() {
     return {
+      rollingTime: 5000,
       searchResult: [],
       timeout: null,
       value: "",
@@ -225,7 +226,7 @@ export default {
         .post("/api/user/getRecommendSubject",{})
         .then(res => {
             if (res.data.data){
-              this.recommendSubject = res.data.data.subjects;
+              this.recommendSubject = res.data.data.subjects.splice(0, 3);
             }
         })
         .catch(error => {
@@ -448,6 +449,7 @@ h3 {
 .index-side-recom {
   background-color: #fafafa;
   margin-top: 25px;
+  margin-bottom: 25px;
   padding: 10px 20px;
 }
 .index-side-recom-title {

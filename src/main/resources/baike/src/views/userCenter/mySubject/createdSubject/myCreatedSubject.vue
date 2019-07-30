@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <div v-if="subjects.length == 0">
+    <div v-if="allsubjects.length == 0">
       <a class="nothing-a" @click="toSubject">
         <div class="nothing-a-display">
           <i class="el-icon-circle-plus nothing-icon"></i>
@@ -28,7 +28,7 @@
                 <i class="el-icon-time" style="color: #cdcfd1; font-size:14px"></i>
                 <span style="font-size:14px; margin-right:5px; color: #cdcfd1;">剩余时间{{subject.deadline | getDay}}天</span>
                 <i class="el-icon-coin" style="color: #cdcfd1; font-size:14px"></i>
-                <span style="font-size:14px; color: #cdcfd1;">完成词条{{subject.finishNum}}个</span>
+                <span style="font-size:14px; color: #cdcfd1;">完成{{subject.finishNum}}个</span>
               </div>
             </div>
           </el-card>
@@ -59,6 +59,7 @@ export default {
     return {
       status: this.$store.state.status,
       state: 1,
+      allsubjects: [],
       subjects: [],
       subjectId: 0,
       subjectName: "",
@@ -85,7 +86,10 @@ export default {
       this.$axios
         .post("/api/subjectMaker/getSubject")
         .then(res => {
-          if (res.data.data) this.subjects = res.data.data.subjects;
+          if (res.data.data){
+            this.subjects = res.data.data.subjects;
+            this.allsubjects = res.data.data.subjects;
+          }
         })
         .catch(error => {
           if (error.response) {
@@ -109,23 +113,16 @@ export default {
       } else this.$router.push("/subjectcreate");
     },
     remoteMethod(query) {
-      this.loading = true;
-      this.value = query;
-      this.$axios
-        .post("/api/user/searchSubject", {
-          keyword: query
-        })
-        .then(res => {
-          if (res.data.data) {
-            window.console.log("woxiaole");
-            this.options = res.data.data.subjects;
-          } else {
-            window.console.log("wozhale");
-          }
-          this.loading = false;
-        })
-        .catch(error => {});
-    }
+      if (query !== "") {
+        this.subjects = this.allsubjects.filter(subject => {
+          return subject.name.toLowerCase().indexOf(query.toLowerCase()) > -1;
+        });
+        this.displayData = this.subjects.slice(0, this.pagesize);
+      } else {
+        this.subjects = this.allsubjects;
+        this.displayData = this.subjects.slice(0, this.pagesize);
+      }
+    },
   }
 };
 </script>
@@ -134,6 +131,7 @@ export default {
 .content {
   margin-left: 30px;
   width: 1200px;
+  max-height: 1210px;
 }
 .nothing-a {
   background: #f0f0f0;

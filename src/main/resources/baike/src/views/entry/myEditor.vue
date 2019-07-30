@@ -1009,9 +1009,6 @@ export default {
     },
     showSelect() {
       this.others.selectVisible = true;
-      // this.$nextTick(_ => {
-      //   this.$refs.saveTagSelect.$refs.input.focus();
-      // });
     },
     addField(){
       let selectValue = this.others.selectValue;

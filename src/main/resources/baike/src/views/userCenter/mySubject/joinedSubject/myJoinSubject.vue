@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <div v-if="subjects.length == 0">
+    <div v-if="allsubjects.length == 0">
       <div
         style="width:95%; font-size:20px; margin-top:40px;margin-bottom: 40px;text-align: center"
       >
@@ -9,19 +9,14 @@
     </div>
     <div v-else>
       <div class="myjoinsub-searchbar">
-        <mySearch
-          style="float:right"
-          v-on:remoteMethod="remoteMethod"
-          :options="options"
-          :value="value"
-          :loading="loading"
-        ></mySearch>
+        <el-input style="width: 250px; float: right; margin-right: 30px;" 
+        v-model="searchValue" placeholder="请输入关键词"></el-input>
       </div>
       <template v-for="subject in subjects">
         <el-card class="box-card" :key="subject.id" :body-style="{ padding: '0px' }">
           <img class="subject-image" :src="subject.imgUrl">
           <div style="padding: 14px;">
-            <div >
+            <div style="height: 20px;">
               <span style="color:#338de6;float:left;">{{subject.name}}</span>
               <el-button style="float:right" size="mini" @click="see(subject.id)">查看</el-button>
               <div class="clear"></div>
@@ -30,7 +25,7 @@
               <i class="el-icon-time" style="color: #cdcfd1; font-size:14px"></i>
               <span style="font-size:14px; margin-right:5px; color: #cdcfd1;">剩余时间{{subject.deadline | getDay}}天</span>
               <i class="el-icon-coin" style="color: #cdcfd1; font-size:14px"></i>
-              <span style="font-size:14px; color: #cdcfd1;">完成词条{{subject.finishNum}}个</span>
+              <span style="font-size:14px; color: #cdcfd1;">完成{{subject.finishNum}}个</span>
             </div>
           </div>
         </el-card>
@@ -48,13 +43,23 @@ export default {
   components: {
     mySearch
   },
+  watch:{
+    searchValue:{
+      handler(n, o){
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => {
+          this.remoteMethod(n);
+        }, 300);
+      }
+    }
+  },
   data() {
     return {
       status: this.$store.state.status,
+      searchValue: '',
+      timeout: null,
+      allsubjects: [],
       subjects: [],
-      options: [],
-      loading: false,
-      value: []
     };
   },
   mounted() {
@@ -74,8 +79,10 @@ export default {
       this.$axios
         .post("/api/user/getSubject")
         .then(res => {
-          if (res.data.data) 
+          if (res.data.data){
             this.subjects = res.data.data.subjects;
+            this.allsubjects = res.data.data.subjects;
+          }
         })
         .catch(error => {
           if (error.response) {
@@ -90,22 +97,16 @@ export default {
       this.$router.push({ path: "/subject", query: { id: id } });
     },
     remoteMethod(query) {
-      this.loading = true;
-      this.$axios
-        .post("/api/user/searchSubject", {
-          keyword: query
-        })
-        .then(res => {
-          if (res.data.data) {
-            window.console.log("woxiaole");
-            this.options = res.data.data.subjects;
-          } else {
-            window.console.log("wozhale");
-          }
-          this.loading = false;
-        })
-        .catch(error => {});
-    }
+      if (query !== "") {
+        this.subjects = this.allsubjects.filter(subject => {
+          return subject.name.toLowerCase().indexOf(query.toLowerCase()) > -1;
+        });
+        this.displayData = this.subjects.slice(0, this.pagesize);
+      } else {
+        this.subjects = this.allsubjects;
+        this.displayData = this.subjects.slice(0, this.pagesize);
+      }
+    },
   }
 };
 </script>
@@ -113,7 +114,8 @@ export default {
 <style scoped>
 .content {
   margin-left: 30px;
-  width: 1200px;
+  width: 100%;
+  height: 530px;
 }
 .myjoinsub-searchbar {
   width: 1060px;
@@ -135,7 +137,7 @@ export default {
   height: 130px;
 }
 .subject-bottom {
-  margin-top: 35px;
+  margin-top: 13px;
   line-height: 12px;
 }
 .clearfix:before,

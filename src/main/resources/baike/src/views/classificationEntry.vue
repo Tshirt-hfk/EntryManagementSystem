@@ -57,7 +57,7 @@ export default {
         })
         .then(res => {
           if (res.data.data) 
-            this.entrys = res.data.data.entrys;
+            this.entrys = res.data.data.entrys.splice(0, 4);
         })
         .catch(error => {
           if (error.response) {

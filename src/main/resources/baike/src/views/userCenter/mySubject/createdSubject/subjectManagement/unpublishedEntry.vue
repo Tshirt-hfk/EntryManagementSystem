@@ -8,8 +8,8 @@
       style="width: 100%"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column type="selection" width="120"></el-table-column>
-      <el-table-column label="名称" width="120">
+      <el-table-column type="selection" width="100"></el-table-column>
+      <el-table-column label="名称" width="150">
         <template slot-scope="scope">{{ scope.row.name }}</template>
       </el-table-column>
       <el-table-column label="领域" width="250">
@@ -20,6 +20,7 @@
       <el-table-column align="right">
         <template slot-scope="scope">
           <el-button size="mini" type="primary" @click="getAssignmentContent(scope.row.id)">查看</el-button>
+          <el-button size="mini" type="danger" @click="deleteAssignment(scope.row.id, scope.$index)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -63,9 +64,9 @@
         <div class="clear"></div>
       </div>
     </el-dialog>
-    <el-dialog title="发布原因" :visible.sync="publishFlag" width="650px">
-      <span>
-        <el-button
+    <el-dialog title="发布原因" :visible.sync="publishFlag" width="800px" top="30vh" center>
+      <div style="width: 100%; text-align: center">
+        <!-- <el-button
           style="margin-bottom:10px"
           size="mini"
           @click="inputValue='词条新建';handleInputConfirm()"
@@ -81,19 +82,31 @@
           @click="inputValue='概述缺失或过短';handleInputConfirm()"
           plain
         >概述缺失或过短</el-button>
-        <div style="margin: 15px 0;"></div>
-        <div class="publish-tag">
-          <el-tag
-            style="font-size: 15px"
-            :key="tag"
-            v-for="tag in dynamicTags"
-            closable
-            :disable-transitions="false"
-            @close="handleClose(tag)"
-          >{{tag}}</el-tag>
-        </div>
+        <div style="margin: 15px 0;"></div> -->
+        <el-tag
+          style="font-size: 16px"
+          :key="tag"
+          v-for="tag in dynamicReasons"
+          closable
+          :disable-transitions="false"
+          @close="handleTagClose(tag)">
+          {{tag}}</el-tag>
+        <el-cascader
+          class="select-new-tag"
+          v-if="selectVisible"
+          placeholder="请选择原因"
+          ref="saveTagSelect"
+          :options="reasonOptions"
+          v-model="selectValue"
+          :props="{ multiple: true, checkStrictly: true, emitPath: false }"
+          :show-all-levels="false"
+          filterable
+          clearable
+          @change="addReason"
+        ></el-cascader>
+        <el-button v-else class="button-new-tag" size="small" @click="showSelect">添加原因</el-button>
         <div style="margin: 10px 0;"></div>
-      </span>
+      </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="publishFlag = false">返 回</el-button>
         <el-button type="primary" @click="publishEntry">提 交</el-button>
@@ -133,6 +146,36 @@ export default {
   },
   data() {
     return {
+      selectValue: '',
+      selectVisible: false,
+      reasonOptions: [
+        {
+            value: "休闲",
+            label: "休闲",
+            children: [
+              {
+                value: "活动",
+                label: "活动",
+                children: [
+                  { value: "旅游", label: "旅游" },
+                ]
+              },
+              {
+                value: "娱乐",
+                label: "娱乐",
+                children: [
+                  { value: "电影", label: "电影" },
+                  { value: "电视剧", label: "电视剧" },
+                ]
+              },
+              {
+                value: "制品",
+                label: "制品",
+                children: [{ value: "玩具", label: "玩具" }]
+              }
+            ]
+          },
+      ],
       drawerFlag: false,
       relationData: [],
       searchValue: '',
@@ -154,7 +197,7 @@ export default {
       },
       dialogFormVisible: false,
       publishFlag: false,
-      dynamicTags: [],
+      dynamicReasons: [],
       inputValue: "",
       options: [
         {
@@ -636,8 +679,8 @@ export default {
         array.push(this.multipleSelection[i].id);
       }
       var reason = "";
-      for (var i = 0; i < this.dynamicTags.length; i++) {
-        reason += this.dynamicTags[i] + ";";
+      for (var i = 0; i < this.dynamicReasons.length; i++) {
+        reason += this.dynamicReasons[i] + ";";
       }
       this.$axios
         .post("/api/subjectMaker/publishAssignment", {
@@ -671,13 +714,13 @@ export default {
     },
     handleInputConfirm() {
       let inputValue = this.inputValue;
-      if (inputValue && this.dynamicTags.indexOf(inputValue) === -1) {
-        this.dynamicTags.push(inputValue);
+      if (inputValue && this.dynamicReasons.indexOf(inputValue) === -1) {
+        this.dynamicReasons.push(inputValue);
       }
       this.inputValue = "";
     },
-    handleClose(tag) {
-      this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
+    handleTagClose(tag) {
+      this.dynamicReasons.splice(this.dynamicReasons.indexOf(tag), 1);
     },
     handleSizeChange(val) {
       this.pagesize = val;
@@ -738,9 +781,49 @@ export default {
       }else
         this.drawerFlag = true;
     },
+    deleteAssignment(id, index){
+      this.$confirm('此操作将删除该任务, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$axios
+          .post("/api/subjectMaker/deleteAssignment", {
+            assignmentId: id
+          })
+          .then(res => {
+            if (!res.errcode){
+              this.entries.splice(index, 1);
+              this.remoteMethod(this.searchValue);
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              });
+            }
+          })
+          .catch(error => {
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+    },
     handleClose(done) {
       this.drawerFlag = false;
-    }
+    },
+    showSelect() {
+      this.selectVisible = true;
+    },
+    addReason(){
+      let selectValue = this.selectValue;
+      if (selectValue) {
+        this.dynamicReasons.push(selectValue[0]);
+      }
+      this.selectVisible = false;
+      this.selectValue = '';
+    },
   }
 };
 </script>
@@ -749,6 +832,20 @@ export default {
 .el-tag + .el-tag {
   margin-left: 10px;
   margin-top: 5px;
+}
+.button-new-tag {
+  margin-left: 10px;
+  height: 40px;
+  line-height: 30px;
+  padding-top: 0;
+  padding-bottom: 0;
+  width: 150px;
+}
+.select-new-tag {
+  height: 38px;
+  width: 150px;
+  margin-left: 10px;
+  vertical-align: bottom;
 }
 .publish-tag {
   width: 610px;

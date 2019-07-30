@@ -1,14 +1,8 @@
 <template>
   <div class="content">
       <div class="myrecsub-searchbar">
-        <!-- <el-select v-model="value" filterable remote :loading="loading"
-        reserve-keyword placeholder="请输入关键词" :remote-method="remoteMethod"
-        style="float: right">
-          <el-option v-for="item in options" :key="item.name"
-          :label="item.name" :value="item.name">
-          </el-option>  
-        </el-select> -->
-        <el-input style="width: 300px; float: right;" v-model="searchValue" placeholder="请输入关键词"></el-input>
+        <el-input style="width: 250px; float: right; margin-right: 30px;" 
+        v-model="searchValue" placeholder="请输入关键词"></el-input>
       </div>
     <template v-for="subject in subjects">
         <el-card class="box-card" :key="subject.id" :body-style="{ padding: '0px' }">

@@ -50,7 +50,7 @@
             <div style="margin: 10px 0;"></div>
             <el-alert title="请在提交前确认" type="warning"
             description="提交后无法更改"
-            show-icon>  </el-alert>
+            show-icon :closable="false">  </el-alert>
           </span>
           <span slot="footer" class="dialog-footer">
             <el-button @click="admitFlag = false">返 回</el-button>

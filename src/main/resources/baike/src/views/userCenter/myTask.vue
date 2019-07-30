@@ -12,7 +12,7 @@
         <el-radio-button label="right">推荐专题</el-radio-button>
       </el-radio-group>
       <!--高度后期需要自适应 -->
-      <el-card style="width: 1200px;height:560px">
+      <el-card style="width: 1200px; height:560px">
         <router-view></router-view>
       </el-card>
     </div>
