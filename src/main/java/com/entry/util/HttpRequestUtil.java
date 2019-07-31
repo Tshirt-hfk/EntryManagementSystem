@@ -82,7 +82,6 @@ public class HttpRequestUtil {
             HttpPost httpPost = new HttpPost(url);
             RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(30000).setConnectionRequestTimeout(30000).setSocketTimeout(30000).build();
             httpPost.setConfig(requestConfig);
-            httpPost.setConfig(requestConfig);
             httpPost.addHeader("Content-type", "application/json; charset=utf-8");
             httpPost.setHeader("Accept", "application/json");
             httpPost.setEntity(new StringEntity(jsonString, Charset.forName("UTF-8")));

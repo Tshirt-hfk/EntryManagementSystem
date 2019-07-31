@@ -520,8 +520,8 @@ export default {
       this.form.documents.splice(0,this.form.documents.length)
       for (var file of files) {
         var reader = new FileReader();
-        reader.readAsText(file, ["UTF-8","GB2312"]); 
-        reader.onloaded = event => {
+        reader.readAsText(file, "GB2312"); 
+        reader.onload = event => {
           this.form.documents.push(event.target.result);
         };
       }

@@ -8,6 +8,8 @@ import com.entry.entity.mysql.pk.GroupMemberPK;
 import com.entry.exception.MyException;
 import com.entry.repository.mysql.*;
 import com.entry.service.SubjectManagementService;
+import com.entry.util.HttpRequestUtil;
+import com.sun.deploy.net.HttpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -69,12 +71,24 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
     public void initSubjectAssignment(Integer subjectId, JSONArray entries, JSONArray relations) throws MyException {
         Subject subject = this.testSubject(subjectId);
         subject.setInitState(true);
-        List<Assignment> assignmentList = new ArrayList<>();
-        int len1=entries.size();
-        for (int i=0;i<len1;i++){
-            JSONObject json = entries.getJSONObject(i);
-            String entryName = json.getString("");
-        }
+//        List<Assignment> assignmentList = new ArrayList<>();
+//        int len1=entries.size();
+//        for (int i=0;i<len1;i++){
+//            JSONObject json = entries.getJSONObject(i);
+//            String entryName = json.getString("name");
+//            String result = HttpRequestUtil.get("http://192.168.1.121:9000/fetchPageByName?name="+entryName);
+//            JSONObject js = JSONObject.parseObject(result);
+//            Assignment assignment = new Assignment();
+//            assignment.setEntryName(js.getString("entryName"));
+//            assignment.setField(js.getJSONArray("field"));
+//            assignment.setOriginalId(js.getInteger("id"));
+//            assignment.setImageUrl(js.getString("imageUrl"));
+//            assignment.setInfoBox(js.getJSONArray("infoBox"));
+//            assignment.setIntro(js.getString("intro"));
+//            assignment.setContent(js.getString("content"));
+//            assignment.setSubject(subject);
+//            assignmentList.add(assignment);
+//        }
         subjectRepository.save(subject);
     }
 
