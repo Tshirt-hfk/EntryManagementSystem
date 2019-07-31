@@ -165,12 +165,12 @@ public class Assignment {
         this.deadline = deadline;
     }
 
-    public String getModifyReason() {
-        return modifyReason;
+    public JSONArray getModifyReason() {
+        return JSONArray.parseArray(this.modifyReason);
     }
 
-    public void setModifyReason(String modifyReason) {
-        this.modifyReason = modifyReason;
+    public void setModifyReason(JSONArray reason) {
+        this.modifyReason = reason.toJSONString();
     }
 
     public Subject getSubject() {

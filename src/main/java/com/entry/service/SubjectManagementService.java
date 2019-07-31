@@ -18,7 +18,7 @@ public interface SubjectManagementService {
     public void initSubjectAssignment(Integer subjectId, JSONArray entries, JSONArray relations) throws MyException;
 
     public Assignment createAssignment(Integer userId, Integer subjectId, String EntryName, JSONArray field) throws MyException;
-    public void publishAssignment(Integer userId, Integer subjectId, String reason, Integer deadline, List<Integer> entryIds) throws MyException;
+    public void publishAssignment(Integer userId, Integer subjectId, JSONArray reason, Integer deadline, List<Integer> entryIds) throws MyException;
     public void drawAssignment(Integer userId, Integer assignmentId) throws MyException;
     public void saveTask(Integer userId, Integer taskId, String entryName, String imageUrl, JSONArray field, String intro, JSONArray infoBox, String content, JSONArray reference) throws MyException;
     public void submitTask(Integer userId, Integer taskId, String reason) throws MyException;

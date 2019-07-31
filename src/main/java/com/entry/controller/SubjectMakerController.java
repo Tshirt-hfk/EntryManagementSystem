@@ -244,12 +244,12 @@ public class SubjectMakerController {
     public ResponseEntity<?> publishAssignment(HttpServletRequest request, @RequestBody String jsonParam) {
         try{
             Integer userId = (Integer) request.getAttribute("userId");
-            HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
+            JSONObject form = JSONObject.parseObject(jsonParam);
             List<Integer> entryIds = (List<Integer>) form.get("entryIds");
             Integer subjectId = (Integer) form.get("subjectId");
-            String reason = (String) form.get("reason");
+            JSONArray reasons = form.getJSONArray("reason");
             Integer time = (Integer) form.getOrDefault("deadline", 24*3600*1000);
-            subjectManagementService.publishAssignment(userId, subjectId, reason, time, entryIds);
+            subjectManagementService.publishAssignment(userId, subjectId, reasons, time, entryIds);
             return new ResponseEntity<>(BaseResultFactory.build("发布成功"), HttpStatus.OK);
         }catch (MyException me){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),me.getMessage()),HttpStatus.OK);
