@@ -12,7 +12,8 @@
         <el-input style="width: 250px; float: right; margin-right: 30px;" 
         v-model="searchValue" placeholder="请输入关键词"></el-input>
       </div>
-      <template v-for="subject in subjects">
+      <div style="width: 100%; height: 480px;">
+      <template v-for="subject in displayData">
         <el-card class="box-card" :key="subject.id" :body-style="{ padding: '0px' }">
           <img class="subject-image" :src="subject.imgUrl">
           <div style="padding: 14px;">
@@ -30,6 +31,17 @@
           </div>
         </el-card>
       </template>
+      </div>
+      <div style="width: 100%;margin-top: 25px;">
+        <el-pagination
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-size="pagesize"
+          layout="total, prev, pager, next, jumper"
+          :total="subjects.length"
+          style="width: 360px;margin: 0 auto"
+        ></el-pagination>
+      </div>
     </div>
   </div>
 </template>
@@ -56,10 +68,13 @@ export default {
   data() {
     return {
       status: this.$store.state.status,
+      currentPage: 1,
+      pagesize: 8,
       searchValue: '',
       timeout: null,
       allsubjects: [],
       subjects: [],
+      displayData: []
     };
   },
   mounted() {
@@ -82,6 +97,7 @@ export default {
           if (res.data.data){
             this.subjects = res.data.data.subjects;
             this.allsubjects = res.data.data.subjects;
+            this.displayData = res.data.data.subjects.slice(0, 8);
           }
         })
         .catch(error => {
@@ -95,6 +111,12 @@ export default {
     },
     see(id) {
       this.$router.push({ path: "/subject", query: { id: id } });
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val;
+      let indexleft = val - 1;
+      let size = this.pagesize;
+      this.displayData = this.subjects.slice(indexleft * size, val * size);
     },
     remoteMethod(query) {
       if (query !== "") {
@@ -115,7 +137,7 @@ export default {
 .content {
   margin-left: 30px;
   width: 100%;
-  height: 530px;
+  max-height: 1210px;
 }
 .myjoinsub-searchbar {
   width: 1060px;
@@ -125,7 +147,7 @@ export default {
   float: left;
   margin-top: 10px;
   margin-left: 30px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   height: 210px;
   width: 236px;
 }

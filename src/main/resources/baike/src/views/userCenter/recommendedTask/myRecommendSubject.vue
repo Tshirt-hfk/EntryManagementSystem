@@ -110,7 +110,7 @@ export default {
 <style scoped>
 .content {
   margin-left: 30px;
-  width: 1200px;
+  width: 100%;
   max-height: 1210px;
 }
 .myrecsub-searchbar{
