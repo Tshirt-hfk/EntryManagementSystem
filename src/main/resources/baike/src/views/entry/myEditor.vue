@@ -152,15 +152,17 @@
               <div class="basic-info-property-header">
                 <h2>属性</h2>
                 <div style="float:right;margin-top:5px">
-                  <el-select v-model="others.selectAttribute" placeholder="请选择导入的基本属性" style="margin-bottom: 10px;">
-                    <el-option
-                      v-for="item in attributeOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                      @change="refreshAttribute">
-                    </el-option>
-                  </el-select>
+                  <el-cascader
+                    placeholder="请选择导入的基本属性"
+                    :options="others.fieldOptions"
+                    v-model="others.selectAttribute"
+                    :props="{checkStrictly: true, emitPath: false }"
+                    :show-all-levels="false"
+                    filterable
+                    clearable
+                    @change="refreshAttribute"
+                    style="margin-bottom: 10px;"
+                  ></el-cascader>
                   <a
                     style="cursor:pointer;color:#3b7cff;"
                     @click="form.infoBox.push({key:'',value:''})"

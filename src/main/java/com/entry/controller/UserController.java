@@ -84,14 +84,14 @@ public class UserController {
             List<Task> tasks = taskRepository.findAllByUser_IdAndState(userId,type);
             List<Object> list = new ArrayList<>();
             HashMap<String, Object> tmp = null;
-            for(Task task: tasks){
+            for(Task task: tasks) {
                 Assignment assignment = task.getAssignment();
                 tmp = new HashMap<>();
                 tmp.put("id", task.getId());
                 tmp.put("content", task.getContent());
                 tmp.put("endTime", task.getDeadline());
                 tmp.put("saveTime", task.getSaveTime());
-             //   tmp.put("judgeTime", task.getJudgeTime());
+                //   tmp.put("judgeTime", task.getJudgeTime());
                 tmp.put("reason", task.getAdmitReason());
                 tmp.put("modifyReason", assignment.getModifyReason());
                 tmp.put("name", task.getEntryName());
