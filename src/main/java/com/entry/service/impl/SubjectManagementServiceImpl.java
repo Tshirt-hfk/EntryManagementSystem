@@ -69,6 +69,9 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
      */
     @Override
     public void initSubjectAssignment(Integer subjectId, JSONArray entries, JSONArray relations) throws MyException {
+        System.out.println("initSubjectAssignment");
+        System.out.println(entries.toJSONString());
+        System.out.println(relations.toJSONString());
         Subject subject = this.testSubject(subjectId);
         subject.setInitState(true);
         List<Assignment> assignmentList = new ArrayList<>();
@@ -76,15 +79,16 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
         JSONObject tmp = new JSONObject();
         for (int i=0;i<len1;i++){
             JSONObject js = entries.getJSONObject(i);
-            Assignment assignment = new Assignment();
-            assignment.setEntryName(js.getString("entryName"));
-            assignment.setField(js.getJSONArray("field"));
-            assignment.setOriginalId(js.getInteger("id"));
-            assignment.setImageUrl(js.getString("imageUrl"));
-            assignment.setInfoBox(js.getJSONArray("infoBox"));
-            assignment.setIntro(js.getString("intro"));
-            assignment.setContent(js.getString("content"));
-            assignment.setSubject(subject);
+            System.out.println(js.toJSONString());
+            String entryName = js.getString("name");
+            Integer originalId = js.getInteger("id");
+            Assignment assignment;
+            if(originalId<0){
+                assignment = new Assignment(entryName,subject.getField(),subject);
+            }else {
+                JSONObject info = js.getJSONObject("info");
+                assignment = new Assignment(originalId,entryName,js.getString("category"),info.getString("intro"),info.getString("imageUrl"),info.getJSONArray("infoBox").toJSONString(),info.getString("content"),subject);
+            }
             assignmentList.add(assignment);
             tmp.put(js.getString("entryName"),new JSONArray());
         }
@@ -93,12 +97,29 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
             JSONObject js = relations.getJSONObject(i);
             String name1 = js.getString("node1");
             String name2 = js.getString("node2");
-            String rela = js.getString("re_type");
-            if(tmp.getJSONArray(name1)!=null){
-                tmp.getJSONArray(name1).add(js);
-            }else if(tmp.getJSONArray(name2)!=null){
-                tmp.getJSONArray(name2).add(js);
+            String rel = js.getString("rel_type");
+            if("co_occurrence".equals(rel)){
+                if(tmp.getJSONArray(name1)!=null){
+                    JSONObject r = new JSONObject();
+                    r.put("entry",name2);
+                    r.put("type","co_occurrence");
+                    tmp.getJSONArray(name1).add(r);
+                }
+                if(tmp.getJSONArray(name2)!=null){
+                    JSONObject r = new JSONObject();
+                    r.put("entry",name1);
+                    r.put("type","co_occurrence");
+                    tmp.getJSONArray(name2).add(r);
+                }
+            }else if("is-a".equals(rel)){
+                if(tmp.getJSONArray(name1)!=null){
+                    JSONObject r = new JSONObject();
+                    r.put("entry",name2);
+                    r.put("type","is-a");
+                    tmp.getJSONArray(name1).add(r);
+                }
             }
+
         }
         for(int i=0;i<assignmentList.size();i++){
             if(tmp.getJSONArray(assignmentList.get(i).getEntryName())!=null){

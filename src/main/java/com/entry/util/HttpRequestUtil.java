@@ -1,6 +1,7 @@
 package com.entry.util;
 
 import com.alibaba.fastjson.JSONObject;
+import com.entry.security.JwtInterceptor;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -9,6 +10,8 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.concurrent.FailureCallback;
@@ -30,6 +33,8 @@ import java.nio.charset.Charset;
 public class HttpRequestUtil {
     private static CloseableHttpClient httpClient;
 
+    private static Logger logger = LogManager.getLogger(HttpRequestUtil.class);
+
     static {
         PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
         cm.setMaxTotal(100);
@@ -39,6 +44,7 @@ public class HttpRequestUtil {
     }
 
     public static String get(String url) {
+        logger.info("server request get {}",url);
         System.out.println(url);
         CloseableHttpResponse response = null;
         BufferedReader in = null;
@@ -74,6 +80,7 @@ public class HttpRequestUtil {
     }
 
     public static String post(String url, String jsonString) {
+        logger.info("server request post {}",url);
         CloseableHttpResponse response = null;
         BufferedReader in = null;
         String result = "";

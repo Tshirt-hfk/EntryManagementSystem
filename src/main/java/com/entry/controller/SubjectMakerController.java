@@ -115,7 +115,7 @@ public class SubjectMakerController {
             String result = this.httpRequestService.requestInitSubject(subject.getId(), subjectName, field, documents, introduction, goal);
             JSONObject json = JSONObject.parseObject(result);
             System.out.println(result);
-            if(json.getString("status")=="success"){
+            if("success".equals(json.getString("status"))){
                 JSONObject data = json.getJSONObject("data");
                 subjectManagementService.initSubjectAssignment(subject.getId(),data.getJSONArray("nodes"),data.getJSONArray("edges"));
             }

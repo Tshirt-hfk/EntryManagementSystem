@@ -15,6 +15,9 @@ import com.entry.repository.neo4j.EntryRepository;
 import com.entry.service.HttpRequestService;
 import com.entry.service.SubjectManagementService;
 import com.entry.util.HttpRequestUtil;
+import jdk.nashorn.internal.ir.RuntimeNode;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +29,8 @@ import java.util.List;
 
 @RestController
 public class EntryController {
+
+    private static Logger logger = LogManager.getLogger(EntryController.class);
 
     @Autowired
     EntryRepository entryRepository;
@@ -41,14 +46,17 @@ public class EntryController {
 
 
     @PostMapping("/api/entry/initSubjectAssignment")
-    public ResponseEntity<?> initSubjectAssignment(@RequestBody String jsonParam){
+    public ResponseEntity<?> initSubjectAssignment(HttpServletRequest request, @RequestBody String jsonParam){
+        logger.info("server response {}", request.getRequestURI());
         try{
             System.out.println(jsonParam);
             JSONObject json = JSONObject.parseObject(jsonParam);
-            Integer subjectId = json.getInteger("subjectId");
-            JSONObject data = json.getJSONObject("data");
-            JSONArray nodes = data.getJSONArray("nodes");
-            JSONArray edges = data.getJSONArray("edges");
+            Integer subjectId = Integer.parseInt(json.getString("subjectId"));
+            JSONArray nodes = json.getJSONArray("nodes");
+            JSONArray edges = json.getJSONArray("edges");
+            System.out.println(subjectId);
+            System.out.println(nodes.toJSONString());
+            System.out.println(edges.toJSONString());
             this.subjectManagementService.initSubjectAssignment(subjectId,nodes,edges);
             return new ResponseEntity<>(BaseResultFactory.build("success"),HttpStatus.OK);
         }catch (MyException me){

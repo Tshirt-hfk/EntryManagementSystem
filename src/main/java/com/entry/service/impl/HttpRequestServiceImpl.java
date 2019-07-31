@@ -27,7 +27,7 @@ public class HttpRequestServiceImpl implements HttpRequestService {
         data.put("topic_name",subjectName);
         data.put("need_domain", 0);
         data.put("description", intro);
-        data.put("documents",documents);;
+        data.put("documents",documents);
         System.out.println(data.toJSONString());
         String result = HttpRequestUtil.post(this.initSubjectUrl, data.toJSONString());
         return result;

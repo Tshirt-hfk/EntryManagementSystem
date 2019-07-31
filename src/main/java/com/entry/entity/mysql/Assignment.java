@@ -88,7 +88,7 @@ public class Assignment {
         this.infoBox = infoBox;
         this.content = content;
         this.relation = "";
-        this.state = 0;
+        this.state = 1;
         this.subject = subject;
     }
 
