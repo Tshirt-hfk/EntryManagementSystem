@@ -74,9 +74,7 @@ export default {
           subjectId: new Number(this.subjectId)
         })
         .then(res => {
-          if (!res.data.errcode) {
-            this.$router.push({ path: "/entryedit", query: { id: id } });
-          }
+          this.$router.push({ path: "/entryedit", query: { id: id } });
         })
         .catch(error => {});
     },
