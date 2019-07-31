@@ -11,7 +11,7 @@
         {{subjectName}}
       </div>
     </div>
-    <el-tabs type="border-card" style="width: 90% ">
+    <el-tabs type="border-card" style="width: 90%">
       <el-tab-pane lazy>
         <span slot="label">未发布词条</span>
         <unpublishedEntry ref="myUnpublishedEntry" v-on:stateChange="stateChange" v-bind:subjectId="subjectId"></unpublishedEntry>
