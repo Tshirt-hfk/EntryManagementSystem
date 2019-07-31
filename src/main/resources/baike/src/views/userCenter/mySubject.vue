@@ -13,7 +13,7 @@
                   <p style="font-style:normal;font-size: 10px; margin-top: 13px;">获得众智化系统认证，享受更多权限!</p>
             </div>
           </div>
-          <el-card style="width: 1200px;min-height:560px">  <!--高度后期需要自适应 -->
+          <el-card style="width: 1200px;min-height:680px">  <!--高度后期需要自适应 -->
             <router-view ></router-view>
           </el-card>
         </div>

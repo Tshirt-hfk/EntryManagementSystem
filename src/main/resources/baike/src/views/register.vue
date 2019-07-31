@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 style="color:#333; text-align:center; margin-top:30px">欢迎来到云论坛</h1>
+    <h1 style="color:#333; text-align:center; margin-top:30px">欢迎加入众智化词条</h1>
     <div style="margin:70px auto 0; width:40%;">
       <el-card>
         <el-form :model="user_data" status-icon :rules="rules" ref="user_data">

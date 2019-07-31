@@ -69,7 +69,16 @@ export default {
         });
     },
     see(id) {
-      this.$router.push({ path: "/entryedit", query: { id: id } });
+      this.$axios
+        .post("/api/user/joinSubject", {
+          subjectId: new Number(this.subjectId)
+        })
+        .then(res => {
+          if (!res.data.errcode) {
+            this.$router.push({ path: "/entryedit", query: { id: id } });
+          }
+        })
+        .catch(error => {});
     },
     remoteMethod(query){
       if(query !== ''){

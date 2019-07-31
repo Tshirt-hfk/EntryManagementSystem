@@ -11,7 +11,12 @@
     </div>
     <div v-else>
       <template v-if="state==1">
-        <template v-for="subject in subjects">
+        <div class="mycreatedsub-searchbar">
+          <el-input style="width: 250px; float: right; margin-right: 30px;" 
+          v-model="searchValue" placeholder="请输入关键词"></el-input>
+        </div>
+        <div style="width: 100%; height: 480px;">
+        <template v-for="subject in displayData">
           <el-card class="box-card" :key="subject.id" :body-style="{ padding: '0px' }">
             <img class="subject-image" :src="subject.imageUrl" />
             <div style="padding: 12px 12px 0 12px;">
@@ -33,6 +38,17 @@
             </div>
           </el-card>
         </template>
+        </div>
+        <div style="width: 100%;margin-top: 25px;">
+          <el-pagination
+            @current-change="handleCurrentChange"
+            :current-page="currentPage"
+            :page-size="pagesize"
+            layout="total, prev, pager, next, jumper"
+            :total="subjects.length"
+            style="width: 360px;margin: 0 auto"
+          ></el-pagination>
+      </div>
       </template>
       <template v-else>
         <subjectManagement
@@ -55,12 +71,27 @@ export default {
     mySearch,
     subjectManagement
   },
+  watch:{
+    searchValue:{
+      handler(n, o){
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => {
+          this.remoteMethod(n);
+        }, 300);
+      }
+    }
+  },
   data() {
     return {
       status: this.$store.state.status,
       state: 1,
+      currentPage: 1,
+      pagesize: 8,
+      searchValue: '',
+      timeout: null,
       allsubjects: [],
       subjects: [],
+      displayData: [],
       subjectId: 0,
       subjectName: "",
       defaultCard: false,
@@ -89,6 +120,7 @@ export default {
           if (res.data.data){
             this.subjects = res.data.data.subjects;
             this.allsubjects = res.data.data.subjects;
+            this.displayData = res.data.data.subjects.slice(0, 8);
           }
         })
         .catch(error => {
@@ -112,6 +144,12 @@ export default {
         });
       } else this.$router.push("/subjectcreate");
     },
+    handleCurrentChange(val) {
+      this.currentPage = val;
+      let indexleft = val - 1;
+      let size = this.pagesize;
+      this.displayData = this.subjects.slice(indexleft * size, val * size);
+    },
     remoteMethod(query) {
       if (query !== "") {
         this.subjects = this.allsubjects.filter(subject => {
@@ -130,7 +168,7 @@ export default {
 <style scope>
 .content {
   margin-left: 30px;
-  width: 1200px;
+  width: 100%;
   max-height: 1210px;
 }
 .nothing-a {
@@ -171,11 +209,15 @@ export default {
   background: #515151;
   border-radius: 50%;
 }
+.mycreatedsub-searchbar {
+  width: 1060px;
+  height: 60px;
+}
 .box-card {
   float: left;
   margin-top: 10px;
   margin-left: 30px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   height: 210px;
   width: 236px;
 }

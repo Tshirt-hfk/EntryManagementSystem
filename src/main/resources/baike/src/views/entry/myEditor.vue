@@ -503,8 +503,6 @@ export default {
                 children: [
                   { value: "罪犯", label: "罪犯" },
                   { value: "烈士", label: "烈士" },
-                  { value: "司法人物", label: "司法人物" },
-                  { value: "神话人物", label: "神话人物" },
                   { value: "虚构角色", label: "虚构角色" }
                 ]
               }
@@ -520,7 +518,6 @@ export default {
                 children: [
                   { value: "旅游", label: "旅游" },
                   { value: "漫画", label: "漫画" },
-                  { value: "锻练", label: "锻练" },
                   { value: "烹饪", label: "烹饪" },
                   { value: "收藏", label: "收藏" },
                   { value: "园艺", label: "园艺" },
@@ -551,11 +548,6 @@ export default {
             label: "历史",
             children: [
               {
-                value: "历史著作",
-                label: "历史著作",
-                children: [{ value: "历史书籍", label: "历史书籍" }]
-              },
-              {
                 value: "历史概念",
                 label: "历史概念",
                 children: [
@@ -573,7 +565,6 @@ export default {
             label: "司法",
             children: [
               { value: "法律", label: "法律" },
-              { value: "司法制度", label: "司法制度" },
               { value: "司法组织", label: "司法组织" },
               { value: "案件", label: "案件" }
             ]
@@ -584,8 +575,6 @@ export default {
             children: [
               { value: "逻辑", label: "逻辑" },
               { value: "伦理学", label: "伦理学" },
-              { value: "哲学问题", label: "哲学问题" },
-              { value: "哲学概念", label: "哲学概念" }
             ]
           },
           {
@@ -596,8 +585,6 @@ export default {
               { value: "国家", label: "国家" },
               { value: "城市", label: "城市" },
               { value: "地图", label: "地图" },
-              { value: "时区", label: "时区" },
-              { value: "方位", label: "方位" },
               { value: "地区", label: "地区" },
               { value: "地形", label: "地形" },
               { value: "气候", label: "气候" },
