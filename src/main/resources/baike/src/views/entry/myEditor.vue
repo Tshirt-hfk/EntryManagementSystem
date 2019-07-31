@@ -159,21 +159,6 @@
               <div class="basic-info-property-header">
                 <h2>属性</h2>
                 <div style="float:right;margin-top:5px">
-<<<<<<< HEAD
-                  <el-select
-                    v-model="others.selectAttribute"
-                    placeholder="请选择导入的基本属性"
-                    style="margin-bottom: 10px;"
-                  >
-                    <el-option
-                      v-for="item in others.attributeOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                      @change="refreshAttribute"
-                    ></el-option>
-                  </el-select>
-=======
                   <el-cascader
                     placeholder="请选择导入的基本属性"
                     :options="others.fieldOptions"
@@ -184,7 +169,6 @@
                     clearable
                     style="margin-bottom: 10px;"
                   ></el-cascader>
->>>>>>> 383193a2bedb8995ae3e88312756ffdd569f3bbf
                   <a
                     style="cursor:pointer;color:#3b7cff;"
                     @click="form.infoBox.push({key:'',value:''})"
@@ -1046,9 +1030,6 @@ export default {
         this.form.field.push(selectValue[0]);
       }
       this.others.selectVisible = false;
-<<<<<<< HEAD
-      this.others.selectValue = "";
-=======
       this.others.selectValue = '';
     },
     refreshAttribute(attribute){
@@ -1074,7 +1055,6 @@ export default {
             });
           }
         });
->>>>>>> 383193a2bedb8995ae3e88312756ffdd569f3bbf
     },
     refreshAttribute() {},
     uploadSuccess(res, file) {
