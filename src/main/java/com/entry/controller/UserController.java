@@ -85,6 +85,7 @@ public class UserController {
             List<Object> list = new ArrayList<>();
             HashMap<String, Object> tmp = null;
             for(Task task: tasks){
+                Assignment assignment = task.getAssignment();
                 tmp = new HashMap<>();
                 tmp.put("id", task.getId());
                 tmp.put("content", task.getContent());
@@ -92,6 +93,7 @@ public class UserController {
                 tmp.put("saveTime", task.getSaveTime());
              //   tmp.put("judgeTime", task.getJudgeTime());
                 tmp.put("reason", task.getAdmitReason());
+                tmp.put("modifyReason", assignment.getModifyReason());
                 tmp.put("name", task.getEntryName());
                 tmp.put("field", task.getField());
                 list.add(tmp);
@@ -455,7 +457,6 @@ public class UserController {
             List<Assignment> assignments = assignmentRepository.findAssignmentByKey(entryName);
             JSONArray tmps = new JSONArray();
             JSONObject tmp = null;
-            String reason = null;
             String reasonResult [] = null;
             if(assignments.size() != 0){
                 for(Assignment assignment: assignments){
@@ -463,14 +464,7 @@ public class UserController {
                     tmp.put("id", assignment.getId());
                     tmp.put("name", assignment.getEntryName());
                     tmp.put("field", assignment.getField());
-                    reason = assignment.getModifyReason();
-                    if(reason != null) {
-                        reasonResult = reason.split(";");
-                        if(reasonResult.length == 2) {
-                            tmp.put("reason1", reasonResult[0]);
-                            tmp.put("reason2", reasonResult[1]);
-                        }
-                    }
+                    tmp.put("reason", assignment.getModifyReason());
                     tmps.add(tmp);
                 }
                 JSONObject result = new JSONObject();
@@ -534,7 +528,6 @@ public class UserController {
             List<Assignment> assignments = assignmentRepository.getRecommendAssignmentByRand(12);
             List<Object> tmps = new ArrayList<>();
             HashMap<String,Object> tmp = null;
-            String reason = null;
             String reasonResult [] = null;
             if(assignments.size() != 0){
                 for(Assignment assignment: assignments){
@@ -542,14 +535,7 @@ public class UserController {
                     tmp.put("id", assignment.getId());
                     tmp.put("name", assignment.getEntryName());
                     tmp.put("field", assignment.getField());
-                    reason = assignment.getModifyReason();
-                    if(reason != null) {
-                        reasonResult = reason.split(";");
-                        if(reasonResult.length == 2) {
-                            tmp.put("reason1", reasonResult[0]);
-                            tmp.put("reason2", reasonResult[1]);
-                        }
-                    }
+                    tmp.put("reason",assignment.getModifyReason());
                     tmps.add(tmp);
                 }
                 HashMap<String,Object> result = new HashMap<>();

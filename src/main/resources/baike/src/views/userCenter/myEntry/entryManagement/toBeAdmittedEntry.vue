@@ -7,10 +7,10 @@
             <el-table-column type="selection" width="55"> </el-table-column>
             <el-table-column prop="name" label="词条名称" width="100"> </el-table-column>
             <el-table-column prop="field" label="领域" width="200"> </el-table-column>
-            <el-table-column label="保存时间" width="180">
+            <el-table-column label="保存时间" width="160">
               <template slot-scope="scope">{{ scope.row.saveTime | formatDate}}</template>
             </el-table-column>
-            <el-table-column label="结束时间" width="180">
+            <el-table-column label="结束时间" width="160">
               <template slot-scope="scope">{{ scope.row.endTime | formatDate}}</template>
             </el-table-column>
             <el-table-column label="版本" show-overflow-tooltip width="50">
@@ -24,6 +24,7 @@
               <template slot-scope="scope">
                 <el-button size="mini" type="primary" @click="jumpToEdit">编辑</el-button>
                 <el-button size="mini" type="primary" @click="getTaskContent(scope.row.id)">预览</el-button>
+                <el-button size="mini" type="success" @click="getReason(scope.$index)">提交</el-button>
               </template>
             </el-table-column>
         </el-table>
@@ -34,17 +35,12 @@
             style="width: 540px;margin: 0 auto"> </el-pagination>
         </div>
         <div style="margin-top: 20px">
-            <el-button @click="admitFlag = true">提交</el-button>
             <el-button @click="deleteFlag = true">放弃</el-button>
         </div>
         <el-dialog title="修改原因" :visible.sync="admitFlag" width="600px">
           <span>
-            <el-button size="mini" @click="reason='更正错误'" plain>更正错误</el-button>
-            <el-button size="mini" @click="reason='内容扩充'" plain>内容扩充</el-button>
-            <el-button size="mini" @click="reason='删除冗余'" plain>删除冗余</el-button>
-            <el-button size="mini" @click="reason='目录结构'" plain>目录结构</el-button>
-            <el-button size="mini" @click="reason='概述'" plain>概述</el-button>
-            <el-button size="mini" @click="reason='图片'" plain>图片</el-button>
+              <el-button v-for="item in modifyReason" :key="item" size="mini" 
+              @click="reason=item" plain>{{item}}</el-button>
             <div style="margin: 15px 0;"></div>
             <el-input type="textarea" v-model="reason" maxlength="30" show-word-limit></el-input>
             <div style="margin: 10px 0;"></div>
@@ -118,6 +114,7 @@ export default {
       admitFlag : false,
       deleteFlag : false,
       entryId: 0,
+      modifyReason: [],
       reason: ""
     };
   },
@@ -168,6 +165,10 @@ export default {
     },
     jumpToEdit(){
       this.$router.push({path : "/entryedit", query :{id : this.entryId}});
+    },
+    getReason(index){
+      this.modifyReason = this.displayData[index].modifyReason;
+      this.admitFlag = true;
     },
     admitEntry(){
       var array = new Array

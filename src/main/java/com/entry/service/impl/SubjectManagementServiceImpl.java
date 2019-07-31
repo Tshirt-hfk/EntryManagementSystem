@@ -109,7 +109,7 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
      * @throws MyException
      */
     @Override
-    public void publishAssignment(Integer userId, Integer subjectId, String reason, Integer deadline, List<Integer> entryIds) throws MyException  {
+    public void publishAssignment(Integer userId, Integer subjectId, JSONArray reason, Integer deadline, List<Integer> entryIds) throws MyException  {
         User user =  this.testUser(userId);
         Subject subject = this.testSubject(subjectId);
         this.testSubjectMaker(user, subject);

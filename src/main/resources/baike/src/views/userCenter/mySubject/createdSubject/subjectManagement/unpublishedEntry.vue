@@ -678,15 +678,11 @@ export default {
       for (var i = 0; i < this.multipleSelection.length; i++) {
         array.push(this.multipleSelection[i].id);
       }
-      var reason = "";
-      for (var i = 0; i < this.dynamicReasons.length; i++) {
-        reason += this.dynamicReasons[i] + ";";
-      }
       this.$axios
         .post("/api/subjectMaker/publishAssignment", {
           entryIds: array,
           subjectId: new Number(this.subjectId),
-          reason: reason
+          reason: this.dynamicReasons,
         })
         .then(res => {
           if (res.data) {

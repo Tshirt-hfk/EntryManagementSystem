@@ -13,8 +13,8 @@
                   ({{item}})</div> 
             </div>
             <div class="rec-entry-body">
-                <p>{{entry.reason1}}</p>
-                <p>{{entry.reason2}}</p>
+                <p>{{entry.reason[0]}}</p>
+                <p>{{entry.reason[1]}}</p>
             </div>         
         </a>
     </template>
