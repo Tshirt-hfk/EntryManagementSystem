@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface HttpRequestService {
 
-    public void requestInitSubject(Integer subjectId ,String subjectName, JSONArray field ,JSONArray documents, String intro, String goal) throws MyException;
+    public String requestInitSubject(Integer subjectId ,String subjectName, JSONArray field ,JSONArray documents, String intro, String goal) throws MyException;
 
 
 }

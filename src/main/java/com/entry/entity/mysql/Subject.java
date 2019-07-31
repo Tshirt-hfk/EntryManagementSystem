@@ -51,6 +51,9 @@ public class Subject {
     @Column(columnDefinition = "BOOLEAN")
     private Boolean isPublic;
 
+    @Column(columnDefinition = "BOOLEAN")
+    private Boolean initState;
+
     @OneToMany(mappedBy = "subject",cascade=CascadeType.ALL,fetch=FetchType.LAZY)
     private List<Assignment> assignmentList;
 
@@ -76,6 +79,7 @@ public class Subject {
         this.currentCount = 0;
         this.totalCount = 0;
         this.drawedTaskCountLimit = 1;
+        this.initState = false;
     }
 
     public void setId(Integer id) {
@@ -168,6 +172,14 @@ public class Subject {
 
     public void setPublic(Boolean aPublic) {
         isPublic = aPublic;
+    }
+
+    public Boolean getInitState() {
+        return initState;
+    }
+
+    public void setInitState(Boolean initState) {
+        this.initState = initState;
     }
 
     public List<Assignment> getAssignmentList() {

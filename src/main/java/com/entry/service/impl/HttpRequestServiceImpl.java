@@ -21,14 +21,17 @@ public class HttpRequestServiceImpl implements HttpRequestService {
     private String initSubjectUrl;
 
     @Override
-    public void requestInitSubject(Integer subjectId , String subjectName, JSONArray field , JSONArray documents, String intro, String goal) throws MyException {
+    public String requestInitSubject(Integer subjectId , String subjectName, JSONArray field , JSONArray documents, String intro, String goal) throws MyException {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("topic_name",subjectName);
-        jsonObject.put("need_domain", 1);
-        jsonObject.put("description", intro);
-        jsonObject.put("documents",documents);
+        JSONObject data = new JSONObject();
+        data.put("subjectId", subjectId);
+        data.put("topic_name",subjectName);
+        data.put("need_domain", 1);
+        data.put("description", intro);
+        data.put("documents",documents);
+        jsonObject.put("data",data);
         String result = HttpRequestUtil.post(this.initSubjectUrl, jsonObject.toJSONString());
-        System.out.println(result);
+        return result;
     }
 
 }

@@ -112,7 +112,12 @@ public class SubjectMakerController {
             Long deadline = form.getLong("deadline");
             JSONArray documents = form.getJSONArray("documents");
             Subject subject = this.subjectManagementService.createSubject(userId, subjectName, imageUrl, field, isPublic, introduction, goal, deadline);
-            this.httpRequestService.requestInitSubject(subject.getId(), subjectName, field, documents, introduction, goal);
+            String result = this.httpRequestService.requestInitSubject(subject.getId(), subjectName, field, documents, introduction, goal);
+            JSONObject json = JSONObject.parseObject(result);
+            if(json.getString("status")=="success"){
+                JSONObject data = json.getJSONObject("data");
+                subjectManagementService.initSubjectAssignment(subject.getId(),data.getJSONArray("nodes"),data.getJSONArray("edges"));
+            }
             return new ResponseEntity<>(BaseResultFactory.build("创建成功"), HttpStatus.OK);
         } catch (MyException me){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST,"创建请求"), HttpStatus.OK);
@@ -153,6 +158,7 @@ public class SubjectMakerController {
             System.out.println(jsonParam);
             HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
             Integer subjectId = (Integer)form.get("subjectId");
+            Subject subject = subjectRepository.findSubjectById(subjectId);
             Integer type = (Integer)form.get("type");
             JSONObject result1;
             List<Object> list = new ArrayList<>();
@@ -181,6 +187,7 @@ public class SubjectMakerController {
             }
             HashMap<String,Object> result=new HashMap<>();
             result.put("assignments",list);
+            result.put("initState",subject.getInitState());
             return new ResponseEntity<>(BaseResultFactory.build(result,"success"), HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);

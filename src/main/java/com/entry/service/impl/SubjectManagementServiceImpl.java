@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -67,7 +68,14 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
     @Override
     public void initSubjectAssignment(Integer subjectId, JSONArray entries, JSONArray relations) throws MyException {
         Subject subject = this.testSubject(subjectId);
-
+        subject.setInitState(true);
+        List<Assignment> assignmentList = new ArrayList<>();
+        int len1=entries.size();
+        for (int i=0;i<len1;i++){
+            JSONObject json = entries.getJSONObject(i);
+            String entryName = json.getString("");
+        }
+        subjectRepository.save(subject);
     }
 
 
@@ -246,7 +254,13 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
         }
     }
 
-
+    /**
+     * 获取任务内容
+     * @param userId
+     * @param assignmentId
+     * @return
+     * @throws MyException
+     */
     @Override
     public JSONObject getAssignment(Integer userId, Integer assignmentId) throws  MyException {
         User user = this.testUser(userId);
@@ -262,6 +276,13 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
         return result;
     }
 
+    /**
+     * 获取领取的任务内容
+     * @param userId
+     * @param taskId
+     * @return
+     * @throws MyException
+     */
     @Override
     public JSONObject getTask(Integer userId, Integer taskId) throws  MyException {
         User user = this.testUser(userId);
