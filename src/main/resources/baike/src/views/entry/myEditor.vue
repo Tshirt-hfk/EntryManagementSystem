@@ -155,12 +155,11 @@
                   <el-cascader
                     placeholder="请选择导入的基本属性"
                     :options="others.fieldOptions"
-                    v-model="others.selectAttribute"
+                    v-model="selectAttribute"
                     :props="{checkStrictly: true, emitPath: false }"
                     :show-all-levels="false"
                     filterable
                     clearable
-                    @change="refreshAttribute"
                     style="margin-bottom: 10px;"
                   ></el-cascader>
                   <a
@@ -332,8 +331,20 @@ export default {
     mySearch,
     entryReview
   },
+  watch:{
+    selectAttribute:{
+      handler(n, o){
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => {
+          this.refreshAttribute(n);
+        }, 300);
+      }
+    }
+  },
   data() {
     return {
+      selectAttribute: '',
+      timeout: null,
       drawerFlag: false,
       options: [],
       loading: false,
@@ -781,7 +792,6 @@ export default {
         ],
         selectVisible: false,
         selectValue: '',
-        selectAttribute: '',
         attributeOptions: [],
         recommendcatalog: [
           {
@@ -1020,8 +1030,29 @@ export default {
       this.others.selectVisible = false;
       this.others.selectValue = '';
     },
-    refreshAttribute(){
-
+    refreshAttribute(attribute){
+      this.$axios
+        .get("/data/getAttribute", {
+          params: {
+            category: attribute
+          }
+        })
+        .then(res => {
+          if (res.data) {
+            this.form.infoBox.splice(0, this.form.infoBox.length);
+            for(var attribute of res.data.attributes){
+              this.form.infoBox.push({key:attribute, value: ''});
+            }
+          }
+        })
+        .catch(error => {
+          if (error.response) {
+            this.$message({
+              message: error.response.data.msg,
+              type: "warning"
+            });
+          }
+        });
     },
     uploadSuccess(res, file) {
       // 如果上传成功
