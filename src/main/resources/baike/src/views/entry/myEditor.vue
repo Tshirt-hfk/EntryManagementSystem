@@ -159,6 +159,7 @@
               <div class="basic-info-property-header">
                 <h2>属性</h2>
                 <div style="float:right;margin-top:5px">
+<<<<<<< HEAD
                   <el-select
                     v-model="others.selectAttribute"
                     placeholder="请选择导入的基本属性"
@@ -172,6 +173,18 @@
                       @change="refreshAttribute"
                     ></el-option>
                   </el-select>
+=======
+                  <el-cascader
+                    placeholder="请选择导入的基本属性"
+                    :options="others.fieldOptions"
+                    v-model="selectAttribute"
+                    :props="{checkStrictly: true, emitPath: false }"
+                    :show-all-levels="false"
+                    filterable
+                    clearable
+                    style="margin-bottom: 10px;"
+                  ></el-cascader>
+>>>>>>> 383193a2bedb8995ae3e88312756ffdd569f3bbf
                   <a
                     style="cursor:pointer;color:#3b7cff;"
                     @click="form.infoBox.push({key:'',value:''})"
@@ -337,8 +350,20 @@ export default {
     mySearch,
     entryReview
   },
+  watch:{
+    selectAttribute:{
+      handler(n, o){
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => {
+          this.refreshAttribute(n);
+        }, 300);
+      }
+    }
+  },
   data() {
     return {
+      selectAttribute: '',
+      timeout: null,
       drawerFlag: false,
       options: [],
       loading: false,
@@ -785,8 +810,7 @@ export default {
           }
         ],
         selectVisible: false,
-        selectValue: "",
-        selectAttribute: "",
+        selectValue: '',
         attributeOptions: [],
         recommendcatalog: [
           {
@@ -1035,7 +1059,35 @@ export default {
         this.form.field.push(selectValue[0]);
       }
       this.others.selectVisible = false;
+<<<<<<< HEAD
       this.others.selectValue = "";
+=======
+      this.others.selectValue = '';
+    },
+    refreshAttribute(attribute){
+      this.$axios
+        .get("/data/getAttribute", {
+          params: {
+            category: attribute
+          }
+        })
+        .then(res => {
+          if (res.data) {
+            this.form.infoBox.splice(0, this.form.infoBox.length);
+            for(var attribute of res.data.attributes){
+              this.form.infoBox.push({key:attribute, value: ''});
+            }
+          }
+        })
+        .catch(error => {
+          if (error.response) {
+            this.$message({
+              message: error.response.data.msg,
+              type: "warning"
+            });
+          }
+        });
+>>>>>>> 383193a2bedb8995ae3e88312756ffdd569f3bbf
     },
     refreshAttribute() {},
     uploadSuccess(res, file) {

@@ -51,6 +51,7 @@
                   <dt>{{prop.key}}</dt>
                   <span style="float:left;line-height: 24px;margin-right: 5px;">:</span>
                   <dd>{{prop.value}}</dd>
+                  <div style="clear: both"></div>
                 </div>
               </div>
             </dl>
@@ -60,6 +61,7 @@
                   <dt>{{prop.key}}</dt>
                   <span style="float:left;line-height: 24px;margin-right: 5px;">:</span>
                   <dd>{{prop.value}}</dd>
+                  <div style="clear: both"></div>
                 </div>
               </div>
             </dl>

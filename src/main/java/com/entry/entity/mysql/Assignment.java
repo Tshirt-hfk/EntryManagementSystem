@@ -1,6 +1,7 @@
 package com.entry.entity.mysql;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -50,6 +51,9 @@ public class Assignment {
     @Column
     private String modifyReason;
 
+    @Column
+    private String relation;
+
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "subject_id")
     private Subject subject;
@@ -69,8 +73,10 @@ public class Assignment {
         this.imageUrl = "";
         this.infoBox = (new JSONArray()).toJSONString();
         this.content = "";
+        this.relation = "";
         this.state = 1;
         this.subject = subject;
+
     }
 
     public Assignment(Integer originalId, String entryName, String field, String intro, String imageUrl, String infoBox, String content, Subject subject) {
@@ -81,6 +87,7 @@ public class Assignment {
         this.imageUrl = imageUrl;
         this.infoBox = infoBox;
         this.content = content;
+        this.relation = "";
         this.state = 0;
         this.subject = subject;
     }
@@ -188,4 +195,14 @@ public class Assignment {
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
     }
+
+    public JSONArray getRelation() {
+        return JSONArray.parseArray(this.relation);
+    }
+
+    public void setRelation(JSONArray relation) {
+        this.relation = relation.toJSONString();
+    }
+
+
 }

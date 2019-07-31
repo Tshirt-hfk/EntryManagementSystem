@@ -43,6 +43,9 @@ public class Task {
     @Column
     private String content;
 
+    @Column
+    private String relation;
+
     @Column(columnDefinition = "TINYINT default 3", nullable = false)
     private Integer state;
 
@@ -215,5 +218,13 @@ public class Task {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public JSONArray getRelation() {
+        return JSONArray.parseArray(this.relation);
+    }
+
+    public void setRelation(JSONArray relation) {
+        this.relation = relation.toJSONString();
     }
 }
