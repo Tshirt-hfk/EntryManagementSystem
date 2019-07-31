@@ -88,6 +88,7 @@ public class Task {
         this.intro = assignment.getIntro();
         this.infoBox = assignment.getInfoBox().toJSONString();
         this.content = assignment.getContent();
+        this.relation = assignment.getRelation().toJSONString();
         this.state = Task.DRAWED;
         this.deadline = new Timestamp((new Date()).getTime()+assignment.getDeadline());
     }

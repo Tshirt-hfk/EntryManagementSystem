@@ -71,24 +71,41 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
     public void initSubjectAssignment(Integer subjectId, JSONArray entries, JSONArray relations) throws MyException {
         Subject subject = this.testSubject(subjectId);
         subject.setInitState(true);
-//        List<Assignment> assignmentList = new ArrayList<>();
-//        int len1=entries.size();
-//        for (int i=0;i<len1;i++){
-//            JSONObject json = entries.getJSONObject(i);
-//            String entryName = json.getString("name");
-//            String result = HttpRequestUtil.get("http://192.168.1.121:9000/fetchPageByName?name="+entryName);
-//            JSONObject js = JSONObject.parseObject(result);
-//            Assignment assignment = new Assignment();
-//            assignment.setEntryName(js.getString("entryName"));
-//            assignment.setField(js.getJSONArray("field"));
-//            assignment.setOriginalId(js.getInteger("id"));
-//            assignment.setImageUrl(js.getString("imageUrl"));
-//            assignment.setInfoBox(js.getJSONArray("infoBox"));
-//            assignment.setIntro(js.getString("intro"));
-//            assignment.setContent(js.getString("content"));
-//            assignment.setSubject(subject);
-//            assignmentList.add(assignment);
-//        }
+        List<Assignment> assignmentList = new ArrayList<>();
+        int len1=entries.size();
+        JSONObject tmp = new JSONObject();
+        for (int i=0;i<len1;i++){
+            JSONObject js = entries.getJSONObject(i);
+            Assignment assignment = new Assignment();
+            assignment.setEntryName(js.getString("entryName"));
+            assignment.setField(js.getJSONArray("field"));
+            assignment.setOriginalId(js.getInteger("id"));
+            assignment.setImageUrl(js.getString("imageUrl"));
+            assignment.setInfoBox(js.getJSONArray("infoBox"));
+            assignment.setIntro(js.getString("intro"));
+            assignment.setContent(js.getString("content"));
+            assignment.setSubject(subject);
+            assignmentList.add(assignment);
+            tmp.put(js.getString("entryName"),new JSONArray());
+        }
+        int len2 = relations.size();
+        for(int i=0;i<len2;i++){
+            JSONObject js = relations.getJSONObject(i);
+            String name1 = js.getString("node1");
+            String name2 = js.getString("node2");
+            String rela = js.getString("re_type");
+            if(tmp.getJSONArray(name1)!=null){
+                tmp.getJSONArray(name1).add(js);
+            }else if(tmp.getJSONArray(name2)!=null){
+                tmp.getJSONArray(name2).add(js);
+            }
+        }
+        for(int i=0;i<assignmentList.size();i++){
+            if(tmp.getJSONArray(assignmentList.get(i).getEntryName())!=null){
+                assignmentList.get(i).setRelation(tmp.getJSONArray(assignmentList.get(i).getEntryName()));
+            }
+            assignmentRepository.save(assignmentList.get(i));
+        }
         subjectRepository.save(subject);
     }
 
