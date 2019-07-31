@@ -6,7 +6,7 @@
           <img style="width: 120px; height: 70px;" src="/static/image/logo.png" />
         </a>
       </div>
-      <div class="index-search">
+      <div class="index-search" v-on:keyup.enter="search" >
         <el-autocomplete
           v-model="value"
           style="width: 440px"

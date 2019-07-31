@@ -50,7 +50,6 @@
           <div class="preview-cataloglist">
             <ol v-for="n in columns" :key="n">
               <li
-                style="line-height: 28px"
                 v-for="(cata, index) in catalog.slice((n-1)*12)"
                 :key="index"
               >
@@ -107,7 +106,7 @@
           <div class="preview-side-roller">
             <div class="inner-container">
               <ol class="preview-side-catalist">
-                <li style="line-height: 28px" v-for="(cata, index) in catalog" :key="index">
+                <li v-for="(cata, index) in catalog" :key="index">
                   <template v-if="cata.type == 1">
                     <a class="side-cata-pointer"></a>
                     <span class="side-index1">{{cata.index}}</span>
@@ -493,6 +492,7 @@ p {
   vertical-align: top;
   text-align: right;
   color: #63a0df;
+  margin-bottom: 10px;
 }
 .catalog-text1 {
   display: inline-block;
@@ -501,6 +501,7 @@ p {
   background-color: #fff;
   vertical-align: top;
   width: 120px;
+  margin-bottom: 10px;
 }
 .catalog-index2 {
   display: inline-block;
@@ -508,14 +509,12 @@ p {
   padding-right: 5px;
   padding-top: 7px;
   width: 5px;
-  line-height: 14px;
   font-size: 14px;
   vertical-align: top;
   color: #ccc;
 }
 .catalog-text2 {
   display: inline-block;
-  line-height: 14px;
   font-size: 14px;
   width: 115px;
   vertical-align: top;
@@ -606,6 +605,7 @@ p {
   vertical-align: top;
   text-align: right;
   color: #63a0df;
+  margin-top: 5px;
 }
 .side-text1 {
   display: inline-block;
@@ -615,20 +615,19 @@ p {
   color: #555;
   vertical-align: top;
   width: 120px;
+  margin-top: 5px;
 }
 .side-index2 {
   display: inline-block;
   padding-left: 41px;
   padding-top: 7px;
   width: 25px;
-  line-height: 14px;
   font-size: 14px;
   vertical-align: top;
   color: #63a0df;
 }
 .side-text2 {
   display: inline-block;
-  line-height: 14px;
   font-size: 14px;
   width: 115px;
   vertical-align: top;
