@@ -25,7 +25,7 @@
                 <el-button
                   style="float:right"
                   size="mini"
-                  @click="entryInSubject(subject.id,subject.name)"
+                  @click="entryInSubject(subject.id,subject.name, subject.initState)"
                 >查看</el-button>
                 <div class="clear"></div>
               </div>
@@ -54,6 +54,7 @@
         <subjectManagement
           :subjectId="subjectId"
           :subjectName="subjectName"
+          :subjectInit="subjectInit"
           v-on:backToSubject="backToSubject"
         ></subjectManagement>
       </template>
@@ -94,6 +95,7 @@ export default {
       displayData: [],
       subjectId: 0,
       subjectName: "",
+      subjectInit: false,
       defaultCard: false,
       options: [],
       loading: false,
@@ -128,9 +130,10 @@ export default {
           }
         });
     },
-    entryInSubject(id, name) {
+    entryInSubject(id, name, state) {
       this.subjectId = id;
       this.subjectName = name;
+      this.subjectInit = state;
       this.state = 2;
     },
     backToSubject() {

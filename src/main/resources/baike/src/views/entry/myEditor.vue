@@ -354,23 +354,10 @@ export default {
       value: [],
       relation: "",
       optionInRelation: ["上位词", "下位词", "同位词"],
-      relationData: [
-        {
-          name: "哈哈",
-          relation: "上位词"
-        },
-        {
-          name: "嘻嘻",
-          relation: "下位词"
-        },
-        {
-          name: "呵呵",
-          relation: "同位词"
-        }
-      ],
+      relationData: [],
       taskId: this.$route.query.id,
       form: {
-        entryName: "哈哈",
+        entryName: "",
         field: [],
         imageUrl: "",
         intro: "",
@@ -783,33 +770,7 @@ export default {
         selectVisible: false,
         selectValue: '',
         attributeOptions: [],
-        recommendcatalog: [
-          {
-            title: "标题1",
-            index: "1",
-            type: 1
-          },
-          {
-            title: "标题1.1",
-            index: "1.1",
-            type: 2
-          },
-          {
-            title: "标题1.2",
-            index: "1.2",
-            type: 2
-          },
-          {
-            title: "标题2",
-            index: "2",
-            type: 1
-          },
-          {
-            title: "标题2.1",
-            index: "2.1",
-            type: 2
-          }
-        ],
+        recommendcatalog: [],
         catalog: [],
         catalogOpen: true, // 目录显示控制
         serverUrl: "/resource/image",
@@ -1144,10 +1105,10 @@ export default {
           relation: this.relation
         }
       ];
-      tableData.push(arr);
+      this.relationData.push(arr);
     },
     toDeleteRelation(index) {
-      this.tableData.splice(index, 1);
+      this.relationData.splice(index, 1);
       window.console.log("nmh");
     },
     handleClose(done) {
@@ -1256,7 +1217,7 @@ export default {
 }
 .basic-info-intro-text {
   float: left;
-  width: 600px;
+  width: 580px;
   height: 178px;
   margin-left: 25px;
   border-radius: 4px;

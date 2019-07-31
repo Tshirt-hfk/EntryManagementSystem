@@ -37,7 +37,7 @@
         <div style="margin-top: 20px">
             <el-button @click="deleteFlag = true">放弃</el-button>
         </div>
-        <el-dialog title="修改原因" :visible.sync="admitFlag" width="600px">
+        <el-dialog title="修改原因" :visible.sync="admitFlag" width="600px" top="20vh">
           <span>
               <el-button v-for="item in modifyReason" :key="item" size="mini" 
               @click="reason=item" plain>{{item}}</el-button>
