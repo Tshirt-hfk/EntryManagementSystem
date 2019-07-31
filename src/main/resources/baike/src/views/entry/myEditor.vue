@@ -68,13 +68,21 @@
                 <template v-if="item.type==1">
                   <h2>
                     {{item.index}}
-                    <a class="catalog-title" :href="'#t'+item.index" style="color: #3f81c1;">{{item.title}}</a>
+                    <a
+                      class="catalog-title"
+                      :href="'#t'+item.index"
+                      style="color: #3f81c1;"
+                    >{{item.title}}</a>
                   </h2>
                 </template>
                 <template v-else-if="item.type==2">
                   <h3>
                     {{item.index}}
-                    <a class="catalog-title" :href="'#t'+item.index" style="color: #000;">{{item.title}}</a>
+                    <a
+                      class="catalog-title"
+                      :href="'#t'+item.index"
+                      style="color: #000;"
+                    >{{item.title}}</a>
                   </h3>
                 </template>
               </div>
@@ -111,9 +119,8 @@
               closable
               :disable-transitions="false"
               @close="handleFieldDelete(tag)"
-              style="font-size: 16px;margin-left:8px;">
-              {{tag}}
-            </el-tag>
+              style="font-size: 16px;margin-left:8px;"
+            >{{tag}}</el-tag>
             <el-cascader
               class="select-new-tag"
               v-if="others.selectVisible"
@@ -152,14 +159,18 @@
               <div class="basic-info-property-header">
                 <h2>属性</h2>
                 <div style="float:right;margin-top:5px">
-                  <el-select v-model="others.selectAttribute" placeholder="请选择导入的基本属性" style="margin-bottom: 10px;">
+                  <el-select
+                    v-model="others.selectAttribute"
+                    placeholder="请选择导入的基本属性"
+                    style="margin-bottom: 10px;"
+                  >
                     <el-option
-                      v-for="item in attributeOptions"
+                      v-for="item in others.attributeOptions"
                       :key="item.value"
                       :label="item.label"
                       :value="item.value"
-                      @change="refreshAttribute">
-                    </el-option>
+                      @change="refreshAttribute"
+                    ></el-option>
                   </el-select>
                   <a
                     style="cursor:pointer;color:#3b7cff;"
@@ -182,12 +193,7 @@
                       ></el-input>
                     </el-form-item>
                     <el-form-item style="width:255px;float:left;margin-left:10px">
-                      <el-input
-                        type="text"
-                        size="mini"
-                        maxlength="20"
-                        v-model="item.value"
-                      ></el-input>
+                      <el-input type="text" size="mini" maxlength="20" v-model="item.value"></el-input>
                     </el-form-item>
                     <div style="float:left;margin-left:8px;line-height:40px;">
                       <a
@@ -319,6 +325,7 @@ import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import "quill/dist/quill.Bubble.css";
 import Quill from "quill";
+import Delta from "quill-delta";
 import katex from "katex";
 import ImageResize from "quill-image-resize-module";
 import "katex/dist/katex.min.css";
@@ -778,29 +785,33 @@ export default {
           }
         ],
         selectVisible: false,
-        selectValue: '',
-        selectAttribute: '',
+        selectValue: "",
+        selectAttribute: "",
         attributeOptions: [],
         recommendcatalog: [
           {
-            title: '标题1',
-            index: '1',
+            title: "标题1",
+            index: "1",
             type: 1
-          },{
-            title: '标题1.1',
-            index: '1.1',
+          },
+          {
+            title: "标题1.1",
+            index: "1.1",
             type: 2
-          },{
-            title: '标题1.2',
-            index: '1.2',
+          },
+          {
+            title: "标题1.2",
+            index: "1.2",
             type: 2
-          },{
-            title: '标题2',
-            index: '2',
+          },
+          {
+            title: "标题2",
+            index: "2",
             type: 1
-          },{
-            title: '标题2.1',
-            index: '2.1',
+          },
+          {
+            title: "标题2.1",
+            index: "2.1",
             type: 2
           }
         ],
@@ -1001,26 +1012,32 @@ export default {
         });
       }
     },
-    applyRecommendCatalog(){
-
+    applyRecommendCatalog() {
+      var delta = new Delta();
+      delta.retain(this.contenteditor.editor.getLength());
+      for (var cata of this.others.recommendcatalog) {
+        delta.insert(cata.title + "\n", {
+          header: cata.type
+        });
+      }
+      this.contenteditor.editor.updateContents(delta);
+      this.refreshCatalog();
     },
-    handleFieldDelete(tag){
+    handleFieldDelete(tag) {
       this.form.field.splice(this.form.field.indexOf(tag), 1);
     },
     showSelect() {
       this.others.selectVisible = true;
     },
-    addField(){
+    addField() {
       let selectValue = this.others.selectValue;
       if (selectValue) {
         this.form.field.push(selectValue[0]);
       }
       this.others.selectVisible = false;
-      this.others.selectValue = '';
+      this.others.selectValue = "";
     },
-    refreshAttribute(){
-
-    },
+    refreshAttribute() {},
     uploadSuccess(res, file) {
       // 如果上传成功
       if (res.data && res.data.url) {
@@ -1171,7 +1188,7 @@ export default {
 }
 
 /* 基本信息 */
-.basic-info-head{
+.basic-info-head {
   width: 100%;
   margin: 30px 0 15px;
 }
@@ -1331,7 +1348,7 @@ export default {
   text-decoration: none;
   display: inline-block;
 }
-.catalog-holder h2{
+.catalog-holder h2 {
   font-size: 18px;
   font-weight: 550;
   color: #3f81c1;
@@ -1406,11 +1423,11 @@ export default {
 .relation-table {
   font-family: Arial, Helvetica, sans-serif;
 }
-.recata-btn-apply{
+.recata-btn-apply {
   color: #fff;
-  border: solid 1px #409EFF;
+  border: solid 1px #409eff;
   border-radius: 6px;
-  background: #409EFF;
+  background: #409eff;
   text-align: center;
   padding: 7px 0px 7px 10px;
   font-size: 15px;
@@ -1420,18 +1437,18 @@ export default {
   cursor: pointer;
   letter-spacing: 10px;
 }
-.recata-btn-apply:hover{
+.recata-btn-apply:hover {
   opacity: 0.9;
 }
-.recata-holder{
+.recata-holder {
   margin-left: 10px;
 }
-.recata-holder h2{
+.recata-holder h2 {
   font-size: 18px;
   font-weight: 550;
   color: #3f81c1;
 }
-.recata-holder h3{
+.recata-holder h3 {
   margin-left: 10px;
   font-size: 14px;
   font-weight: 500;
