@@ -222,7 +222,7 @@ export default {
         array.push(this.multipleSelection[i].id);
       }
       this.$axios
-        .post("/api/subjectMaker/toSubmitAssignment", {
+        .post("/api/subjectMaker/submitEntry", {
           entryIds: array,
           subjectId: new Number(this.subjectId),
         })

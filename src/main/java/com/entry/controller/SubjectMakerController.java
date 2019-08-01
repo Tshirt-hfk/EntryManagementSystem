@@ -163,7 +163,7 @@ public class SubjectMakerController {
             Integer type = (Integer)form.get("type");
             JSONObject result1;
             List<Object> list = new ArrayList<>();
-            if(type >= Assignment.DRAWED){
+            if(type >= Assignment.DRAWED && type<Assignment.TOSUBMIT){
                 List<Task> tasks = taskRepository.findAllBySubject_IdAndState(subjectId,type);
                 for(Task task : tasks) {
                     User user = task.getUser();
@@ -322,9 +322,12 @@ public class SubjectMakerController {
         try{
             Integer userId = (Integer) request.getAttribute("userId");
             JSONObject form = JSONObject.parseObject(jsonParam);
-            Integer assignmentId = (Integer) form.get("assignmentId");
-            Assignment assignment = this.subjectManagementService.submitEntry(userId,assignmentId);
-            String result = this.httpRequestService.requestSubmitEntry(assignment);
+            JSONArray entryIds = form.getJSONArray("entryIds");
+            for(int i=0;i<entryIds.size();i++) {
+                Integer assignmentId = entryIds.getInteger(i);
+                Assignment assignment = this.subjectManagementService.submitEntry(userId, assignmentId);
+                String result = this.httpRequestService.requestSubmitEntry(assignment);
+            }
             return new ResponseEntity<>(BaseResultFactory.build("提交成功"), HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"删除错误"),HttpStatus.BAD_REQUEST);
