@@ -133,7 +133,6 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
             }
             assignmentRepository.save(assignmentList.get(i));
         }
-        subjectRepository.save(subject);
     }
 
 

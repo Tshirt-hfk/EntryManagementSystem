@@ -86,7 +86,7 @@
             <h3 style="margin-left: 80px">关系</h3>
           </div>
           <ul>
-            <li v-for="item in relationData" :key="item.name">
+            <li v-for="item in form.relation" :key="item.name">
               <div>
                 <h4 style="margin-left: 60px">{{item.name}}</h4>
                 <h4 style="margin-left: 88px">{{item.relation}}</h4>
@@ -139,7 +139,7 @@ let sideIndex = 1;
 
 export default {
   name: "entryReview",
-  props: ["form", "drawerFlag", "relationData"],
+  props: ["form", "drawerFlag"],
   watch: {
     drawerFlag: function(n, o) {
       indexNum = 1;

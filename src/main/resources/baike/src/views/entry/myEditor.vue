@@ -266,7 +266,7 @@
           <el-button class="relation-button-add" type="primary" @click="toAddRelation">添加</el-button>
         </div>
         <div class="relation-table">
-          <el-table :data="other.relation" style="width: 100%">
+          <el-table :data="form.relation" style="width: 100%">
             <el-table-column prop="name" label="词条名" width="150px"></el-table-column>
             <el-table-column prop="relation" label="关系" width="150px"></el-table-column>
             <el-table-column label="操作">
@@ -306,7 +306,6 @@
       </div>
     </el-dialog>
     <entryReview
-      :relationData="relationData"
       :form="form"
       :drawerFlag="drawerFlag"
       v-on:handleClose="handleClose"
@@ -1082,21 +1081,21 @@ export default {
       this.others.dialogFormVisible = false;
     },
     remoteMethod(query) {
-      if (query !== "") {
-        this.loading = true;
-        this.value = query;
-        this.$axios
-          .post("http://192.168.1.121:9000/", { keyword: query }) //向远程服务器模糊搜索
-          .then(res => {
-            if (res.data.data) {
-              this.options = res.data.data.entrys;
-            }
-            this.loading = false;
-          })
-          .catch(error => {});
-      } else {
-        this.options = [];
-      }
+      // if (query !== "") {
+      //   this.loading = true;
+      //   this.value = query;
+      //   this.$axios
+      //     .post("http://192.168.1.121:9000/", { keyword: query }) //向远程服务器模糊搜索
+      //     .then(res => {
+      //       if (res.data.data) {
+      //         this.options = res.data.data.entrys;
+      //       }
+      //       this.loading = false;
+      //     })
+      //     .catch(error => {});
+      // } else {
+      //   this.options = [];
+      // }
     },
     toAddRelation() {
       let arr = [
@@ -1105,10 +1104,10 @@ export default {
           relation: this.relation
         }
       ];
-      this.relationData.push(arr);
+      this.form.relation.push(arr);
     },
     toDeleteRelation(index) {
-      this.relationData.splice(index, 1);
+      this.form.relation.splice(index, 1);
       window.console.log("nmh");
     },
     handleClose(done) {

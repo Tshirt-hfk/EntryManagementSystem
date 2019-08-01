@@ -72,14 +72,14 @@ public class SubjectMakerController {
             HashMap<String,Object> tmp = null;
             for(GroupMember groupMember : groupMembers){
                 Subject subject = groupMember.getSubject();
-                List<Task> tasks = taskRepository.findAllBySubject_IdAndState(subject.getId(), Task.PASS);
                 tmp = new HashMap<>();
                 tmp.put("id", subject.getId());
                 tmp.put("name", subject.getName());
                 tmp.put("introduction", subject.getIntroduction());
                 tmp.put("imageUrl", subject.getImageUrl());
                 tmp.put("deadline", subject.getDeadline());
-                tmp.put("finishNum", tasks.size());
+                tmp.put("finishNum", subject.getCurrentCount());
+                tmp.put("initState",subject.getInitState());
                 tmps.add(tmp);
             }
             HashMap<String,Object> result = new HashMap<>();
@@ -188,7 +188,6 @@ public class SubjectMakerController {
             }
             HashMap<String,Object> result=new HashMap<>();
             result.put("assignments",list);
-            result.put("initState",subject.getInitState());
             return new ResponseEntity<>(BaseResultFactory.build(result,"success"), HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
