@@ -38,7 +38,7 @@ public class ResourceController {
             if(newName==null)
                 return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),"上传失败"), HttpStatus.NOT_FOUND);
             HashMap<String,String> result=new HashMap<>();
-            result.put("url","http://localhost:"+port+showUrl+newName);
+            result.put("url",showUrl+newName);
             return new ResponseEntity<>(BaseResultFactory.build(result), HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);

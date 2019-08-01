@@ -2,14 +2,11 @@ package com.entry.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.entry.dto.BaseResultFactory;
 import com.entry.entity.mysql.*;
 import com.entry.entity.mysql.pk.GroupMemberPK;
 import com.entry.exception.MyException;
 import com.entry.repository.mysql.*;
 import com.entry.service.SubjectManagementService;
-import com.entry.util.HttpRequestUtil;
-import com.sun.deploy.net.HttpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

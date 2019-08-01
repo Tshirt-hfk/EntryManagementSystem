@@ -1,8 +1,5 @@
 package com.entry.controller;
 
-import com.entry.entity.neo4j.Entry;
-import com.entry.repository.neo4j.CategoryRepository;
-import com.entry.repository.neo4j.EntryRepository;
 import com.entry.util.JwtUtil;
 import com.entry.entity.mysql.User;
 import com.entry.repository.mysql.UserRepository;
@@ -27,11 +24,6 @@ public class TouristController {
     @Autowired
     UserRepository userRepository;
 
-    @Autowired
-    EntryRepository entryRepository;
-
-    @Autowired
-    CategoryRepository categoryRepository;
 
     @PostMapping("/api/tourist/login")
     @CrossOrigin

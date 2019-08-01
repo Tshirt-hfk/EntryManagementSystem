@@ -5,30 +5,19 @@ import com.alibaba.fastjson.JSONObject;
 import com.entry.dto.BaseResultFactory;
 import com.entry.entity.mysql.*;
 import com.entry.exception.MyException;
-import com.entry.entity.mysql.pk.GroupMemberPK;
 import com.entry.repository.mysql.*;
 import com.entry.service.HttpRequestService;
 import com.entry.service.SubjectManagementService;
-import com.entry.service.impl.SubjectManagementServiceImpl;
-import com.entry.util.HttpRequestUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.concurrent.FailureCallback;
-import org.springframework.util.concurrent.SuccessCallback;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.criteria.CriteriaBuilder;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.sql.Timestamp;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 public class SubjectMakerController {
