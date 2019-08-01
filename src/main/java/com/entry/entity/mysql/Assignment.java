@@ -31,16 +31,16 @@ public class Assignment {
     @Column(columnDefinition ="varchar(255)", nullable = false)
     private String field;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String intro;
 
     @Column
     private String imageUrl;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String infoBox;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     @Column(columnDefinition = "TINYINT default 1", nullable = false)
@@ -52,7 +52,7 @@ public class Assignment {
     @Column
     private String modifyReason;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String relation;
 
     @ManyToOne(fetch=FetchType.LAZY)

@@ -31,19 +31,19 @@ public class Task {
     @Column(columnDefinition ="varchar(255)", nullable = false)
     private String field;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String intro;
 
     @Column
     private String imageUrl;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String infoBox;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String content;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String relation;
 
     @Column(columnDefinition = "TINYINT default 3", nullable = false)
