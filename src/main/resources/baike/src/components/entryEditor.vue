@@ -278,7 +278,7 @@ export default {
           type: 1,
           aim: 1
         },
-        serverUrl: "http://localhost:8081/resource/image",
+        serverUrl: "/resource/image",
         catalog: [],
         properties: [
           ["hel", "ehl"],

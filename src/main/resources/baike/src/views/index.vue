@@ -194,32 +194,7 @@ export default {
             "/static/image/哪吒.jpg"
         }
       ],
-      recommendSubject: [
-        {
-          id: "1",
-          name: "游戏青春",
-          field: ["方磊"],
-          intro: "谁还没有窝在寝室打游戏的时光呢",
-          src:
-            "https://gss0.bdstatic.com/94o3dSag_xI4khGkpoWK1HF6hhy/baike/eWH%3D150%2C100/sign=abd9a92af936afc31c664268822cdbe8/9a504fc2d56285354d4b36cb9eef76c6a6ef63b5.jpg"
-        },
-        {
-          id: "2",
-          name: "游戏青春",
-          field: ["方磊"],
-          intro: "谁还没有窝在寝室打游戏的时光呢",
-          src:
-            "https://gss0.bdstatic.com/94o3dSag_xI4khGkpoWK1HF6hhy/baike/eWH%3D150%2C100/sign=abd9a92af936afc31c664268822cdbe8/9a504fc2d56285354d4b36cb9eef76c6a6ef63b5.jpg"
-        },
-        {
-          id: "3",
-          name: "游戏青春",
-          field: ["方磊"],
-          intro: "谁还没有窝在寝室打游戏的时光呢",
-          src:
-            "https://gss0.bdstatic.com/94o3dSag_xI4khGkpoWK1HF6hhy/baike/eWH%3D150%2C100/sign=abd9a92af936afc31c664268822cdbe8/9a504fc2d56285354d4b36cb9eef76c6a6ef63b5.jpg"
-        }
-      ]
+      recommendSubject: []
     };
   },
   mounted() {

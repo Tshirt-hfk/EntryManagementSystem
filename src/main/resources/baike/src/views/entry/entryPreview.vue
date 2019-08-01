@@ -3,7 +3,7 @@
     <div class="preview-searchbar">
       <div class="preview-logo-headl">
         <a title="首页" href="/">
-          <img src="https://wx3.sinaimg.cn/mw690/ad5be381gy1g51mw04nn2j206t01mgli.jpg" />
+          <img src="/static/image/name.jpg" />
         </a>
       </div>
       <div class="preview-search" v-on:keyup.enter="search">

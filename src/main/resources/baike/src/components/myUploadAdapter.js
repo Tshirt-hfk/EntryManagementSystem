@@ -13,7 +13,7 @@ export default class MyUploadAdapter {
 
 		return new Promise((resolve, reject) => {
 			axios({
-				url: `http://localhost:8081/resource/image`,
+				url: `/resource/image`,
 				method: 'post',
 				data,
 				headers: {

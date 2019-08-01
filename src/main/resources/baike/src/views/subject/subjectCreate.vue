@@ -8,7 +8,7 @@
         <el-form-item label="专题图片" style="float:left">
           <el-upload
             class="avatar-uploader"
-            action="http://localhost:8081/resource/image"
+            action="/resource/image"
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload"
