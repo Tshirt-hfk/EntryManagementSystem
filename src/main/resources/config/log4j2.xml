@@ -2,7 +2,7 @@
 <Configuration status="INFO" monitorInterval="30">
     <Properties>
         <!--  输出路径  -->
-        <Property name="logpath">c:/Log4j/logs/log/dev</Property>
+        <Property name="logpath">${sys:LOG_PATH}</Property>
     </Properties>
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
