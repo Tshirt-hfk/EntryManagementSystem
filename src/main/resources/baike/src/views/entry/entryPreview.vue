@@ -38,7 +38,7 @@
           <div class="preview-entryName">
             <h1>{{form.entryName}}</h1>
             <h2 v-for="item in form.field" :key="item">({{item}})</h2>
-            <el-button style="margin-left: 10px;" size="mini" @click="toEntryEdit">编辑</el-button>
+            <el-button style="margin-left: 10px;" size="mini" @click="toEntryEdit()">编辑</el-button>
           </div>
           <div class="preview-entryintro" v-html="form.intro"></div>
           <div class="preview-entry-attribute">
@@ -223,7 +223,9 @@ export default {
     initContent() {
       this.$refs.editor.innerHTML = this.form.content;
     },
-    toEntryEdit() {},
+    toEntryEdit() {
+
+    },
     search() {
       this.name = this.value;
       this.init();

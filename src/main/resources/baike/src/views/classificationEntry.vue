@@ -3,7 +3,7 @@
     <ul>
         <li v-for="entry in entrys" :key="entry.id">
             <a class="classification-content-img" @click="toEntryExhibition(entry.name)">
-                <img :src="entry.img_url">
+                <img :src="entry.img_url" style="width: 88px;height: 74px">
             </a>
             <div class="classification-lemma-content">
                 <h4 @click="toEntryExhibition(entry.name)">{{entry.name}}</h4>
@@ -33,15 +33,25 @@ export default {
         entrys: [
             {
                 id: '1',
-                name: 'hah',
-                intro: 'ssssssssssssssssssssssssssssssssssssssbuzhidassssssssssssssssssssssssssssssssssssssssssssssssssssowwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
-                img_url: 'zuile'
+                name: '李鹏',
+                intro: '李鹏同志遗体在北京被火化，习近平总书记亲自到场送别',
+                img_url: '/static/image/李鹏.jpg'
             },{
                 id: '2',
-                name: 'hah',
-                intro: 'ssssssssssssssssssssssssssssssssssssssbuzhidassssssssssssssssssssssssssssssssssssssssssssssssssssowwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
-                img_url: 'zuile'
-            }
+                name: '蔡徐坤',
+                intro: 'UCAA艺术公益大使蔡徐坤帮助孩子走进艺术展',
+                img_url: '/static/image/蔡徐坤.jpg'
+            },{
+                id: '3',
+                name: '马思纯',
+                intro: '马思纯笑对发胖，自侃是心灵美',
+                img_url: '/static/image/马思纯.jpg'
+            },{
+                id: '4',
+                name: '石原里美',
+                intro: '石原里美的女神蜕变记，靠自己闯出一条爆红路',
+                img_url: '/static/image/石原里美.jpg'
+            }         
         ],
     };
   },

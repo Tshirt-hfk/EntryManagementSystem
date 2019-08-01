@@ -107,6 +107,11 @@
           <div class="index-side-rightbox-title">
             <div class="name">众智化词条</div>
             <div class="slogan">集大家智慧认识世界</div>
+            <div class="number">
+              共收录
+              <span style="font-size: 27px">638,352</span>
+              个词条
+            </div>
           </div>
           <a @click="toEntryCreate">创建词条</a>
           <a @click="toRecommendEntry">完善词条</a>
@@ -156,37 +161,37 @@ export default {
       homePageEntry: [
         {
           id: "1",
-          name: "哪吒",
-          intro: "魔童降世，你还在等什么，不一样的小哪吒",
+          name: "建军节",
+          intro: "八一建军节致敬中国军人，中国军人二十四小时展露英雄本色",
           src:
-            "https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2576670729,629322128&fm=26&gp=0.jpg"
+            "/static/image/建军节.jpg"
         },
         {
           id: "2",
-          name: "哪吒",
-          intro: "魔童降世，你还在等什么，不一样的小哪吒",
+          name: "小红书",
+          intro: "种草神器出事了，小红书被下架，启动整改全面排查",
           src:
-            "http://img2.imgtn.bdimg.com/it/u=999955696,3117746350&fm=11&gp=0.jpg"
+            "/static/image/小红书.jpg"
         },
         {
           id: "3",
-          name: "哪吒",
-          intro: "魔童降世，你还在等什么，不一样的小哪吒",
+          name: "扎里夫",
+          intro: "伊朗外长遭美国政府制裁，其回应：谢谢将我视为如此大的威胁",
           src:
-            "http://img2.imgtn.bdimg.com/it/u=999955696,3117746350&fm=11&gp=0.jpg"
+            "/static/image/伊朗.jpg"
         },
         {
           id: "4",
-          name: "哪吒",
-          intro: "魔童降世，你还在等什么，不一样的小哪吒",
+          name: "小行星",
+          intro: "险！一颗小行星擦过地球，科学家只提前1天发现",
           src:
-            "http://img2.imgtn.bdimg.com/it/u=999955696,3117746350&fm=11&gp=0.jpg"
+            "/static/image/小行星.jpg"
         },
         {
           name: "哪吒",
           intro: "魔童降世，你还在等什么，不一样的小哪吒",
           src:
-            "http://img2.imgtn.bdimg.com/it/u=999955696,3117746350&fm=11&gp=0.jpg"
+            "/static/image/哪吒.jpg"
         }
       ],
       recommendSubject: [
@@ -424,7 +429,13 @@ h3 {
   color: #459df5;
 }
 .index-side-rightbox-title .slogan {
-  margin-bottom: 17px;
+  margin-bottom: 25px;
+  line-height: 1;
+  font-size: 18px;
+  color: #459df5;
+}
+.index-side-rightbox-title .number{
+  margin-bottom: 20px;
   line-height: 1;
   font-size: 18px;
   color: #459df5;
