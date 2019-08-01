@@ -285,6 +285,7 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
         Assignment assignment = task.getAssignment();
         if(pass){
             assignment.setEntryName(task.getEntryName());
+            assignment.setField(task.getField());
             assignment.setImageUrl(task.getImageUrl());
             assignment.setIntro(task.getIntro());
             assignment.setInfoBox(task.getInfoBox());
