@@ -11,7 +11,7 @@
         {{subjectName}}
       </div>
     </div>
-    <el-tabs type="border-card" style="width: 90%" v-loading="!subjectInit" element-loading-text="词条拼命加载中...">
+    <el-tabs type="border-card" style="width: 90%" v-loading="!subjectInit" element-loading-text="词条初始化中，请稍后刷新。">
       <el-tab-pane lazy>
         <span slot="label">未发布词条</span>
         <unpublishedEntry ref="myUnpublishedEntry" v-on:stateChange="stateChange" v-bind:subjectId="subjectId"></unpublishedEntry>

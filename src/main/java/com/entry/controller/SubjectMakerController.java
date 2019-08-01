@@ -317,4 +317,19 @@ public class SubjectMakerController {
         }
     }
 
+    @PostMapping("api/subjectMaker/submitEntry")
+    @CrossOrigin
+    public ResponseEntity<?> submitEntry(HttpServletRequest request, @RequestBody String jsonParam) {
+        try{
+            Integer userId = (Integer) request.getAttribute("userId");
+            JSONObject form = JSONObject.parseObject(jsonParam);
+            Integer assignmentId = (Integer) form.get("assignmentId");
+            Assignment assignment = this.subjectManagementService.submitEntry(userId,assignmentId);
+            String result = this.httpRequestService.requestSubmitEntry(assignment);
+            return new ResponseEntity<>(BaseResultFactory.build("提交成功"), HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"删除错误"),HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

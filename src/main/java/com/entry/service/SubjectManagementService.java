@@ -20,9 +20,10 @@ public interface SubjectManagementService {
     public Assignment createAssignment(Integer userId, Integer subjectId, String EntryName, JSONArray field) throws MyException;
     public void publishAssignment(Integer userId, Integer subjectId, JSONArray reason, Integer deadline, List<Integer> entryIds) throws MyException;
     public void drawAssignment(Integer userId, Integer assignmentId) throws MyException;
-    public void saveTask(Integer userId, Integer taskId, String entryName, String imageUrl, JSONArray field, String intro, JSONArray infoBox, String content, JSONArray reference) throws MyException;
+    public void saveTask(Integer userId, Integer taskId, String entryName, String imageUrl, JSONArray field, String intro, JSONArray infoBox, String content, JSONArray reference, JSONArray rel) throws MyException;
     public void submitTask(Integer userId, Integer taskId, String reason) throws MyException;
     public void auditTask(Integer userId, Integer taskId, Boolean pass, String reason) throws MyException;
+    public Assignment submitEntry(Integer userId, Integer assignmentId) throws  MyException;
 
     public JSONObject getAssignment(Integer userId, Integer assignmentId) throws  MyException;
     public JSONObject getTask(Integer userId, Integer taskId) throws  MyException;

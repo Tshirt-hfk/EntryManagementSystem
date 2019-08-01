@@ -16,6 +16,7 @@ public class Assignment {
     public final static Integer DRAWED = 3;     // 待提交
     public final static Integer TOAUDITED = 4;  // 待审核
     public final static Integer TOSUBMIT = 5;   // 待提交
+    public final static Integer SUBMITED = 6;   // 待提交
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

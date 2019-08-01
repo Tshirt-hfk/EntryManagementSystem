@@ -266,7 +266,7 @@
           <el-button class="relation-button-add" type="primary" @click="toAddRelation">添加</el-button>
         </div>
         <div class="relation-table">
-          <el-table :data="relationData" style="width: 100%">
+          <el-table :data="other.relation" style="width: 100%">
             <el-table-column prop="name" label="词条名" width="150px"></el-table-column>
             <el-table-column prop="relation" label="关系" width="150px"></el-table-column>
             <el-table-column label="操作">
@@ -353,8 +353,7 @@ export default {
       loading: false,
       value: [],
       relation: "",
-      optionInRelation: ["上位词", "下位词", "同位词"],
-      relationData: [],
+      optionInRelation: ["上位词", "下位词", "贡献词"],
       taskId: this.$route.query.id,
       form: {
         entryName: "",
@@ -363,7 +362,8 @@ export default {
         intro: "",
         infoBox: [],
         content: "",
-        reference: []
+        reference: [],
+        relation: [],
       },
       introEditor: {
         editor: null,

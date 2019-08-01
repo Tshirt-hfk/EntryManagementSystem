@@ -102,21 +102,27 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
                 if(tmp.getJSONArray(name1)!=null){
                     JSONObject r = new JSONObject();
                     r.put("entry",name2);
-                    r.put("type","co_occurrence");
+                    r.put("type",1);
                     tmp.getJSONArray(name1).add(r);
                 }
                 if(tmp.getJSONArray(name2)!=null){
                     JSONObject r = new JSONObject();
                     r.put("entry",name1);
-                    r.put("type","co_occurrence");
+                    r.put("type","贡献词");
                     tmp.getJSONArray(name2).add(r);
                 }
             }else if("is-a".equals(rel)){
                 if(tmp.getJSONArray(name1)!=null){
                     JSONObject r = new JSONObject();
                     r.put("entry",name2);
-                    r.put("type","is-a");
+                    r.put("type","上位词");
                     tmp.getJSONArray(name1).add(r);
+                }
+                if(tmp.getJSONArray(name2)!=null){
+                    JSONObject r = new JSONObject();
+                    r.put("entry",name1);
+                    r.put("type","下位词");
+                    tmp.getJSONArray(name2).add(r);
                 }
             }
 
@@ -224,7 +230,7 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
      * @throws MyException
      */
     @Override
-    public void saveTask(Integer userId, Integer taskId, String entryName, String imageUrl, JSONArray field, String intro, JSONArray infoBox, String content, JSONArray reference) throws MyException {
+    public void saveTask(Integer userId, Integer taskId, String entryName, String imageUrl, JSONArray field, String intro, JSONArray infoBox, String content, JSONArray reference, JSONArray rel) throws MyException {
         User user = this.testUser(userId);
         Task task = this.testTask(taskId);
         if(task.getUser().getId() != user.getId())
@@ -238,6 +244,7 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
         task.setIntro(intro);
         task.setInfoBox(infoBox);
         task.setContent(content);
+        task.setRelation(rel);
         taskRepository.save(task);
         this.testTaskOutOfDate(task);
     }
@@ -287,7 +294,8 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
             assignment.setIntro(task.getIntro());
             assignment.setInfoBox(task.getInfoBox());
             assignment.setContent(task.getContent());
-            assignment.setState(Assignment.TOSUBMIT);;
+            assignment.setState(Assignment.TOSUBMIT);
+            assignment.setRelation(task.getRelation());
             task.setJudgeTime(new Date().getTime());
             task.setState(Task.PASS);
             groupMember.setMyCompletedCount(groupMember.getMyCompletedCount()+1);
@@ -304,6 +312,18 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
             assignmentRepository.save(assignment);
             taskRepository.save(task);
         }
+    }
+
+    @Override
+    public Assignment submitEntry(Integer userId, Integer assignmentId) throws  MyException {
+        User user = this.testUser(userId);
+        Assignment assignment = this.testAssignment(assignmentId);
+        this.testSubjectMaker(user,assignment.getSubject());
+        if(assignment.getState()!=Assignment.TOSUBMIT)
+            throw new MyException("任务未完成审核！");
+        assignment.setState(Assignment.SUBMITED);
+        assignmentRepository.save(assignment);
+        return assignment;
     }
 
     /**
@@ -325,6 +345,7 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
         result.put("field",assignment.getField());
         result.put("infoBox", assignment.getInfoBox());
         result.put("content", assignment.getContent());
+        result.put("relation", assignment.getRelation());
         return result;
     }
 
@@ -349,6 +370,7 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
         result.put("field",task.getField());
         result.put("infoBox", task.getInfoBox());
         result.put("content", task.getContent());
+        result.put("relation", task.getRelation());
         return result;
     }
 

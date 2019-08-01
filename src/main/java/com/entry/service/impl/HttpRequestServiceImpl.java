@@ -2,6 +2,7 @@ package com.entry.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.entry.entity.mysql.Assignment;
 import com.entry.entity.mysql.Subject;
 import com.entry.exception.MyException;
 import com.entry.service.HttpRequestService;
@@ -20,6 +21,10 @@ public class HttpRequestServiceImpl implements HttpRequestService {
     @Value("${dataServer.initSubject.url}")
     private String initSubjectUrl;
 
+    @Value("${dataServer.submitted.url}")
+    private String submittedUrl;
+
+
     @Override
     public String requestInitSubject(Integer subjectId , String subjectName, JSONArray field , JSONArray documents, String intro, String goal) throws MyException {
         JSONObject data = new JSONObject();
@@ -30,6 +35,19 @@ public class HttpRequestServiceImpl implements HttpRequestService {
         data.put("documents",documents);
         System.out.println(data.toJSONString());
         String result = HttpRequestUtil.post(this.initSubjectUrl, data.toJSONString());
+        return result;
+    }
+
+    @Override
+    public String requestSubmitEntry(Assignment assignment) throws MyException {
+        JSONObject data = new JSONObject();
+        data.put("id", assignment.getOriginalId());
+        data.put("entryName",assignment.getEntryName());
+        data.put("field", assignment.getField());
+        data.put("intro", assignment.getIntro());
+        data.put("infoBox",assignment.getInfoBox());
+        data.put("relation",assignment.getRelation());
+        String result = HttpRequestUtil.post(this.submittedUrl, data.toJSONString());
         return result;
     }
 

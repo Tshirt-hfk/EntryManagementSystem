@@ -149,8 +149,8 @@ public class UserController {
             JSONArray infoBox = form.getJSONArray("infoBox");
             String content = form.getString("content");
             JSONArray reference = form.getJSONArray("reference");
-            Task task = taskRepository.findTaskById(taskId);
-            subjectManagementService.saveTask(userId, taskId, entryName, imageUrl, field, intro, infoBox, content, reference);
+            JSONArray rel = form.getJSONArray("relation");
+            subjectManagementService.saveTask(userId, taskId, entryName, imageUrl, field, intro, infoBox, content, reference, rel);
             return new ResponseEntity<>(BaseResultFactory.build("编辑成功"), HttpStatus.OK);
         }catch (MyException me){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),me.getMessage()),HttpStatus.BAD_REQUEST);
