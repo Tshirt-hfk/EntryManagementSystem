@@ -48,13 +48,8 @@
 
 <script>
 
-import mySearch from "../../../../components/mySearch";
-
 export default {
   name: "myJoinSubject",
-  components: {
-    mySearch
-  },
   watch:{
     searchValue:{
       handler(n, o){

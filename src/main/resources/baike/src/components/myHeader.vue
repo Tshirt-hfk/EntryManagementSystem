@@ -90,13 +90,9 @@
 
 
 <script>
-import mySearch from "./mySearch";
 
 export default {
   name: "myHeader",
-  components: {
-    mySearch
-  },
   data() {
     return {
       circleUrl:

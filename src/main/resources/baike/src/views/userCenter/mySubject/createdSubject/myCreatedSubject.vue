@@ -63,13 +63,11 @@
 </template>
 
 <script>
-import mySearch from "../../../../components/mySearch";
 import subjectManagement from "./subjectManagement";
 
 export default {
   name: "myCreatedSubject",
   components: {
-    mySearch,
     subjectManagement
   },
   watch:{

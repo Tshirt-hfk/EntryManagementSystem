@@ -253,13 +253,15 @@
             style="width: 250px;margin: 0 auto;margin-bottom: 10px;"
             center
           ></el-alert>
-          <mySearch
+          <el-autocomplete
             style="margin-left: 15px;width: 210px;"
-            v-on:remoteMethod="remoteMethod"
-            :options="options"
+            :fetch-suggestions="remoteMethod"
+            placeholder="请输入词条名称"
+            :trigger-on-focus="false"
+            @select="handleSelect"
             :value="value"
-            :loading="loading"
-          ></mySearch>
+            @input="input"
+          ></el-autocomplete>
           <el-select v-model="relation" placeholder="关系选择" style="width: 150px">
             <el-option v-for="item in optionInRelation" :key="item" :label="item" :value="item"></el-option>
           </el-select>
@@ -314,7 +316,7 @@
 </template>
 
 <script>
-import mySearch from "../../components/mySearch";
+
 import entryReview from "../../components/entryReview";
 
 import "quill/dist/quill.core.css";
@@ -330,7 +332,6 @@ window.Quill.register("modules/imageResize", ImageResize);
 export default {
   name: "myEditor",
   components: {
-    mySearch,
     entryReview
   },
   watch:{
