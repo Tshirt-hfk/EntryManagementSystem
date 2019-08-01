@@ -1,87 +1,104 @@
 <template>
-    <div>
-      <el-input style="width: 300px; float: right;margin-bottom: 10px;" v-model="searchValue" placeholder="请输入关键词"></el-input>
-        <el-table ref="multipleTable" :data="displayData" tooltip-effect="dark"
-            style="width: 100%" @selection-change="handleSelectionChange"
-            @cell-mouse-enter="getId">
-            <el-table-column type="selection" width="55"> </el-table-column>
-            <el-table-column prop="name" label="词条名称" width="100"> </el-table-column>
-            <el-table-column prop="field" label="领域" width="200"> </el-table-column>
-            <el-table-column label="保存时间" width="160">
-              <template slot-scope="scope">{{ scope.row.saveTime | formatDate}}</template>
-            </el-table-column>
-            <el-table-column label="结束时间" width="160">
-              <template slot-scope="scope">{{ scope.row.endTime | formatDate}}</template>
-            </el-table-column>
-            <el-table-column label="版本" show-overflow-tooltip width="50">
-              <template>
-                <span class="admitentry-version">
-                  <a @click="toEntryExhibition">版本</a>
-                </span>
-              </template>
-            </el-table-column>
-            <el-table-column align="right">
-              <template slot-scope="scope">
-                <el-button size="mini" type="primary" @click="jumpToEdit">编辑</el-button>
-                <el-button size="mini" type="primary" @click="getTaskContent(scope.row.id)">预览</el-button>
-                <el-button size="mini" type="success" @click="getReason(scope.$index)">提交</el-button>
-              </template>
-            </el-table-column>
-        </el-table>
-        <div class="toadmit-page">
-          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-            :current-page="currentPage" :page-sizes="[10, 20, 50]" :page-size="pagesize"
-            layout="total, sizes, prev, pager, next, jumper" :total="tableData.length" 
-            style="width: 540px;margin: 0 auto"> </el-pagination>
-        </div>
-        <div style="margin-top: 20px">
-            <el-button @click="deleteFlag = true">放弃</el-button>
-        </div>
-        <el-dialog title="修改原因" :visible.sync="admitFlag" width="600px" top="20vh">
-          <span>
-              <el-button v-for="item in modifyReason" :key="item" size="mini" 
-              @click="reason=item" plain>{{item}}</el-button>
-            <div style="margin: 15px 0;"></div>
-            <el-input type="textarea" v-model="reason" maxlength="30" show-word-limit></el-input>
-            <div style="margin: 10px 0;"></div>
-            <el-alert title="请在提交前确认" type="warning"
-            description="提交后无法更改"
-            show-icon :closable="false">  </el-alert>
+  <div>
+    <el-input
+      style="width: 300px; float: right;margin-bottom: 10px;"
+      v-model="searchValue"
+      placeholder="请输入关键词"
+    ></el-input>
+    <el-table
+      ref="multipleTable"
+      :data="displayData"
+      tooltip-effect="dark"
+      style="width: 100%"
+      @selection-change="handleSelectionChange"
+      @cell-mouse-enter="getId"
+    >
+      <el-table-column type="selection" width="55"></el-table-column>
+      <el-table-column prop="name" label="词条名称" width="100"></el-table-column>
+      <el-table-column prop="field" label="领域" width="200"></el-table-column>
+      <el-table-column label="保存时间" width="160">
+        <template slot-scope="scope">{{ scope.row.saveTime | formatDate}}</template>
+      </el-table-column>
+      <el-table-column label="结束时间" width="160">
+        <template slot-scope="scope">{{ scope.row.endTime | formatDate}}</template>
+      </el-table-column>
+      <el-table-column label="版本" show-overflow-tooltip width="50">
+        <template>
+          <span class="admitentry-version">
+            <a @click="toEntryExhibition">版本</a>
           </span>
-          <span slot="footer" class="dialog-footer">
-            <el-button @click="admitFlag = false">返 回</el-button>
-            <el-button type="primary" @click="admitEntry">提 交</el-button>
-          </span>
-        </el-dialog>
-        <el-dialog title="提示" :visible.sync="deleteFlag" width="30%">
-          <span>放弃选中词条？</span>
-          <span slot="footer" class="dialog-footer">
-            <el-button @click="deleteFlag = false">取 消</el-button>
-            <el-button type="primary" @click="deleteEntry">确 定</el-button>
-          </span>
-        </el-dialog>
-        <entryReview
-          :relationData="relationData"
-          :form="form"
-          :drawerFlag="drawerFlag"
-          v-on:handleClose="handleClose"
-        ></entryReview>
-    </div> 
+        </template>
+      </el-table-column>
+      <el-table-column align="right">
+        <template slot-scope="scope">
+          <el-button size="mini" type="primary" @click="jumpToEdit">编辑</el-button>
+          <el-button size="mini" type="primary" @click="getTaskContent(scope.row.id)">预览</el-button>
+          <el-button size="mini" type="success" @click="getReason(scope.$index)">提交</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <div class="toadmit-page">
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[10, 20, 50]"
+        :page-size="pagesize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="tableData.length"
+        style="width: 540px;margin: 0 auto"
+      ></el-pagination>
+    </div>
+    <div style="margin-top: 20px">
+      <el-button @click="deleteFlag = true">放弃</el-button>
+    </div>
+    <el-dialog title="修改原因" :visible.sync="admitFlag" width="600px" top="20vh">
+      <span>
+        <el-button
+          v-for="item in modifyReason"
+          :key="item"
+          size="mini"
+          @click="reason=item"
+          plain
+        >{{item}}</el-button>
+        <div style="margin: 15px 0;"></div>
+        <el-input type="textarea" v-model="reason" maxlength="30" show-word-limit></el-input>
+        <div style="margin: 10px 0;"></div>
+        <el-alert title="请在提交前确认" type="warning" description="提交后无法更改" show-icon :closable="false"></el-alert>
+      </span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="admitFlag = false">返 回</el-button>
+        <el-button type="primary" @click="admitEntry">提 交</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog title="提示" :visible.sync="deleteFlag" width="30%">
+      <span>放弃选中词条？</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="deleteFlag = false">取 消</el-button>
+        <el-button type="primary" @click="deleteEntry">确 定</el-button>
+      </span>
+    </el-dialog>
+    <entryReview
+      :relationData="relationData"
+      :form="form"
+      :drawerFlag="drawerFlag"
+      v-on:handleClose="handleClose"
+    ></entryReview>
+  </div>
 </template>
 
 <script>
-
-import moment from 'moment'
-import entryReview from "../../../../components/entryReview"
+import moment from "moment";
+import entryReview from "../../../../components/entryReview";
 
 export default {
   name: "toBeAdmittedEntry",
-  components:{
-    entryReview,
+  components: {
+    entryReview
   },
-  watch:{
-    searchValue:{
-      handler(n, o){
+  watch: {
+    searchValue: {
+      handler(n, o) {
         clearTimeout(this.timeout);
         this.timeout = setTimeout(() => {
           this.remoteMethod(n);
@@ -102,7 +119,7 @@ export default {
         content: "",
         reference: []
       },
-      searchValue: '',
+      searchValue: "",
       timeout: null,
       currentPage: 1,
       pagesize: 10,
@@ -111,20 +128,21 @@ export default {
       displayData: [],
       multipleSelection: [],
       disabledFlag: true,
-      admitFlag : false,
-      deleteFlag : false,
+      admitFlag: false,
+      deleteFlag: false,
       entryId: 0,
       modifyReason: [],
-      reason: ""
+      reason: "",
+      tag: 0
     };
   },
   mounted() {
     this.init();
   },
   filters: {
-      formatDate: function (value) {
-        return moment(value).format('YYYY-MM-DD HH:mm:ss')
-      }
+    formatDate: function(value) {
+      return moment(value).format("YYYY-MM-DD HH:mm:ss");
+    }
   },
   methods: {
     init() {
@@ -160,21 +178,20 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
-    getId(row){
+    getId(row) {
       this.entryId = row.id;
     },
-    jumpToEdit(){
-      this.$router.push({path : "/entryedit", query :{id : this.entryId}});
+    jumpToEdit() {
+      this.$router.push({ path: "/entryedit", query: { id: this.entryId } });
     },
-    getReason(index){
+    getReason(index) {
       this.modifyReason = this.displayData[index].modifyReason;
+      this.tag = index;
       this.admitFlag = true;
     },
-    admitEntry(){
-      var array = new Array
-      for(var i = 0; i < this.multipleSelection.length; i++){
-        array.push(this.multipleSelection[i].id)
-      }
+    admitEntry() {
+      var array = new Array();
+      array.push(this.tableData[this.tag].id);
       this.$axios
         .post("/api/user/admitEntry", {
           entryIds: array,
@@ -186,7 +203,7 @@ export default {
             this.init();
             this.stateChange(4);
             this.$message({
-            message: res.data.msg
+              message: res.data.msg
             });
           }
         })
@@ -199,10 +216,10 @@ export default {
           }
         });
     },
-    deleteEntry(){
-      var array = new Array
-      for(var i = 0; i < this.multipleSelection.length; i++){
-        array.push(this.multipleSelection[i].id)
+    deleteEntry() {
+      var array = new Array();
+      for (var i = 0; i < this.multipleSelection.length; i++) {
+        array.push(this.multipleSelection[i].id);
       }
       this.$axios
         .post("/api/user/giveUpTask", {
@@ -226,22 +243,22 @@ export default {
           }
         });
     },
-    toEntryExhibition(){
+    toEntryExhibition() {
       //TODO
     },
-    stateChange(state){
-      this.$emit('stateChange', state)
+    stateChange(state) {
+      this.$emit("stateChange", state);
     },
     handleSizeChange(val) {
       this.pagesize = val;
       let index = this.currentPage - 1;
-      this.displayData = this.tableData.slice(index*val, (index + 1)*val);
+      this.displayData = this.tableData.slice(index * val, (index + 1) * val);
     },
     handleCurrentChange(val) {
       this.currentPage = val;
       let indexleft = val - 1;
       let size = this.pagesize;
-      this.displayData = this.tableData.slice(indexleft*size, val*size);
+      this.displayData = this.tableData.slice(indexleft * size, val * size);
     },
     remoteMethod(query) {
       if (query !== "") {
@@ -254,11 +271,11 @@ export default {
         this.displayData = this.tableData.slice(0, this.pagesize);
       }
     },
-    getTaskContent(id){
-      if(!this.form.entryName){
+    getTaskContent(id) {
+      if (!this.form.entryName) {
         this.$axios
           .post("/api/user/getTaskContent", {
-              taskId: new Number(id)
+            taskId: new Number(id)
           })
           .then(res => {
             if (res.data.data) {
@@ -288,8 +305,7 @@ export default {
               });
             }
           });
-      }else
-        this.drawerFlag = true;
+      } else this.drawerFlag = true;
     },
     handleClose(done) {
       this.drawerFlag = false;
@@ -311,12 +327,12 @@ export default {
   margin-bottom: 0;
   width: 50%;
 }
-.admitentry-version{
+.admitentry-version {
   text-decoration: underline;
   cursor: pointer;
   color: #1296db;
 }
-.toadmit-page{
+.toadmit-page {
   width: 100%;
   margin-top: 25px;
 }
