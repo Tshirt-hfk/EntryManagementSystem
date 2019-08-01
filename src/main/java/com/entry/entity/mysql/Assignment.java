@@ -88,7 +88,7 @@ public class Assignment {
         this.imageUrl = imageUrl;
         this.infoBox = infoBox;
         this.content = content;
-        this.relation = (new JSONObject()).toJSONString();
+        this.relation = (new JSONArray()).toJSONString();
         this.state = 1;
         this.subject = subject;
     }

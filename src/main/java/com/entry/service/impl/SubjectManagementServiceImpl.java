@@ -67,8 +67,6 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
     @Override
     public void initSubjectAssignment(Integer subjectId, JSONArray entries, JSONArray relations) throws MyException {
         System.out.println("initSubjectAssignment");
-        System.out.println(entries.toJSONString());
-        System.out.println(relations.toJSONString());
         Subject subject = this.testSubject(subjectId);
         subject.setInitState(true);
         List<Assignment> assignmentList = new ArrayList<>();
@@ -78,7 +76,7 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
             JSONObject js = entries.getJSONObject(i);
             System.out.println(js.toJSONString());
             String entryName = js.getString("name");
-            Integer originalId = js.getInteger("id");
+            Integer originalId = Integer.parseInt(js.getString("id"));
             Assignment assignment;
             if(originalId<0){
                 assignment = new Assignment(entryName,subject.getField(),subject);
