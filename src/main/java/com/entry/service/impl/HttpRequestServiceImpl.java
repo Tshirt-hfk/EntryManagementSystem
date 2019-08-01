@@ -42,10 +42,12 @@ public class HttpRequestServiceImpl implements HttpRequestService {
     public String requestSubmitEntry(Assignment assignment) throws MyException {
         JSONObject data = new JSONObject();
         data.put("id", assignment.getOriginalId());
+        data.put("imageUrl", assignment.getImageUrl());
         data.put("entryName",assignment.getEntryName());
         data.put("field", assignment.getField());
         data.put("intro", assignment.getIntro());
         data.put("infoBox",assignment.getInfoBox());
+        data.put("content",assignment.getContent());
         data.put("relation",assignment.getRelation());
         String result = HttpRequestUtil.post(this.submittedUrl, data.toJSONString());
         return result;

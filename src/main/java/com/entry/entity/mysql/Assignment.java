@@ -74,7 +74,7 @@ public class Assignment {
         this.imageUrl = "";
         this.infoBox = (new JSONArray()).toJSONString();
         this.content = "";
-        this.relation = "";
+        this.relation = (new JSONArray()).toJSONString();
         this.state = 1;
         this.subject = subject;
 
