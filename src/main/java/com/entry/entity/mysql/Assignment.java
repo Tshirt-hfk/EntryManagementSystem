@@ -80,13 +80,19 @@ public class Assignment {
 
     }
 
-    public Assignment(Integer originalId, String entryName, String field, String intro, String imageUrl, String infoBox, String content, Subject subject) {
+    public Assignment(Integer originalId, String entryName, JSONArray field, String intro, String imageUrl, JSONArray infoBox, String content, Subject subject) {
         this.originalId = originalId;
         this.entryName = entryName;
-        this.field = field;
+        if(field!=null)
+            this.field = field.toJSONString();
+        else
+            this.field = (new JSONArray()).toJSONString();
         this.intro = intro;
         this.imageUrl = imageUrl;
-        this.infoBox = infoBox;
+        if(infoBox!=null)
+            this.infoBox = infoBox.toJSONString();
+        else
+            this.infoBox = (new JSONArray()).toJSONString();
         this.content = content;
         this.relation = (new JSONArray()).toJSONString();
         this.state = 1;

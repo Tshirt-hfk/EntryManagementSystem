@@ -82,7 +82,7 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
                 assignment = new Assignment(entryName,subject.getField(),subject);
             }else {
                 JSONObject info = js.getJSONObject("info");
-                assignment = new Assignment(originalId,entryName,js.getString("category"),info.getString("intro"),info.getString("imageUrl"),info.getJSONArray("infoBox").toJSONString(),info.getString("content"),subject);
+                assignment = new Assignment(originalId,entryName,js.getJSONArray("category"),info.getString("intro"),info.getString("imageUrl"),info.getJSONArray("infoBox"),info.getString("content"),subject);
             }
             assignmentList.add(assignment);
             tmp.put(js.getString("entryName"),new JSONArray());
