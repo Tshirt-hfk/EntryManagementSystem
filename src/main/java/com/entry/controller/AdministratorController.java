@@ -126,7 +126,7 @@ public class AdministratorController {
             //得到待审核权限申请
             JSONObject form = JSONObject.parseObject(jsonParam);
             Integer affair = form.getInteger("affair");
-            List<Application> applications = applicationRepository.findAllByAffair(affair);
+            List<Application> applications = applicationRepository.findAllByAffairAndState(affair, Application.UNADUIT);
             List<Object> list = new ArrayList<>();
             HashMap<String, Object> tmp = null;
             for(Application application: applications){
@@ -162,14 +162,16 @@ public class AdministratorController {
             Integer applicationId = (Integer)form.get("applicationId");
             String reason = (String) form.get("reason");
             Application application = applicationRepository.findApplicationById(applicationId);
+            // TODO 向用户发送一个消息提醒
             if(pass){
-                User user = application.getUser();
-                user.setAuthorith(User.SUBJECTMAKER);
-                //向用户发送一个消息提醒
-                applicationRepository.delete(application);
+//                User user = application.getUser();
+//                user.setAuthorith(User.SUBJECTMAKER);
+                application.setState(Application.PASS);
+                applicationRepository.save(application);
                 return new ResponseEntity<>(BaseResultFactory.build("申请成功"), HttpStatus.OK);
             }else{
-                applicationRepository.delete(application);
+                application.setState(Application.UNPASS);
+                applicationRepository.save(application);
                 return new ResponseEntity<>(BaseResultFactory.build("申请失败"), HttpStatus.OK);
             }
         }catch (Exception e){

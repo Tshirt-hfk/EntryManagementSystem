@@ -11,6 +11,8 @@ public interface ApplicationRepository extends JpaRepository<Application, Intege
     @Query(value = "select * from application where id = ?1", nativeQuery = true)
     Application findApplicationById(Integer id);
 
-    @Query(value = "select * from application where affair = ?1",nativeQuery = true)
-    List<Application> findAllByAffair(Integer affair);
+    @Query(value = "select * from application where affair = ?1 and state == ?2",nativeQuery = true)
+    List<Application> findAllByAffairAndState(Integer affair, Integer state);
+
+
 }

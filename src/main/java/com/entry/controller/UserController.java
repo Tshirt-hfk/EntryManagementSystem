@@ -7,9 +7,7 @@ import com.entry.exception.MyException;
 import com.entry.repository.mysql.*;
 import com.entry.dto.BaseResultFactory;
 import com.entry.service.SubjectManagementService;
-import com.entry.service.impl.SubjectManagementServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,9 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -604,7 +600,7 @@ public class UserController {
      * @param request
      * @return
      */
-    @GetMapping("/api/user/applyAuthority")
+    @PostMapping("/api/user/applyAuthority")
     @CrossOrigin
     public ResponseEntity<?> applyAuthority(HttpServletRequest request, @RequestBody String jsonParam){
         try{

@@ -63,6 +63,9 @@ public class User {
         this.authorith = authorith;
         this.phone = phone;
         this.email = email;
+        this.submitVersion = 0;
+        this.passVersion = 0;
+        this.premiumVersion = 0;
     }
 
     public Integer getId() {
