@@ -33,6 +33,9 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
     @Autowired
     TaskRepository taskRepository;
 
+    @Autowired
+    RecordRepository recordRepository;
+
     /**
      * 创建专题
      * @param userId
@@ -245,6 +248,36 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
     }
 
     /**
+     * 暂存词条记录
+     * @param userId
+     * @param taskId
+     * @param entryName
+     * @param imageUrl
+     * @param field
+     * @param intro
+     * @param infoBox
+     * @param content
+     * @param reference
+     * @throws MyException
+     */
+    @Override
+    public void saveRecord(Integer userId, Integer taskId, String entryName, String imageUrl, JSONArray field, String intro, JSONArray infoBox, String content, JSONArray reference, JSONArray rel) throws MyException {
+        User user = this.testUser(userId);
+        Record record = new Record();
+        record.setState(Record.DRAWED);
+        record.setUser(user);
+        record.setSaveTime(new Date().getTime());
+        record.setEntryName(entryName);
+        record.setImageUrl(imageUrl);
+        record.setField(field);
+        record.setIntro(intro);
+        record.setInfoBox(infoBox);
+        record.setContent(content);
+        record.setRelation(rel);
+        recordRepository.save(record);
+    }
+
+    /**
      * 提交词条任务
      * @param userId
      * @param taskId
@@ -266,6 +299,25 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
         assignment.setState(Assignment.TOAUDITED);
         taskRepository.save(task);
         assignmentRepository.save(assignment);
+    }
+
+    /**
+     * 提交词条记录
+     * @param userId
+     * @param taskId
+     * @param reason
+     * @throws MyException
+     */
+    @Override
+    public void submitRecord(Integer userId, Integer taskId, String reason) throws MyException {
+        User user =  this.testUser(userId);
+        Record record =  this.testRecord(taskId);
+        if(record.getUser().getId() != user.getId())
+            throw new MyException("用户不是词条的编辑人！");
+        record.setState(Task.TOAUDITED);
+        record.setSaveTime(new Date().getTime());
+        record.setAdmitReason(reason);
+        recordRepository.save(record);
     }
 
     /**
@@ -370,6 +422,28 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
         return result;
     }
 
+    /**
+     * 获取普通的记录内容
+     * @param userId
+     * @param taskId
+     * @return
+     * @throws MyException
+     */
+    @Override
+    public JSONObject getRecord(Integer userId, Integer taskId) throws  MyException {
+        User user = this.testUser(userId);
+        Record record = this.testRecord(taskId);
+        JSONObject result = new JSONObject();
+        result.put("entryName",record.getEntryName());
+        result.put("imageUrl",record.getImageUrl());
+        result.put("intro",record.getIntro());
+        result.put("field",record.getField());
+        result.put("infoBox", record.getInfoBox());
+        result.put("content", record.getContent());
+        result.put("relation", record.getRelation());
+        return result;
+    }
+
 
     private void testTaskOutOfDate(Task task) throws MyException {
         if(task.getState()==Task.OUTOFDATE){
@@ -411,6 +485,13 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
         if(task == null)
             throw new MyException("任务不存在");
         return task;
+    }
+
+    private Record testRecord(Integer taskId) throws  MyException {
+        Record record = recordRepository.findRecordById(taskId);
+        if(record == null)
+            throw new MyException("记录不存在");
+        return record;
     }
 
     private GroupMember testOrdinaryUser(User user, Subject subject) throws MyException {

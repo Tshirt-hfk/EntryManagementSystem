@@ -32,11 +32,26 @@ public class User {
     @Column(columnDefinition = "varchar(50)", unique = true, nullable = false)
     private String email;
 
+    @Column(nullable = false, columnDefinition = "INT default 0")
+    private Integer submitVersion;  // 用户提交的词条数
+
+    @Column(nullable = false, columnDefinition = "INT default 0")
+    private Integer passVersion;  // 用户通过的词条数
+
+    @Column(nullable = false, columnDefinition = "INT default 0")
+    private Integer premiumVersion;  // 用户编辑的优质词条数
+
     @OneToMany(mappedBy="pk.user",cascade=CascadeType.REFRESH,fetch=FetchType.LAZY)
     private List<GroupMember> groupMemberList;
 
     @OneToMany(mappedBy="user",cascade=CascadeType.REFRESH,fetch=FetchType.LAZY)
     private List<Task> taskList;
+
+    @OneToMany(mappedBy="user",cascade=CascadeType.REFRESH,fetch=FetchType.LAZY)
+    private List<Record> recordList;
+
+    @OneToMany(mappedBy="user",cascade=CascadeType.REFRESH,fetch=FetchType.LAZY)
+    private List<Application> applicationList;
 
     public User() {
 
@@ -66,6 +81,10 @@ public class User {
         return authorith;
     }
 
+    public void setAuthorith(Integer authorith) {
+        this.authorith = authorith;
+    }
+
     public String getPhone() {
         return phone;
     }
@@ -80,6 +99,30 @@ public class User {
 
     public List<Task> getTaskList() {
         return taskList;
+    }
+
+    public Integer getSubmitVersion(){
+        return this.submitVersion;
+    }
+
+    public void setSubmitVersion(Integer submitVersion){
+        this.submitVersion = submitVersion;
+    }
+
+    public Integer getPassVersion(){
+        return this.passVersion;
+    }
+
+    public void setPassVersion(Integer passVersion){
+        this.passVersion = passVersion;
+    }
+
+    public Integer getPremiumVersion(){
+        return this.premiumVersion;
+    }
+
+    public void setPremiumVersion(Integer premiumVersion){
+        this.premiumVersion = premiumVersion;
     }
 
 }
