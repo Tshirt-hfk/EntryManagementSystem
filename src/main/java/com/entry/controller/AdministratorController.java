@@ -51,12 +51,11 @@ public class AdministratorController {
     /**
      * 管理员获取所有待审核词条
      * @param request
-     * @param jsonParam
      * @return
      */
     @PostMapping("api/admin/getRecord")
     @CrossOrigin
-    public ResponseEntity<?> getRecord(HttpServletRequest request, @RequestBody String jsonParam) {
+    public ResponseEntity<?> getRecord(HttpServletRequest request) {
         try{
             //得到待审核记录
             List<Record> records = recordRepository.findAllByState(Record.TOAUDITED);
