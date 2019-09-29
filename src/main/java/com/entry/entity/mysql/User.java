@@ -29,7 +29,7 @@ public class User {
     private String phone;
 
     @Email
-    @Column(columnDefinition = "varchar(20)", unique = true, nullable = false)
+    @Column(columnDefinition = "varchar(50)", unique = true, nullable = false)
     private String email;
 
     @OneToMany(mappedBy="pk.user",cascade=CascadeType.REFRESH,fetch=FetchType.LAZY)
