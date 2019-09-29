@@ -38,6 +38,9 @@ public class UserController {
     RecordRepository recordRepository;
 
     @Autowired
+    ApplicationRepository applicationRepository;
+
+    @Autowired
     AssignmentRepository assignmentRepository;
 
     @Autowired
@@ -48,6 +51,7 @@ public class UserController {
 
     @Autowired
     SubjectManagementService subjectManagementService;
+
     /**
      * 用户登陆状态
      * @param request
@@ -592,6 +596,30 @@ public class UserController {
             }
         }catch (Exception e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    /**
+     * 用户申请权限
+     * @param request
+     * @return
+     */
+    @GetMapping("/api/user/applyAuthority")
+    @CrossOrigin
+    public ResponseEntity<?> applyAuthority(HttpServletRequest request, @RequestBody String jsonParam){
+        try{
+            Integer userId = (Integer)request.getAttribute("userId");
+            JSONObject form = JSONObject.parseObject(jsonParam);
+            Integer affair = form.getInteger("affair");
+            User user = userRepository.findUserById(userId);
+            if (user != null) {
+                Application application = new Application(affair, user);
+                applicationRepository.save(application);
+                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.OK.value(),"申请成功"), HttpStatus.OK);
+            }else
+                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),"用户未注册"), HttpStatus.NOT_FOUND);
+        }catch (Exception e){
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"网络错误"),HttpStatus.BAD_REQUEST);
         }
     }
 
