@@ -653,4 +653,27 @@ public class UserController {
         }
     }
 
+    /**
+     * 用户创建新词条暂存Record
+     * @param request
+     * @param jsonParam
+     * @return
+     */
+    @PostMapping("api/user/createEntry")
+    @CrossOrigin
+    public ResponseEntity<?> createEntry(HttpServletRequest request, @RequestBody String jsonParam) {
+        try{
+            Integer userId = (Integer) request.getAttribute("userId");
+            JSONObject data = JSONObject.parseObject(jsonParam);
+            String entryName = data.getString("entryName");
+            String field = data.getJSONArray("field");
+            subjectManagementService.saveRecord(userId, null, entryName, -1, "", , "", new JSONArray(), "content", new JSONArray(), new JSONArray());
+            return new ResponseEntity<>(BaseResultFactory.build("编辑成功"), HttpStatus.OK);
+        }catch (MyException me){
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),me.getMessage()),HttpStatus.BAD_REQUEST);
+        }catch (Exception e){
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"编辑错误"),HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }
