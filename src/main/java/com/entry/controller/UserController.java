@@ -169,7 +169,7 @@ public class UserController {
             Integer userId = (Integer) request.getAttribute("userId");
             JSONObject data = JSONObject.parseObject(jsonParam);
             Integer taskId = data.getInteger("taskId");
-            Integer type = data.getInteger("type");
+            Integer source = data.getInteger("source");
             JSONObject form = data.getJSONObject("form");
             String entryName = form.getString("entryName");
             Integer originalId = form.getInteger("originId");
@@ -180,9 +180,9 @@ public class UserController {
             String content = form.getString("content");
             JSONArray reference = form.getJSONArray("reference");
             JSONArray rel = form.getJSONArray("relation");
-            if(type == 2)
+            if(source == 2)
                 subjectManagementService.saveTask(userId, taskId, entryName, imageUrl, field, intro, infoBox, content, reference, rel);
-            else if(type == 1)
+            else if(source == 1)
                 subjectManagementService.saveRecord(userId, taskId, entryName, originalId, imageUrl, field, intro, infoBox, content, reference, rel);
             return new ResponseEntity<>(BaseResultFactory.build("编辑成功"), HttpStatus.OK);
         }catch (MyException me){
