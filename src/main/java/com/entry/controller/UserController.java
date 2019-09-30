@@ -83,8 +83,8 @@ public class UserController {
     public ResponseEntity<?> getEntry(HttpServletRequest request, @RequestBody String jsonParam) {
         try{
             Integer userId = (Integer) request.getAttribute("userId");
-            HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
-            Integer type = (Integer)form.get("type");
+            JSONObject form = JSONObject.parseObject(jsonParam);
+            Integer type = form.getInteger("type");
             //得到专题内任务词条
             List<Task> tasks = taskRepository.findAllByUser_IdAndState(userId,type);
             List<Object> list = new ArrayList<>();
@@ -140,18 +140,19 @@ public class UserController {
             Integer userId = (Integer) request.getAttribute("userId");
             JSONObject form = JSONObject.parseObject(jsonParam);
             Integer taskId = form.getInteger("taskId");
-            String isTask = form.getString("isTask");
-            if(isTask == "true") {
+            Integer type = form.getInteger("type");
+            if (type == 2) {
                 JSONObject task = this.subjectManagementService.getTask(userId, taskId);
                 return new ResponseEntity<>(BaseResultFactory.build(task, "success"), HttpStatus.OK);
-            }else{
+            } else if (type == 1) {
                 JSONObject record = this.subjectManagementService.getRecord(userId, taskId);
                 return new ResponseEntity<>(BaseResultFactory.build(record, "success"), HttpStatus.OK);
-            }
+            } else
+                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value()), HttpStatus.NOT_FOUND);
         } catch (MyException me) {
-            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),me.getMessage()), HttpStatus.NOT_FOUND);
-        } catch (Exception e){
-            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"我真的错了"),HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(), me.getMessage()), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(), e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -168,7 +169,7 @@ public class UserController {
             Integer userId = (Integer) request.getAttribute("userId");
             JSONObject data = JSONObject.parseObject(jsonParam);
             Integer taskId = data.getInteger("taskId");
-            String isTask = data.getString("isTask");
+            Integer type = data.getInteger("type");
             JSONObject form = data.getJSONObject("form");
             String entryName = form.getString("entryName");
             String imageUrl = form.getString("imageUrl");
@@ -178,9 +179,9 @@ public class UserController {
             String content = form.getString("content");
             JSONArray reference = form.getJSONArray("reference");
             JSONArray rel = form.getJSONArray("relation");
-            if(isTask == "true")
+            if(type == 2)
                 subjectManagementService.saveTask(userId, taskId, entryName, imageUrl, field, intro, infoBox, content, reference, rel);
-            else
+            else if(type == 1)
                 subjectManagementService.saveRecord(userId, taskId, entryName, imageUrl, field, intro, infoBox, content, reference, rel);
             return new ResponseEntity<>(BaseResultFactory.build("编辑成功"), HttpStatus.OK);
         }catch (MyException me){
@@ -608,11 +609,11 @@ public class UserController {
         try{
             Integer userId = (Integer) request.getAttribute("userId");
             JSONObject form = JSONObject.parseObject(jsonParam);
-            String entryName = form.getString("entryName");
-            Record record = recordRepository.findAllByEntryNameAndUserId(entryName, userId);
+            Integer originId = form.getInteger("originId");
+            Record record = recordRepository.findByOriginalIdAnAndUser(originId, userId);
             JSONObject result = new JSONObject();
             if(record != null){
-                if(record.getState() != Record.TOAUDITED) {
+                if(record.getState() == Record.DRAWED) {
                     JSONObject result1 = new JSONObject();
                     result1.put("id", record.getId());
                     result1.put("state", record.getState());
@@ -623,13 +624,15 @@ public class UserController {
                     result1.put("infoBox", record.getInfoBox());
                     result1.put("content", record.getContent());
                     result1.put("relation", record.getRelation());
-                    result.put("entry", result1);
-                    result.put("isExit", true);
-                    return new ResponseEntity<>(BaseResultFactory.build(result,"success"), HttpStatus.OK);
+                    result.put("data", result1);
+                    result.put("state", 1);
+                }else if(record.getState() == Record.TOAUDITED) {
+                    result.put("state", 2);
                 }
             }else{
-                return new ResponseEntity<>(BaseResultFactory.build("无结果"), HttpStatus.OK);
+                result.put("state", 0);
             }
+            return new ResponseEntity<>(BaseResultFactory.build(result,"success"), HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
         }

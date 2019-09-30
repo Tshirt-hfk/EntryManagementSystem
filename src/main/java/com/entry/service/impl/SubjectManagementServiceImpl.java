@@ -263,7 +263,12 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
     @Override
     public void saveRecord(Integer userId, Integer taskId, String entryName, String imageUrl, JSONArray field, String intro, JSONArray infoBox, String content, JSONArray reference, JSONArray rel) throws MyException {
         User user = this.testUser(userId);
-        Record record = new Record();
+        Record record = null;
+        if(taskId < 0)
+            record = new Record();
+        else
+            record = recordRepository.findRecordById(taskId);
+        // TODO record 不属于subject management
         record.setState(Record.DRAWED);
         record.setUser(user);
         record.setSaveTime(new Date().getTime());
