@@ -667,8 +667,10 @@ public class UserController {
             JSONObject data = JSONObject.parseObject(jsonParam);
             String entryName = data.getString("entryName");
             JSONArray field = data.getJSONArray("field");
-            subjectManagementService.saveRecord(userId, -1, entryName, -1, "", field, "", new JSONArray(), "", new JSONArray(), new JSONArray());
-            return new ResponseEntity<>(BaseResultFactory.build("创建成功"), HttpStatus.OK);
+            Integer recordId = subjectManagementService.saveRecord(userId, -1, entryName, -1, "", field, "", new JSONArray(), "", new JSONArray(), new JSONArray());
+            JSONObject result = new JSONObject();
+            result.put("id", recordId);
+            return new ResponseEntity<>(BaseResultFactory.build(result, "创建成功"), HttpStatus.OK);
         }catch (MyException me){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),me.getMessage()),HttpStatus.BAD_REQUEST);
         }catch (Exception e){
