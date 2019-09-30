@@ -1,5 +1,6 @@
 package com.entry.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.entry.entity.mysql.*;
@@ -587,6 +588,45 @@ public class UserController {
                 HashMap<String,Object> result = new HashMap<>();
                 result.put("assignments", tmps);
                 return new ResponseEntity<>(BaseResultFactory.build(result,"success"), HttpStatus.OK);
+            }else{
+                return new ResponseEntity<>(BaseResultFactory.build("无结果"), HttpStatus.OK);
+            }
+        }catch (Exception e){
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    /**
+     * 用户是否已有词条记录
+     * @param request
+     * @param jsonParam
+     * @return
+     */
+    @PostMapping("/api/user/exitUserRecord")
+    @CrossOrigin
+    public ResponseEntity<?> exitUserRecord(HttpServletRequest request,@RequestBody String jsonParam){
+        try{
+            Integer userId = (Integer) request.getAttribute("userId");
+            JSONObject form = JSONObject.parseObject(jsonParam);
+            String entryName = form.getString("entryName");
+            Record record = recordRepository.findAllByEntryNameAndUserId(entryName, userId);
+            JSONObject result = new JSONObject();
+            if(record != null){
+                if(record.getState() != Record.TOAUDITED) {
+                    JSONObject result1 = new JSONObject();
+                    result1.put("id", record.getId());
+                    result1.put("state", record.getState());
+                    result1.put("entryName",record.getEntryName());
+                    result1.put("imageUrl",record.getImageUrl());
+                    result1.put("intro",record.getIntro());
+                    result1.put("field",record.getField());
+                    result1.put("infoBox", record.getInfoBox());
+                    result1.put("content", record.getContent());
+                    result1.put("relation", record.getRelation());
+                    result.put("entry", result1);
+                    result.put("isExit", true);
+                    return new ResponseEntity<>(BaseResultFactory.build(result,"success"), HttpStatus.OK);
+                }
             }else{
                 return new ResponseEntity<>(BaseResultFactory.build("无结果"), HttpStatus.OK);
             }
