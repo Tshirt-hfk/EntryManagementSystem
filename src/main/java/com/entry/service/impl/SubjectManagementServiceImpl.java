@@ -261,7 +261,7 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
      * @throws MyException
      */
     @Override
-    public void saveRecord(Integer userId, Integer taskId, String entryName, Integer originalId, String imageUrl, JSONArray field, String intro, JSONArray infoBox, String content, JSONArray reference, JSONArray rel) throws MyException {
+    public Integer saveRecord(Integer userId, Integer taskId, String entryName, Integer originalId, String imageUrl, JSONArray field, String intro, JSONArray infoBox, String content, JSONArray reference, JSONArray rel) throws MyException {
         User user = this.testUser(userId);
         Record record = null;
         if(taskId < 0)
@@ -281,6 +281,7 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
         record.setContent(content);
         record.setRelation(rel);
         recordRepository.save(record);
+        return record.getId();
     }
 
     /**
