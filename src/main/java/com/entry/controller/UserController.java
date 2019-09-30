@@ -101,7 +101,7 @@ public class UserController {
                 tmp.put("modifyReason", assignment.getModifyReason());
                 tmp.put("name", task.getEntryName());
                 tmp.put("field", task.getField());
-                tmp.put("isTask", "true");
+                tmp.put("source", 2);
                 list.add(tmp);
             }
             //得到普通记录
@@ -116,7 +116,7 @@ public class UserController {
                 tmp.put("modifyReason", record.getModifyReason());
                 tmp.put("name", record.getEntryName());
                 tmp.put("field", record.getField());
-                tmp.put("isTask", "false");
+                tmp.put("source", 1);
                 list.add(tmp);
             }
             HashMap<String, Object> result = new HashMap<>();
@@ -140,11 +140,11 @@ public class UserController {
             Integer userId = (Integer) request.getAttribute("userId");
             JSONObject form = JSONObject.parseObject(jsonParam);
             Integer taskId = form.getInteger("taskId");
-            Integer type = form.getInteger("type");
-            if (type == 2) {
+            Integer source = form.getInteger("source");
+            if (source == 2) {
                 JSONObject task = this.subjectManagementService.getTask(userId, taskId);
                 return new ResponseEntity<>(BaseResultFactory.build(task, "success"), HttpStatus.OK);
-            } else if (type == 1) {
+            } else if (source == 1) {
                 JSONObject record = this.subjectManagementService.getRecord(userId, taskId);
                 return new ResponseEntity<>(BaseResultFactory.build(record, "success"), HttpStatus.OK);
             } else
@@ -172,6 +172,7 @@ public class UserController {
             Integer type = data.getInteger("type");
             JSONObject form = data.getJSONObject("form");
             String entryName = form.getString("entryName");
+            Integer originalId = form.getInteger("originId");
             String imageUrl = form.getString("imageUrl");
             JSONArray field = form.getJSONArray("field");
             String intro = form.getString("intro");
@@ -182,7 +183,7 @@ public class UserController {
             if(type == 2)
                 subjectManagementService.saveTask(userId, taskId, entryName, imageUrl, field, intro, infoBox, content, reference, rel);
             else if(type == 1)
-                subjectManagementService.saveRecord(userId, taskId, entryName, imageUrl, field, intro, infoBox, content, reference, rel);
+                subjectManagementService.saveRecord(userId, taskId, entryName, originalId, imageUrl, field, intro, infoBox, content, reference, rel);
             return new ResponseEntity<>(BaseResultFactory.build("编辑成功"), HttpStatus.OK);
         }catch (MyException me){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),me.getMessage()),HttpStatus.BAD_REQUEST);
@@ -614,17 +615,7 @@ public class UserController {
             JSONObject result = new JSONObject();
             if(record != null){
                 if(record.getState() == Record.DRAWED) {
-                    JSONObject result1 = new JSONObject();
-                    result1.put("id", record.getId());
-                    result1.put("state", record.getState());
-                    result1.put("entryName",record.getEntryName());
-                    result1.put("imageUrl",record.getImageUrl());
-                    result1.put("intro",record.getIntro());
-                    result1.put("field",record.getField());
-                    result1.put("infoBox", record.getInfoBox());
-                    result1.put("content", record.getContent());
-                    result1.put("relation", record.getRelation());
-                    result.put("data", result1);
+                    result.put("id", record.getId());
                     result.put("state", 1);
                 }else if(record.getState() == Record.TOAUDITED) {
                     result.put("state", 2);

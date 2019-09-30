@@ -71,7 +71,6 @@ public class AdministratorController {
                 tmp.put("modifyReason", record.getModifyReason());
                 tmp.put("name", record.getEntryName());
                 tmp.put("field", record.getField());
-                tmp.put("isTask", "false");
                 list.add(tmp);
             }
             HashMap<String, Object> result = new HashMap<>();
@@ -100,10 +99,12 @@ public class AdministratorController {
             Record record = recordRepository.findRecordById(recordId);
             if(pass){
                 record.setState(Record.PASS);
+                recordRepository.save(record);
                 return new ResponseEntity<>(BaseResultFactory.build("审核通过"), HttpStatus.OK);
             }else{
                 record.setState(Record.UNPASS);
                 record.setAdmitReason(reason);
+                recordRepository.save(record);
                 return new ResponseEntity<>(BaseResultFactory.build("审核不通过"), HttpStatus.OK);
             }
         }catch (Exception e){

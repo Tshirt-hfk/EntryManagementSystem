@@ -67,7 +67,10 @@ public class Assignment {
     public Assignment(String entryName, JSONArray field, Subject subject) {
         this.originalId = -1;
         this.entryName = entryName;
-        this.field = field.toJSONString();
+        if(field!=null)
+            this.field = field.toJSONString();
+        else
+            this.field = (new JSONArray()).toJSONString();
         this.intro = "";
         this.imageUrl = "";
         this.infoBox = (new JSONArray()).toJSONString();
@@ -126,7 +129,10 @@ public class Assignment {
     }
 
     public void setField(JSONArray field) {
-        this.field = field.toJSONString();
+        if(field!=null)
+            this.field = field.toJSONString();
+        else
+            this.field = (new JSONArray()).toJSONString();
     }
 
     public String getIntro() {

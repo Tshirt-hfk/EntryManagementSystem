@@ -261,18 +261,19 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
      * @throws MyException
      */
     @Override
-    public void saveRecord(Integer userId, Integer taskId, String entryName, String imageUrl, JSONArray field, String intro, JSONArray infoBox, String content, JSONArray reference, JSONArray rel) throws MyException {
+    public void saveRecord(Integer userId, Integer taskId, String entryName, Integer originalId, String imageUrl, JSONArray field, String intro, JSONArray infoBox, String content, JSONArray reference, JSONArray rel) throws MyException {
         User user = this.testUser(userId);
         Record record = null;
         if(taskId < 0)
             record = new Record();
         else
             record = recordRepository.findRecordById(taskId);
-        // TODO record 不属于subject management
+        // TODO record 不属于subject management, 新建文件。
         record.setState(Record.DRAWED);
         record.setUser(user);
         record.setSaveTime(new Date().getTime());
         record.setEntryName(entryName);
+        record.setOriginalId(originalId);
         record.setImageUrl(imageUrl);
         record.setField(field);
         record.setIntro(intro);
@@ -418,6 +419,7 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
         this.testTaskOutOfDate(task);
         JSONObject result = new JSONObject();
         result.put("entryName",task.getEntryName());
+        result.put("original", task.getOriginalId());
         result.put("imageUrl",task.getImageUrl());
         result.put("intro",task.getIntro());
         result.put("field",task.getField());
@@ -440,6 +442,7 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
         Record record = this.testRecord(taskId);
         JSONObject result = new JSONObject();
         result.put("entryName",record.getEntryName());
+        result.put("originalId",record.getOriginalId());
         result.put("imageUrl",record.getImageUrl());
         result.put("intro",record.getIntro());
         result.put("field",record.getField());
