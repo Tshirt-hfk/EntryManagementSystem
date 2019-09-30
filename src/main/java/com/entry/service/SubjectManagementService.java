@@ -24,5 +24,9 @@ public interface SubjectManagementService {
 
     public JSONObject getAssignment(Integer userId, Integer assignmentId) throws  MyException;
     public JSONObject getTask(Integer userId, Integer taskId) throws  MyException;
+
+    public JSONObject getRecord(Integer userId, Integer taskId) throws  MyException;
+    public void submitRecord(Integer userId, Integer taskId, String reason) throws MyException;
+    public void saveRecord(Integer userId, Integer taskId, String entryName, Integer originalId, String imageUrl, JSONArray field, String intro, JSONArray infoBox, String content, JSONArray reference, JSONArray rel) throws MyException;
 }
 

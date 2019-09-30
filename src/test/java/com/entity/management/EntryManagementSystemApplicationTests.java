@@ -47,22 +47,22 @@ public class EntryManagementSystemApplicationTests {
 
     @Test
     public void contextLoads() {
-        try {
-            String url = "http://192.168.1.120:5005/keywords_extraction";
-            JSONObject jsonObject = new JSONObject();
-            String data = HttpRequestUtil.post(url,"");
-            JSONObject result = JSONObject.parseObject(data);
-            JSONArray nodes = result.getJSONArray("nodes");
-            int len = nodes.size();
-            for(int i=0;i<len;i++){
-                JSONObject node = nodes.getJSONObject(i);
-                String entryName = node.getString("name");
+//        try {
+//            String url = "http://192.168.1.120:5005/keywords_extraction";
+//            JSONObject jsonObject = new JSONObject();
+//            String data = HttpRequestUtil.post(url,"");
+//            JSONObject result = JSONObject.parseObject(data);
+//            JSONArray nodes = result.getJSONArray("nodes");
+//            int len = nodes.size();
+//            for(int i=0;i<len;i++){
+//                JSONObject node = nodes.getJSONObject(i);
+//                String entryName = node.getString("name");
 //                Integer originId = node.getInteger("originId");
-                System.out.println(entryName);
-            }
-        }catch (Exception e){
-
-        }
+//                System.out.println(entryName);
+//            }
+//        }catch (Exception e){
+//
+//        }
 
     }
 

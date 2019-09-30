@@ -122,7 +122,10 @@ public class Task {
     }
 
     public void setField(JSONArray field) {
-        this.field = field.toJSONString();
+        if(field!=null)
+            this.field = field.toJSONString();
+        else
+            this.field = (new JSONArray()).toJSONString();
     }
 
     public String getIntro() {

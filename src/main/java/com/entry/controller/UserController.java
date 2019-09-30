@@ -1,5 +1,6 @@
 package com.entry.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.entry.entity.mysql.*;
@@ -7,9 +8,7 @@ import com.entry.exception.MyException;
 import com.entry.repository.mysql.*;
 import com.entry.dto.BaseResultFactory;
 import com.entry.service.SubjectManagementService;
-import com.entry.service.impl.SubjectManagementServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,9 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -35,6 +32,12 @@ public class UserController {
     TaskRepository taskRepository;
 
     @Autowired
+    RecordRepository recordRepository;
+
+    @Autowired
+    ApplicationRepository applicationRepository;
+
+    @Autowired
     AssignmentRepository assignmentRepository;
 
     @Autowired
@@ -45,6 +48,7 @@ public class UserController {
 
     @Autowired
     SubjectManagementService subjectManagementService;
+
     /**
      * 用户登陆状态
      * @param request
@@ -69,7 +73,7 @@ public class UserController {
     }
 
     /**
-     * 获取该用户的所有词条任务task
+     * 获取该用户的所有词条任务task以及所有记录Record
      * @param request
      * @param jsonParam
      * @return
@@ -79,8 +83,9 @@ public class UserController {
     public ResponseEntity<?> getEntry(HttpServletRequest request, @RequestBody String jsonParam) {
         try{
             Integer userId = (Integer) request.getAttribute("userId");
-            HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
-            Integer type = (Integer)form.get("type");
+            JSONObject form = JSONObject.parseObject(jsonParam);
+            Integer type = form.getInteger("type");
+            //得到专题内任务词条
             List<Task> tasks = taskRepository.findAllByUser_IdAndState(userId,type);
             List<Object> list = new ArrayList<>();
             HashMap<String, Object> tmp = null;
@@ -96,6 +101,22 @@ public class UserController {
                 tmp.put("modifyReason", assignment.getModifyReason());
                 tmp.put("name", task.getEntryName());
                 tmp.put("field", task.getField());
+                tmp.put("source", 2);
+                list.add(tmp);
+            }
+            //得到普通记录
+            List<Record> records = recordRepository.findAllByUser_IdAndState(userId, type);
+            for(Record record: records){
+                tmp = new HashMap<>();
+                tmp.put("id", record.getId());
+                tmp.put("content", record.getContent());
+                tmp.put("saveTime", record.getSaveTime());
+                //   tmp.put("judgeTime", record.getJudgeTime());
+                tmp.put("reason", record.getAdmitReason());
+                tmp.put("modifyReason", record.getModifyReason());
+                tmp.put("name", record.getEntryName());
+                tmp.put("field", record.getField());
+                tmp.put("source", 1);
                 list.add(tmp);
             }
             HashMap<String, Object> result = new HashMap<>();
@@ -107,7 +128,7 @@ public class UserController {
     }
 
     /**
-     * 获取词条task内容
+     * 获取词条task内容或Record内容
      * @param request
      * @param jsonParam
      * @return
@@ -119,17 +140,24 @@ public class UserController {
             Integer userId = (Integer) request.getAttribute("userId");
             JSONObject form = JSONObject.parseObject(jsonParam);
             Integer taskId = form.getInteger("taskId");
-            JSONObject task = this.subjectManagementService.getTask(userId,taskId);
-            return new ResponseEntity<>(BaseResultFactory.build(task, "success"), HttpStatus.OK);
+            Integer source = form.getInteger("source");
+            if (source == 2) {
+                JSONObject task = this.subjectManagementService.getTask(userId, taskId);
+                return new ResponseEntity<>(BaseResultFactory.build(task, "success"), HttpStatus.OK);
+            } else if (source == 1) {
+                JSONObject record = this.subjectManagementService.getRecord(userId, taskId);
+                return new ResponseEntity<>(BaseResultFactory.build(record, "success"), HttpStatus.OK);
+            } else
+                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value()), HttpStatus.NOT_FOUND);
         } catch (MyException me) {
-            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),me.getMessage()), HttpStatus.NOT_FOUND);
-        } catch (Exception e){
-            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"我真的错了"),HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(), me.getMessage()), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(), e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 
     /**
-     * 暂存词条task
+     * 暂存词条task或者记录Record
      * @param request
      * @param jsonParam
      * @return
@@ -141,8 +169,10 @@ public class UserController {
             Integer userId = (Integer) request.getAttribute("userId");
             JSONObject data = JSONObject.parseObject(jsonParam);
             Integer taskId = data.getInteger("taskId");
+            Integer type = data.getInteger("type");
             JSONObject form = data.getJSONObject("form");
             String entryName = form.getString("entryName");
+            Integer originalId = form.getInteger("originId");
             String imageUrl = form.getString("imageUrl");
             JSONArray field = form.getJSONArray("field");
             String intro = form.getString("intro");
@@ -150,7 +180,10 @@ public class UserController {
             String content = form.getString("content");
             JSONArray reference = form.getJSONArray("reference");
             JSONArray rel = form.getJSONArray("relation");
-            subjectManagementService.saveTask(userId, taskId, entryName, imageUrl, field, intro, infoBox, content, reference, rel);
+            if(type == 2)
+                subjectManagementService.saveTask(userId, taskId, entryName, imageUrl, field, intro, infoBox, content, reference, rel);
+            else if(type == 1)
+                subjectManagementService.saveRecord(userId, taskId, entryName, originalId, imageUrl, field, intro, infoBox, content, reference, rel);
             return new ResponseEntity<>(BaseResultFactory.build("编辑成功"), HttpStatus.OK);
         }catch (MyException me){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),me.getMessage()),HttpStatus.BAD_REQUEST);
@@ -160,7 +193,7 @@ public class UserController {
     }
 
     /**
-     * 用户提交词条task
+     * 用户提交词条task或记录Record
      * @param request
      * @param jsonParam
      * @return
@@ -173,10 +206,18 @@ public class UserController {
             JSONObject form = JSONObject.parseObject(jsonParam);
             JSONArray entryIds = form.getJSONArray("entryIds");
             String reason = form.getString("reason");
+            String isTask = form.getString("isTask");
             int len = entryIds.size();
-            for (int i=0;i<len;i++){
-                Integer taskId = entryIds.getInteger(i);
-                subjectManagementService.submitTask(userId, taskId, reason);
+            if(isTask == "true") {
+                for (int i = 0; i < len; i++) {   //每次只有一条，懒得改了
+                    Integer taskId = entryIds.getInteger(i);
+                    subjectManagementService.submitTask(userId, taskId, reason);
+                }
+            }else{
+                for (int i = 0; i < len; i++) {
+                    Integer taskId = entryIds.getInteger(i);
+                    subjectManagementService.submitRecord(userId, taskId, reason);
+                }
             }
             return new ResponseEntity<>(BaseResultFactory.build("提交成功"), HttpStatus.OK);
         }catch (MyException me){
@@ -187,7 +228,7 @@ public class UserController {
     }
 
     /**
-     * 用户放弃任务
+     * 用户放弃任务或者词条编辑
      * @param request
      * @param jsonParam
      * @return
@@ -199,12 +240,20 @@ public class UserController {
         try{
             HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
             List<Integer> entryIds = (List<Integer>) form.get("entryIds");
-            for (Integer id : entryIds){
-                Task task = taskRepository.findTaskById(id);
-                Assignment assignment = task.getAssignment();
-                assignment.setState(Assignment.PUBLISHED);
-                assignmentRepository.save(assignment);
-                taskRepository.delete(task);
+            List<String> isTasks = (List<String>) form.get("isTaskArray");
+            for (int i = 0; i < entryIds.size(); i++){
+                Integer taskId = entryIds.get(i);
+                String isTask = isTasks.get(i);
+                if(isTask == "true") {
+                    Task task = taskRepository.findTaskById(taskId);
+                    Assignment assignment = task.getAssignment();
+                    assignment.setState(Assignment.PUBLISHED);
+                    assignmentRepository.save(assignment);
+                    taskRepository.delete(task);
+                }else{
+                    Record record = recordRepository.findRecordById(taskId);
+                    recordRepository.delete(record);
+                }
             }
             return new ResponseEntity<>(BaseResultFactory.build("删除成功"), HttpStatus.OK);
         }catch (Exception e){
@@ -546,6 +595,84 @@ public class UserController {
             }
         }catch (Exception e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    /**
+     * 用户是否已有词条记录
+     * @param request
+     * @param jsonParam
+     * @return
+     */
+    @PostMapping("/api/user/exitUserRecord")
+    @CrossOrigin
+    public ResponseEntity<?> exitUserRecord(HttpServletRequest request,@RequestBody String jsonParam){
+        try{
+            Integer userId = (Integer) request.getAttribute("userId");
+            JSONObject form = JSONObject.parseObject(jsonParam);
+            Integer originId = form.getInteger("originId");
+            Record record = recordRepository.findByOriginalIdAnAndUser(originId, userId);
+            JSONObject result = new JSONObject();
+            if(record != null){
+                if(record.getState() == Record.DRAWED) {
+                    result.put("id", record.getId());
+                    result.put("state", 1);
+                }else if(record.getState() == Record.TOAUDITED) {
+                    result.put("state", 2);
+                }
+            }else{
+                result.put("state", 0);
+            }
+            return new ResponseEntity<>(BaseResultFactory.build(result,"success"), HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    /**
+     * 用户申请权限
+     * @param request
+     * @return
+     */
+    @PostMapping("/api/user/applyAuthority")
+    @CrossOrigin
+    public ResponseEntity<?> applyAuthority(HttpServletRequest request, @RequestBody String jsonParam){
+        try{
+            Integer userId = (Integer)request.getAttribute("userId");
+            JSONObject form = JSONObject.parseObject(jsonParam);
+            Integer affair = form.getInteger("affair");
+            User user = userRepository.findUserById(userId);
+            if (user != null) {
+                Application application = new Application(affair, user);
+                applicationRepository.save(application);
+                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.OK.value(),"申请成功"), HttpStatus.OK);
+            }else
+                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(),"用户未注册"), HttpStatus.NOT_FOUND);
+        }catch (Exception e){
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"网络错误"),HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    /**
+     * 用户创建新词条暂存Record
+     * @param request
+     * @param jsonParam
+     * @return
+     */
+    @PostMapping("api/user/createEntry")
+    @CrossOrigin
+    public ResponseEntity<?> createEntry(HttpServletRequest request, @RequestBody String jsonParam) {
+        try{
+            Integer userId = (Integer) request.getAttribute("userId");
+            JSONObject data = JSONObject.parseObject(jsonParam);
+            String entryName = data.getString("entryName");
+            JSONArray field = data.getJSONArray("field");
+            subjectManagementService.saveRecord(userId, -1, entryName, -1, "", field, "", new JSONArray(), "", new JSONArray(), new JSONArray());
+            return new ResponseEntity<>(BaseResultFactory.build("创建成功"), HttpStatus.OK);
+        }catch (MyException me){
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),me.getMessage()),HttpStatus.BAD_REQUEST);
+        }catch (Exception e){
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"创建错误"),HttpStatus.BAD_REQUEST);
         }
     }
 

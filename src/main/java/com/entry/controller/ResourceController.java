@@ -34,7 +34,6 @@ public class ResourceController {
     @PostMapping("/resource/image")
     @CrossOrigin
     public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file) {
-        System.out.println("test");
         try {
             String fileName = file.getOriginalFilename();
             String newName = FileUtil.saveFile(file,filePath,fileName);

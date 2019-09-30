@@ -1,20 +1,22 @@
 package com.entry.entity.mysql;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 import javax.persistence.*;
+import java.util.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
-@Table(name="assignment")
-public class Assignment {
+@Table(name = "record")
+public class Record {
 
-    public final static Integer UNPUBLISHED = 1;// 未发布
-    public final static Integer PUBLISHED = 2;  // 已发布
     public final static Integer DRAWED = 3;     // 待提交
     public final static Integer TOAUDITED = 4;  // 待审核
-    public final static Integer TOSUBMIT = 5;   // 待提交
-    public final static Integer SUBMITED = 6;   // 待提交
+    public final static Integer PASS = 5;       // 审核通过
+    public final static Integer UNPASS = 6;     // 审核未通过
+    public final static Integer OUTOFDATE = 7;   // 过期
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,63 +43,30 @@ public class Assignment {
     @Column(columnDefinition = "TEXT")
     private String content;
 
-    @Column(columnDefinition = "TINYINT default 1", nullable = false)
-    private Integer state; //1:未发布；2：已发布，3：被领取
+    @Column(columnDefinition = "TEXT")
+    private String relation;
+
+    @Column(columnDefinition = "TINYINT default 3", nullable = false)
+    private Integer state;
 
     @Column
-    private Integer deadline;
+    private String admitReason;
 
     @Column
     private String modifyReason;
 
-    @Column(columnDefinition = "TEXT")
-    private String relation;
+    @Column(columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP", nullable = false)
+    private Timestamp saveTime;
 
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "subject_id")
-    private Subject subject;
+    @Column(columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP", nullable = false)
+    private Timestamp judgeTime;
 
-    @OneToMany(mappedBy="assignment", fetch=FetchType.LAZY)
-    private List<Task> tasks;
+    @ManyToOne(optional=false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    public Assignment() {
+    public Record() {
 
-    }
-
-    public Assignment(String entryName, JSONArray field, Subject subject) {
-        this.originalId = -1;
-        this.entryName = entryName;
-        if(field!=null)
-            this.field = field.toJSONString();
-        else
-            this.field = (new JSONArray()).toJSONString();
-        this.intro = "";
-        this.imageUrl = "";
-        this.infoBox = (new JSONArray()).toJSONString();
-        this.content = "";
-        this.relation = (new JSONArray()).toJSONString();
-        this.state = 1;
-        this.subject = subject;
-
-    }
-
-    public Assignment(Integer originalId, String entryName, JSONArray field, String intro, String imageUrl, JSONArray infoBox, String content, Subject subject) {
-        this.originalId = originalId;
-        this.entryName = entryName;
-        if(field!=null)
-            this.field = field.toJSONString();
-        else
-            this.field = (new JSONArray()).toJSONString();
-        this.intro = intro;
-        this.imageUrl = imageUrl;
-        if(infoBox!=null)
-            this.infoBox = infoBox.toJSONString();
-        else
-            this.infoBox = (new JSONArray()).toJSONString();
-        this.content = content;
-        this.relation = (new JSONArray()).toJSONString();
-        this.state = 1;
-        this.subject = subject;
     }
 
     public Integer getId() {
@@ -175,12 +144,12 @@ public class Assignment {
         this.state = state;
     }
 
-    public Integer getDeadline() {
-        return deadline;
+    public String getAdmitReason() {
+        return admitReason;
     }
 
-    public void setDeadline(Integer deadline) {
-        this.deadline = deadline;
+    public void setAdmitReason(String admitReason) {
+        this.admitReason = admitReason;
     }
 
     public JSONArray getModifyReason() {
@@ -191,20 +160,28 @@ public class Assignment {
         this.modifyReason = reason.toJSONString();
     }
 
-    public Subject getSubject() {
-        return subject;
+    public Long getSaveTime() {
+        return saveTime.getTime();
     }
 
-    public void setSubject(Subject subject) {
-        this.subject = subject;
+    public void setSaveTime(Long saveTime) {
+        this.saveTime = new Timestamp(saveTime);
     }
 
-    public List<Task> getTasks() {
-        return tasks;
+    public Long getJudgeTime() {
+        return judgeTime.getTime();
     }
 
-    public void setTasks(List<Task> tasks) {
-        this.tasks = tasks;
+    public void setJudgeTime(Long judgeTime) {
+        this.judgeTime = new Timestamp(judgeTime);
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public JSONArray getRelation() {
@@ -214,6 +191,4 @@ public class Assignment {
     public void setRelation(JSONArray relation) {
         this.relation = relation.toJSONString();
     }
-
-
 }
