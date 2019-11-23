@@ -7,7 +7,7 @@ import java.util.List;
 
 @Entity
 @Table(name="assignment")
-public class Assignment {
+public class Assignment extends Entry {
 
     public final static Integer UNPUBLISHED = 1;// 未发布
     public final static Integer PUBLISHED = 2;  // 已发布
@@ -20,27 +20,6 @@ public class Assignment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(columnDefinition = "INT default -1", nullable = false)
-    private Integer originalId;
-
-    @Column(columnDefinition = "varchar(50)", nullable = false)
-    private String entryName;
-
-    @Column(columnDefinition ="varchar(255)", nullable = false)
-    private String field;
-
-    @Column(columnDefinition = "TEXT")
-    private String intro;
-
-    @Column
-    private String imageUrl;
-
-    @Column(columnDefinition = "TEXT")
-    private String infoBox;
-
-    @Column(columnDefinition = "TEXT")
-    private String content;
-
     @Column(columnDefinition = "TINYINT default 1", nullable = false)
     private Integer state; //1:未发布；2：已发布，3：被领取
 
@@ -49,9 +28,6 @@ public class Assignment {
 
     @Column
     private String modifyReason;
-
-    @Column(columnDefinition = "TEXT")
-    private String relation;
 
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "subject_id")
@@ -108,65 +84,6 @@ public class Assignment {
         this.id = id;
     }
 
-    public Integer getOriginalId() {
-        return originalId;
-    }
-
-    public void setOriginalId(Integer originalId) {
-        this.originalId = originalId;
-    }
-
-    public String getEntryName() {
-        return entryName;
-    }
-
-    public void setEntryName(String entryName) {
-        this.entryName = entryName;
-    }
-
-    public JSONArray getField() {
-        return JSONArray.parseArray(field);
-    }
-
-    public void setField(JSONArray field) {
-        if(field!=null)
-            this.field = field.toJSONString();
-        else
-            this.field = (new JSONArray()).toJSONString();
-    }
-
-    public String getIntro() {
-        return intro;
-    }
-
-    public void setIntro(String intro) {
-        this.intro = intro;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public JSONArray getInfoBox() {
-        return JSONArray.parseArray(infoBox);
-    }
-
-    public void setInfoBox(JSONArray infoBox) {
-        this.infoBox = infoBox.toJSONString();
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
     public Integer getState() {
         return state;
     }
@@ -206,14 +123,5 @@ public class Assignment {
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
     }
-
-    public JSONArray getRelation() {
-        return JSONArray.parseArray(this.relation);
-    }
-
-    public void setRelation(JSONArray relation) {
-        this.relation = relation.toJSONString();
-    }
-
 
 }
