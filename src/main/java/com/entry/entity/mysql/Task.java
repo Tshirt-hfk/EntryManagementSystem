@@ -1,12 +1,10 @@
 package com.entry.entity.mysql;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.entry.entity.mysql.pk.Entry;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.sql.Timestamp;
-import java.util.List;
 
 @Entity
 @Table(name = "task")

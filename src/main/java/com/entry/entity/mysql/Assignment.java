@@ -1,6 +1,7 @@
 package com.entry.entity.mysql;
 
 import com.alibaba.fastjson.JSONArray;
+import com.entry.entity.mysql.pk.Entry;
 
 import javax.persistence.*;
 import java.util.List;
