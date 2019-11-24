@@ -611,7 +611,7 @@ public class UserController {
             Integer userId = (Integer) request.getAttribute("userId");
             JSONObject form = JSONObject.parseObject(jsonParam);
             Integer originId = form.getInteger("originId");
-            Record record = recordRepository.findByOriginalIdAnAndUser(originId, userId);
+            Record record = recordRepository.findByOriginalIdAndUserAndState(originId, userId);
             JSONObject result = new JSONObject();
             if(record != null){
                 if(record.getState() == Record.DRAWED) {
@@ -666,7 +666,8 @@ public class UserController {
             Integer userId = (Integer) request.getAttribute("userId");
             JSONObject data = JSONObject.parseObject(jsonParam);
             String entryName = data.getString("entryName");
-            JSONArray field = data.getJSONArray("field");
+            JSONArray field = new JSONArray();
+            field.add(data.getString("field"));
             Integer recordId = subjectManagementService.saveRecord(userId, -1, entryName, -1, "", field, "", new JSONArray(), "", new JSONArray(), new JSONArray());
             JSONObject result = new JSONObject();
             result.put("id", recordId);

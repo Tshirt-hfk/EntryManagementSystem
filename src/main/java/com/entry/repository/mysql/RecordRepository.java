@@ -18,6 +18,9 @@ public interface RecordRepository extends JpaRepository<Record, Integer> {
     List<Record> findAllByState(Integer state);
 
     @Query(value = "select * from record where original_id= ?1 and user_id = ?2",nativeQuery = true)
-    Record findByOriginalIdAnAndUser(Integer originalId, Integer userId);
+    Record findByOriginalIdAndUser(Integer originalId, Integer userId);
+
+    @Query(value = "select * from record where original_id= ?1 and user_id = ?2 and state<=4",nativeQuery = true)
+    Record findByOriginalIdAndUserAndState(Integer originalId, Integer userId);
 
 }
