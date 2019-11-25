@@ -1,4 +1,4 @@
-package com.entry.entity.mysql;
+package com.entry.entity.mysql.pk;
 
 import com.alibaba.fastjson.JSONArray;
 
