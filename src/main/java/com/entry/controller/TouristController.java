@@ -29,7 +29,6 @@ public class TouristController {
     @CrossOrigin
     public ResponseEntity<?> touristLogin(@RequestBody String jsonParam){
         try{
-            System.out.println(jsonParam);
             HashMap<String,String> user_data = new ObjectMapper().readValue(jsonParam,HashMap.class);
             String username=user_data.get("username");
             String password=user_data.get("password");
