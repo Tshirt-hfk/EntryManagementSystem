@@ -2,11 +2,14 @@ package com.entry.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.entry.controller.EntryController;
 import com.entry.entity.mysql.*;
 import com.entry.entity.mysql.pk.GroupMemberPK;
 import com.entry.exception.MyException;
 import com.entry.repository.mysql.*;
 import com.entry.service.SubjectManagementService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +21,8 @@ import java.util.List;
 
 @Service("subjectManagementService")
 public class SubjectManagementServiceImpl implements SubjectManagementService {
+    private static Logger logger = LogManager.getLogger(EntryController.class);
+
     @Autowired
     UserRepository userRepository;
 
@@ -69,7 +74,7 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
      */
     @Override
     public void initSubjectAssignment(Integer subjectId, JSONArray entries, JSONArray relations) throws MyException {
-        System.out.println("initSubjectAssignment");
+        logger.info("initSubjectAssignment");
         Subject subject = this.testSubject(subjectId);
         subject.setInitState(true);
         List<Assignment> assignmentList = new ArrayList<>();
