@@ -77,7 +77,7 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
         JSONObject tmp = new JSONObject();
         for (int i=0;i<len1;i++){
             JSONObject js = entries.getJSONObject(i);
-            System.out.println(js.toJSONString());
+//            System.out.println(js.toJSONString());
             String entryName = js.getString("name");
             Integer originalId = Integer.parseInt(js.getString("id"));
             Assignment assignment;
