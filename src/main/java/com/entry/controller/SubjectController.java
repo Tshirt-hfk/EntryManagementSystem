@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @RestController
-public class subjectController {
+public class SubjectController {
     @Autowired
     SubjectRepository subjectRepository;
 

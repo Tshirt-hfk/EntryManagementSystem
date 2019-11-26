@@ -17,6 +17,6 @@ public interface SubjectRepository extends JpaRepository<Subject, Integer> {
     @Query(value = "SELECT * FROM subject where is_public = 1 ORDER BY RAND() LIMIT ?1", nativeQuery = true)
     List<Subject> findSubjectByRand(Integer number);
 
-    @Query(value = "SELECT * FROM subject where field = ?1", nativeQuery = true)
+    @Query(value = "SELECT * FROM subject where field like concat('%\"',?1,'\"%')", nativeQuery = true)
     List<Subject> findSubjectsByField(String field);
 }
