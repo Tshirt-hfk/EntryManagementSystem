@@ -94,6 +94,12 @@ public class SubjectMakerController {
             JSONObject form = JSONObject.parseObject(jsonParam);
             String imageUrl = form.getString("imageUrl");
             String subjectName = form.getString("name");
+            Subject subjectTest = subjectRepository.findSubjectByName(subjectName);
+            if(subjectTest != null) {
+                HashMap<String,Object> result=new HashMap<>();
+                result.put("msg", "exist");
+                return new ResponseEntity<>(BaseResultFactory.build("该专题已存在"), HttpStatus.OK);
+            }
             JSONArray field = form.getJSONArray("field");
             Boolean isPublic = form.getBoolean("isPublic");
             String introduction = form.getString("introduction");

@@ -11,6 +11,9 @@ public interface SubjectRepository extends JpaRepository<Subject, Integer> {
     @Query(value = "select * from subject where id =?1", nativeQuery = true)
     Subject findSubjectById(Integer id);
 
+    @Query(value = "select * from subject where name =?1", nativeQuery = true)
+    Subject findSubjectByName(String name);
+
     @Query(value = "select * from subject where name like concat('%',?1,'%')", nativeQuery = true)
     List<Subject> findSubjectByKey(String keyword);
 
