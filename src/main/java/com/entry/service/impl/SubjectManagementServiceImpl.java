@@ -7,6 +7,7 @@ import com.entry.entity.mysql.*;
 import com.entry.entity.mysql.pk.GroupMemberPK;
 import com.entry.exception.MyException;
 import com.entry.repository.mysql.*;
+import com.entry.service.HttpRequestService;
 import com.entry.service.SubjectManagementService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,6 +41,9 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
 
     @Autowired
     RecordRepository recordRepository;
+
+    @Autowired
+    HttpRequestService httpRequestService;
 
     /**
      * 创建专题
@@ -364,6 +368,7 @@ public class SubjectManagementServiceImpl implements SubjectManagementService {
             assignmentRepository.save(assignment);
             groupMemberRepository.save(groupMember);
             subjectRepository.save(subject);
+            httpRequestService.requestSubmitEntry(assignment);
         }else{
             assignment.setState(Assignment.PUBLISHED);
             task.setJudgeTime(new Date().getTime());

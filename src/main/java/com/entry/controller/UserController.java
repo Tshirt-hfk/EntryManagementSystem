@@ -240,11 +240,11 @@ public class UserController {
         try{
             HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
             List<Integer> entryIds = (List<Integer>) form.get("entryIds");
-            List<String> isTasks = (List<String>) form.get("isTaskArray");
+            List<Boolean> isTasks = (List<Boolean>) form.get("isTaskArray");
             for (int i = 0; i < entryIds.size(); i++){
                 Integer taskId = entryIds.get(i);
-                String isTask = isTasks.get(i);
-                if(isTask == "true") {
+                Boolean isTask = isTasks.get(i);
+                if(isTask) {
                     Task task = taskRepository.findTaskById(taskId);
                     Assignment assignment = task.getAssignment();
                     assignment.setState(Assignment.PUBLISHED);

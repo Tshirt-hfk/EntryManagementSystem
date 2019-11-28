@@ -100,6 +100,7 @@ public class AdministratorController {
             if(pass){
                 record.setState(Record.PASS);
                 recordRepository.save(record);
+                httpRequestService.requestSubmitEntry(record);
                 return new ResponseEntity<>(BaseResultFactory.build("审核通过"), HttpStatus.OK);
             }else{
                 record.setState(Record.UNPASS);

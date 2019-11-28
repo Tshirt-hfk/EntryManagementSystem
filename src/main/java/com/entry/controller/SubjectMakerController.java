@@ -96,8 +96,6 @@ public class SubjectMakerController {
             String subjectName = form.getString("name");
             Subject subjectTest = subjectRepository.findSubjectByName(subjectName);
             if(subjectTest != null) {
-                HashMap<String,Object> result=new HashMap<>();
-                result.put("msg", "exist");
                 return new ResponseEntity<>(BaseResultFactory.build("该专题已存在"), HttpStatus.OK);
             }
             JSONArray field = form.getJSONArray("field");
@@ -109,7 +107,6 @@ public class SubjectMakerController {
             Subject subject = this.subjectManagementService.createSubject(userId, subjectName, imageUrl, field, isPublic, introduction, goal, deadline);
             String result = this.httpRequestService.requestInitSubject(subject.getId(), subjectName, field, documents, introduction, goal);
             JSONObject json = JSONObject.parseObject(result);
-            System.out.println(result);
             if("success".equals(json.getString("status"))){
                 JSONObject data = json.getJSONObject("data");
                 subjectManagementService.initSubjectAssignment(subject.getId(),data.getJSONArray("nodes"),data.getJSONArray("edges"));
@@ -151,7 +148,7 @@ public class SubjectMakerController {
     @CrossOrigin
     public ResponseEntity<?> getSubject(@RequestBody String jsonParam){
         try{
-            System.out.println(jsonParam);
+//            System.out.println(jsonParam);
             HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
             Integer subjectId = (Integer)form.get("subjectId");
             Subject subject = subjectRepository.findSubjectById(subjectId);
