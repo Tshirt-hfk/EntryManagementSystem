@@ -38,9 +38,9 @@ public class EntryController {
             Integer subjectId = Integer.parseInt(json.getString("subjectId"));
             JSONArray nodes = json.getJSONArray("nodes");
             JSONArray edges = json.getJSONArray("edges");
-            System.out.println(subjectId);
-            System.out.println(nodes.toJSONString());
-            System.out.println(edges.toJSONString());
+//            System.out.println(subjectId);
+//            System.out.println(nodes.toJSONString());
+//            System.out.println(edges.toJSONString());
             this.subjectManagementService.initSubjectAssignment(subjectId,nodes,edges);
             return new ResponseEntity<>(BaseResultFactory.build("success"),HttpStatus.OK);
         }catch (MyException me){
