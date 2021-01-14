@@ -140,6 +140,39 @@ public class SubjectMakerController {
     }
 
     /**
+     * 查询专题信息
+     * @param request
+     * @param jsonParam
+     * @return
+     */
+    @PostMapping("api/subjectMaker/getSubjectInfo")
+    @CrossOrigin
+    public ResponseEntity<?> getSubjectBasicInfo(@RequestBody String jsonParam) {
+        try{
+            HashMap<String,Object> form = new ObjectMapper().readValue(jsonParam,HashMap.class);
+            Integer subjectId = (Integer) form.get("subjectId");
+            Subject subject = subjectRepository.findSubjectById(subjectId);
+            HashMap<String, Object> result = new HashMap<>();
+            if(subject!=null){
+                result.put("imageUrl",subject.getImageUrl());
+                result.put("title", subject.getName());
+                result.put("creator", subject.getCreator());
+                result.put("isPublic", subject.getPublic());
+                result.put("currentCount",subject.getCurrentCount());
+                result.put("totalCount",subject.getTotalCount());
+                result.put("deadline", subject.getDeadline());
+                result.put("introduction",subject.getIntroduction());
+                result.put("goal",subject.getGoal());
+            }else {
+                return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.NOT_FOUND.value(), "该专题不存在"), HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(BaseResultFactory.build(result, "success"), HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"我真的错了"),HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    /**
      * 获取该专题下的任务
      * @param jsonParam
      * @return

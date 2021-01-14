@@ -283,7 +283,6 @@ public class UserController {
                 result.put("title", subject.getName());
                 result.put("creator", subject.getCreator());
                 result.put("isPublic", subject.getPublic());
-
                 result.put("currentCount",subject.getCurrentCount());
                 result.put("totalCount",subject.getTotalCount());
                 result.put("deadline", subject.getDeadline());
