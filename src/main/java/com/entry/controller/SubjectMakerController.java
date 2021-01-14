@@ -111,37 +111,16 @@ public class SubjectMakerController {
                 JSONObject data = json.getJSONObject("data");
                 subjectManagementService.initSubjectAssignment(subject.getId(),data.getJSONArray("nodes"),data.getJSONArray("edges"));
             }
-            return new ResponseEntity<>(BaseResultFactory.build("创建成功"), HttpStatus.OK);
+            JSONObject res = new JSONObject();
+            res.put("subjectId", subject.getId());
+            return new ResponseEntity<>(BaseResultFactory.build(res,"创建成功"), HttpStatus.OK);
         } catch (MyException me){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST,"创建请求"), HttpStatus.OK);
         }
     }
 
     /**
-     * 创建新的词条任务
-     * @param request
-     * @param jsonParam
-     * @return
-     */
-    @PostMapping("/api/subjectMaker/createEntry")
-    @CrossOrigin
-    public ResponseEntity<?> createEntry(HttpServletRequest request, @RequestBody String jsonParam){
-        try{
-            Integer userId = (Integer) request.getAttribute("userId");
-            JSONObject form = JSONObject.parseObject(jsonParam);
-            String name = form.getString("name");
-            JSONArray fields = form.getJSONArray("field");
-            Integer subjectId = form.getInteger("subjectId");
-            subjectManagementService.createAssignment(userId, subjectId, name, fields);
-            return new ResponseEntity<>(BaseResultFactory.build("创建成功"), HttpStatus.OK);
-        }catch (Exception e){
-            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    /**
      * 查询专题信息
-     * @param request
      * @param jsonParam
      * @return
      */
@@ -169,6 +148,28 @@ public class SubjectMakerController {
             return new ResponseEntity<>(BaseResultFactory.build(result, "success"), HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"我真的错了"),HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    /**
+     * 创建新的词条任务
+     * @param request
+     * @param jsonParam
+     * @return
+     */
+    @PostMapping("/api/subjectMaker/createEntry")
+    @CrossOrigin
+    public ResponseEntity<?> createEntry(HttpServletRequest request, @RequestBody String jsonParam){
+        try{
+            Integer userId = (Integer) request.getAttribute("userId");
+            JSONObject form = JSONObject.parseObject(jsonParam);
+            String name = form.getString("name");
+            JSONArray fields = form.getJSONArray("field");
+            Integer subjectId = form.getInteger("subjectId");
+            subjectManagementService.createAssignment(userId, subjectId, name, fields);
+            return new ResponseEntity<>(BaseResultFactory.build("创建成功"), HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(BaseResultFactory.build(HttpStatus.BAD_REQUEST.value(),"输入错误"),HttpStatus.BAD_REQUEST);
         }
     }
 
