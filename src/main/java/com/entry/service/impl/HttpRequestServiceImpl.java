@@ -25,6 +25,9 @@ public class HttpRequestServiceImpl implements HttpRequestService {
     @Value("${dataServer.submitted.url}")
     private String submittedUrl;
 
+    @Value("${otherServer.checkToken.url}")
+    private String checkTokenUrl;
+
 
     @Override
     public String requestInitSubject(Integer subjectId , String subjectName, JSONArray field , JSONArray documents, String intro, String goal) throws MyException {
@@ -66,6 +69,15 @@ public class HttpRequestServiceImpl implements HttpRequestService {
         data.put("content",record.getContent());
         data.put("relation",record.getRelation());
         String result = HttpRequestUtil.post(this.submittedUrl, data.toJSONString());
+        return result;
+    }
+
+    @Override
+    public String checkToken(String token) throws MyException {
+        JSONObject data = new JSONObject();
+        data.put("token", token);
+        String result = HttpRequestUtil.post(this.checkTokenUrl, data.toJSONString());
+//        JSONObject json = JSONObject.parseObject(result);
         return result;
     }
 

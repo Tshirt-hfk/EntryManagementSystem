@@ -28,6 +28,9 @@ public class User {
     @Column(columnDefinition = "varchar(20)")
     private String phone;
 
+    @Column(columnDefinition = "INT", unique = true)
+    private Integer mid;
+
     @Email
     @Column(columnDefinition = "varchar(50)", unique = true, nullable = false)
     private String email;

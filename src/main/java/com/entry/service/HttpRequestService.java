@@ -14,4 +14,6 @@ public interface HttpRequestService {
     public String requestSubmitEntry(Assignment assignment) throws MyException;
 
     public String requestSubmitEntry(Record record) throws MyException;
+
+    public String checkToken(String token) throws MyException;
 }
